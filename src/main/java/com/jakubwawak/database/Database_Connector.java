@@ -39,7 +39,6 @@ public class Database_Connector {
     public Configuration configuration;            // vield for storing configuration data
 
     public int admin_id;                           // id currently logged admin
-    public int access_level;                       // number of access level
 
     /**
      * Constructor
@@ -71,7 +70,7 @@ public class Database_Connector {
         // load log to database
         if ( debug == 1){
             String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code) VALUES (?,?); ";
-            System.out.println("ENTRC LOG: "+database_log.get(database_log.size()-1));
+            System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
             if ( con == null){
                 System.out.println("Bład bazy: con=null ("+log+")");
             }

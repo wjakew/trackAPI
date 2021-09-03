@@ -105,12 +105,12 @@ public class Configuration {
             this.database_name = sc.nextLine();
             System.out.print("database user?");
             this.database_user = sc.nextLine();
-            System.out.print("database password?");
             if ( cnsl != null){
                 char[] ch = cnsl.readPassword("password?");
                 this.database_password = String.copyValueOf(ch);
             }
             else{
+                System.out.print("database password?");
                 this.database_password = sc.nextLine();
             }
         }catch(Exception e){
