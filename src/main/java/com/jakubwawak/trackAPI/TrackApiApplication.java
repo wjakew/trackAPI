@@ -1,14 +1,118 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.trackAPI;
 
+import com.jakubwawak.administrator.Configuration;
+import com.jakubwawak.database.Database_Connector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 
 @SpringBootApplication
 public class TrackApiApplication {
 
-	public static void main(String[] args) {
-		System.out.println("WITAJ");
-		SpringApplication.run(TrackApiApplication.class, args);
+	public static String version = "v1.0.0";
+	public static String build = "0309REV01";
+
+	public static Configuration configuration;
+	public static Database_Connector database;
+
+	public static void main(String[] args) throws IOException {
+		header();
+		if ( load_configuration() ){
+
+		}
+		else{
+			System.out.println("Program aborted");
+		}
+		System.out.println("trackAPI stopped.");
+		System.out.println("by Jakub Wawak");
+		//SpringApplication.run(TrackApiApplication.class, args);
+	}
+
+	/**
+	 * Function for loading configuration
+	 */
+	public static boolean load_configuration() throws IOException {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("@@ Configuration Loader @@");
+		configuration = new Configuration();
+		if (configuration.exists){
+			System.out.println("Configuration file exists..");
+			configuration.read_file();
+			System.out.println("Configuration file reading..");
+			configuration.load_file_data();
+			System.out.println("Configuration file loading data..");
+			if ( configuration.validation() ){
+				System.out.println("Configuration data validated!");
+				configuration.show_configuration();
+				System.out.print("continue(y/n)?");
+				String ans = sc.nextLine();
+				return ans.equals("y");
+			}
+			else{
+				System.out.println("Configuration file not validated, wrong file");
+				return false;
+			}
+		}
+		else{
+			System.out.println("Configuration file not exist..");
+			System.out.print("create(y/n)?");
+			String ans = sc.nextLine();
+			if ( ans.equals("y") ){
+				configuration.load_user_data();
+				System.out.println("save to file(y/n)?");
+				ans = sc.nextLine();
+				if (ans.equals("y")){
+					configuration.copy_configuration();
+				}
+				if (!configuration.error){
+					System.out.println("Configuration correct");
+					System.out.println("continue(y/n)?");
+					ans = sc.nextLine();
+					return ans.equals("y");
+				}
+				else{
+					System.out.println("Configuration error.Aborted.");
+					return false;
+				}
+			}
+			else{
+				System.out.println("Aborted");
+				return false;
+			}
+		}
+	}
+
+	/**
+	 * Function for clearing console
+	 */
+	public static void clear_console(){
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	/**
+	 * Function for loading header
+	 */
+	public static void header(){
+		String header = " _                  _               _\n" +
+				"| |_ _ __ __ _  ___| | ____ _ _ __ (_)\n" +
+				"| __| '__/ _` |/ __| |/ / _` | '_ \\| |\n" +
+				"| |_| | | (_| | (__|   < (_| | |_) | |\n" +
+				" \\__|_|  \\__,_|\\___|_|\\_\\__,_| .__/|_|\n" +
+				"                             |_|";
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+		System.out.print(header);
+		System.out.println("version: "+version+", build: "+build);
+
 	}
 
 }
