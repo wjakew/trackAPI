@@ -6,6 +6,8 @@
 package com.jakubwawak.database;
 
 import com.jakubwawak.administrator.Configuration;
+import com.jakubwawak.administrator.RandomString;
+import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Database_Connector {
 
@@ -122,6 +125,33 @@ public class Database_Connector {
             log("Failed to connect to database ("+e.toString()+")","ERROR-DB01");
         }
         log("Database string: "+login_data.substring(0,login_data.length()-25)+"...*END*","ERROR-DB02");
+    }
+
+    /**
+     * Function for creating session
+     * @param user_id
+     * @return String
+     */
+    public String create_session(int user_id) throws SQLException {
+        LocalDateTime lt = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        String query = "INSERT INTO SESSION_TOKEN (user_id,session_token,session_token_time) VALUES (?,?,?);";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            RandomString session = new RandomString(15, ThreadLocalRandom.current());
+
+            ppst.setInt(1,user_id);
+            ppst.setString(2,String.copyValueOf(session.buf));
+            log("Created new session: "+String.copyValueOf(session.buf)+"for user_id "+user_id,"SESSION-CRT");
+            ppst.setObject(3,lt);
+
+            ppst.executeQuery();
+            return String.copyValueOf(session.buf);
+        } catch (SQLException e) {
+            log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
+            return null;
+        }
     }
 
 

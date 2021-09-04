@@ -3,7 +3,9 @@
  kubawawak@gmail.com
  all rights reserved
  */
-package com.jakubwawak.trackAPI;
+package com.jakubwawak.maintanance;
+
+import com.jakubwawak.trackAPI.TrackApiApplication;
 
 /**
  * Object for getting status data from database

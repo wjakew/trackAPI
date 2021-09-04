@@ -3,7 +3,7 @@
  kubawawak@gmail.com
  all rights reserved
  */
-package com.jakubwawak.trackAPI;
+package com.jakubwawak.administrator;
 
 import com.jakubwawak.database.Database_Connector;
 import com.jakubwawak.trackAPI.TrackApiApplication;
@@ -43,6 +43,23 @@ public class TokenCheck {
             }
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load token "+token+" to check ("+e.toString()+")","ERROR-TKN1");
+        }
+    }
+
+    public int check() throws SQLException {
+        String query = "SELECT token_value FROM TOKEN where token_value = ?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,token);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ) {
+                return 1;
+            }
+            return 0;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to load token "+token+" to check ("+e.toString()+")","ERROR-TKN1");
+            return -1;
         }
     }
 }
