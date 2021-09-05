@@ -22,7 +22,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "0409REV01";
+	public static String build = "0509REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
