@@ -139,15 +139,16 @@ public class Database_Connector {
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
 
-            RandomString session = new RandomString(15, ThreadLocalRandom.current());
+            RandomString session = new RandomString(15);
 
             ppst.setInt(1,user_id);
-            ppst.setString(2,String.copyValueOf(session.buf));
-            log("Created new session: "+String.copyValueOf(session.buf)+"for user_id "+user_id,"SESSION-CRT");
+            ppst.setString(2,session.buf);
+            lt = lt.plusMinutes(15);
+            log("Created new session: "+session.buf+"for user_id "+user_id,"SESSION-CRT");
             ppst.setObject(3,lt);
 
-            ppst.executeQuery();
-            return String.copyValueOf(session.buf);
+            ppst.execute();
+            return session.buf;
         } catch (SQLException e) {
             log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
             return null;
