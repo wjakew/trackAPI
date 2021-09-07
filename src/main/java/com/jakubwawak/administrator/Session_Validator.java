@@ -22,7 +22,7 @@ public class Session_Validator {
      */
     public Session_Validator(String session_token){
         this.session_token = session_token;
-        this.session_token = null;
+        this.session_due = null;
         validation_flag = -1;
     }
 
@@ -31,7 +31,7 @@ public class Session_Validator {
      */
     public Session_Validator(){
         this.session_token = null;
-        this.session_token = null;
+        this.session_due = null;
         validation_flag = -1;
     }
 
@@ -102,7 +102,7 @@ public class Session_Validator {
                 TrackApiApplication.database.log("Session validated! Token: "+session_token,"VALIDATION-CORRECT");
                 LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
                 LocalDateTime session_time = rs.getObject("session_token_time",LocalDateTime.class);
-                if ( now.isAfter(session_time)){
+                if ( now.isBefore(session_time)){
                     session_due = session_time;
                     validation_flag = 1;
                     return 1;

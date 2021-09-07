@@ -9,10 +9,7 @@ import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -153,6 +150,72 @@ public class Database_Connector {
             log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
             return null;
         }
+    }
+
+    /**
+     * Function for removing user_session
+     * @param user_id
+     * @return Integer
+     */
+    public int remove_session(int user_id) throws SQLException {
+        log("Checking and removing user session..","SESSION-RM");
+        String query = "DELETE FROM SESSION_TOKEN WHERE user_id=?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setInt(1,user_id);
+
+            ppst.execute();
+            return 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove session ("+e.toString()+")","SESSION-ERR");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for finding user_id by given login
+     * @param user_login
+     * @return Integer
+     */
+    int find_user_by_login(String user_login) throws SQLException {
+        String query = "SELECT user_id FROM USER_DATA where user_login = ?;";
+
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+
+            ppst.setString(1,user_login);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if (rs.next()){
+                return rs.getInt("user_id");
+            }
+            return 0;
+
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to fin user by login ("+e.toString()+")","USER-FIND-ERROR");
+            return -1;
+        }
+    }
+
+    /**
+     * Funciton for removing user session
+     */
+    public int remove_session(String login) throws SQLException {
+        log("Checking and removing user session..","SESSION-RM");
+        String query = "DELETE FROM SESSION_TOKEN WHERE user_id=?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            int user_id = this.find_user_by_login(login);
+            ppst.setInt(1,user_id);
+            ppst.execute();
+            return 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove session ("+e.toString()+")","SESSION-ERR");
+            return -1;
+        }
+
     }
 
 

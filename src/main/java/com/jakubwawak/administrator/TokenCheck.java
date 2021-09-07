@@ -50,12 +50,15 @@ public class TokenCheck {
         String query = "SELECT token_value FROM TOKEN where token_value = ?;";
 
         try{
+            TrackApiApplication.database.log("Trying to validate app token ("+token+")","TOKENCHECK");
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setString(1,token);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ) {
+                TrackApiApplication.database.log("Token ("+token+") validated!","TOKENCHECK");
                 return 1;
             }
+            TrackApiApplication.database.log("Token not found","TOKENCHECK");
             return 0;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load token "+token+" to check ("+e.toString()+")","ERROR-TKN1");

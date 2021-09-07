@@ -3,6 +3,7 @@ package com.jakubwawak.users;
 import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import java.nio.channels.spi.AbstractSelectionKey;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,14 +121,18 @@ public class User_Data {
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setString(1,user_login);
             ppst.setString(2,pv.hash());
+            TrackApiApplication.database.log("Trying to authorize "+user_login+" with "+password,"USER-LOGIN");
 
             ResultSet rs = ppst.executeQuery();
 
             if ( rs.next() ){
                 database_loader(rs);
+                TrackApiApplication.database.remove_session(user_login);
                 user_session = TrackApiApplication.database.create_session(user_id);
+                TrackApiApplication.database.log("User "+user_login+" logged in!","USER-SUCCESS");
             }
             else{
+                TrackApiApplication.database.log("User "+user_login+" failed to login","USER-FAILED");
                 user_id = -5;
             }
 

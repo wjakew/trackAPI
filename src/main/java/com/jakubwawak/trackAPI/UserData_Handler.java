@@ -47,7 +47,7 @@ public class UserData_Handler {
             ud.login(user_login,user_password);
         }
         else{
-            ud.user_id = -5;
+            ud.user_id = -6;
         }
         return ud;
     }
