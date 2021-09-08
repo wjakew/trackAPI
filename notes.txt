@@ -3,6 +3,7 @@ mvn clean compile spring-boot:repackage
 !!!
 mvn clean package spring-boot:repackage
 !!!
+wielki test synchro
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>

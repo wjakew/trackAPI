@@ -46,6 +46,11 @@ public class TokenCheck {
         }
     }
 
+    /**
+     * Function for checking token
+     * @return Integer
+     * @throws SQLException
+     */
     public int check() throws SQLException {
         String query = "SELECT token_value FROM TOKEN where token_value = ?;";
 

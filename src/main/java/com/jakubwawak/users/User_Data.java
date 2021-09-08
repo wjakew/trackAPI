@@ -1,9 +1,9 @@
 package com.jakubwawak.users;
 
 import com.jakubwawak.administrator.Password_Validator;
+import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
-import java.nio.channels.spi.AbstractSelectionKey;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,6 +34,7 @@ public class User_Data {
     public String user_login;
     public String user_category;
     public String user_session;
+    public String user_password;
 
     /**
      * Main default constructor
@@ -46,6 +47,7 @@ public class User_Data {
         user_login = "";
         user_category = "";
         user_session = "blank";
+        user_password = "";
     }
 
     /**
@@ -138,6 +140,36 @@ public class User_Data {
 
         } catch (SQLException | NoSuchAlgorithmException e) {
             TrackApiApplication.database.log("Failed to login user ("+e.toString()+")","ERROR-USR3");
+        }
+    }
+
+    /**
+     * Function for registering user
+     */
+    public void register() throws SQLException, NoSuchAlgorithmException {
+        TrackApiApplication.database.log("Trying to register new user..","REGISTER");
+        RandomString generator = new RandomString(12);
+        user_password = generator.buf;
+        Password_Validator pv = new Password_Validator(user_password);
+        user_password = pv.hash();
+        String query = "INSERT INTO USER_DATA\n" +
+                "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
+                "VALUES\n" +
+                "(?,?,?,?,?,?);";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setString(1,user_name);
+            ppst.setString(2,user_surname);
+            ppst.setString(3,user_surname);
+            ppst.setString(4,user_login);
+            ppst.setString(5,generator.buf);
+            ppst.setString(6,user_category);
+
+            ppst.execute();
+            this.user_password = generator.buf;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
         }
     }
 
