@@ -15,6 +15,7 @@ public class HealthMonitor {
     public String database_status;
     public String database_ip;
     public String version;
+    public String build_number;
 
     /**
      * Constructor
@@ -29,5 +30,6 @@ public class HealthMonitor {
         }
         database_ip = TrackApiApplication.database.ip;
         version = TrackApiApplication.version;
+        build_number = TrackApiApplication.build;
     }
 }

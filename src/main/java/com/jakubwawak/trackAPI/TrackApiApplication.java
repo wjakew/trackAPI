@@ -7,12 +7,11 @@ package com.jakubwawak.trackAPI;
 
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.database.Database_Admin;
-import com.jakubwawak.database.Database_Connector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.Console;
-import java.io.FileNotFoundException;
+import com.jakubwawak.database.*;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -22,7 +21,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "0809REV01";
+	public static String build = "0909REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;

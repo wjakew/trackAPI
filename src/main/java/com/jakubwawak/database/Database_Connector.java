@@ -3,17 +3,15 @@
  kubawawak@gmail.com
  all rights reserved
  */
+
 package com.jakubwawak.database;
 
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
-import com.jakubwawak.trackAPI.TrackApiApplication;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Database_Connector {
 
@@ -36,7 +34,7 @@ public class Database_Connector {
     public ArrayList<String> database_log;         // collection for storing data
     private ArrayList<String> database_log_copy;
 
-    public Configuration configuration;            // vield for storing configuration data
+    public Configuration configuration;            // field for storing configuration data
 
     public int admin_id;                           // id currently logged admin
 
