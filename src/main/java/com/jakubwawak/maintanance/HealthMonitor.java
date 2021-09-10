@@ -32,4 +32,17 @@ public class HealthMonitor {
         version = TrackApiApplication.version;
         build_number = TrackApiApplication.build;
     }
+
+    /**
+     * Function for showing info
+     * @return String
+     */
+    public String info(){
+        String data = "trackAPI status:\n";
+        data = data + "start time: "+start_time+"\n";
+        data = data + "database status:"+database_status+"\n";
+        data = data + "version: "+version+", build number: "+build_number+"\n";
+        data = data + "database ip: "+database_ip;
+        return data;
+    }
 }

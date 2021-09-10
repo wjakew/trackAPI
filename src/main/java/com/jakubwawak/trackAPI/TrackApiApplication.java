@@ -6,6 +6,7 @@
 package com.jakubwawak.trackAPI;
 
 import com.jakubwawak.administrator.Configuration;
+import com.jakubwawak.administrator.Menu;
 import com.jakubwawak.database.Database_Admin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,10 +22,12 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "0909REV01";
+	public static String build = "1009REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
+
+	public static Menu menu;
 
 	/**
 	 * Main function of the program
@@ -46,6 +49,8 @@ public class TrackApiApplication {
 			System.out.println("Program aborted");
 		}
 		// main menu
+		menu = new Menu();
+		menu.run();
 	}
 
 	/**
