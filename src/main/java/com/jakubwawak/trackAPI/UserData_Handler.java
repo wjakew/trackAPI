@@ -39,6 +39,11 @@ public class UserData_Handler {
      * @param user_password
      * @return User_Data
      * @throws SQLException
+     * return codes:
+     * user_id:
+     * -6 - app token is wrong
+     * -1 - user not found
+     * -5 - user not found
      */
     @GetMapping("/login/{token}/{user_login}/{user_password}")
     public User_Data login(@PathVariable String token,@PathVariable String user_login,@PathVariable String user_password) throws SQLException {

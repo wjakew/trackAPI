@@ -7,20 +7,25 @@ package com.jakubwawak.maintanance;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * Object for getting status data from database
  */
 public class HealthMonitor {
+    private InetAddress ip;
     public String start_time;
     public String database_status;
     public String database_ip;
+    public String service_ip;
     public String version;
     public String build_number;
 
     /**
      * Constructor
      */
-    public HealthMonitor(){
+    public HealthMonitor() throws UnknownHostException {
         start_time = TrackApiApplication.database.run_time.toString();
         if ( TrackApiApplication.database.connected ){
             database_status = "connected";
@@ -31,6 +36,7 @@ public class HealthMonitor {
         database_ip = TrackApiApplication.database.ip;
         version = TrackApiApplication.version;
         build_number = TrackApiApplication.build;
+        service_ip = ip.getLocalHost().toString();
     }
 
     /**

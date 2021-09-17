@@ -7,6 +7,7 @@ package com.jakubwawak.administrator;
 
 import com.jakubwawak.maintanance.HealthMonitor;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -42,7 +43,7 @@ public class Menu {
     /**
      * Function for running the menu
      */
-    public void run(){
+    public void run() throws UnknownHostException {
         show_header();
         while(flag) {
             System.out.print(">");
@@ -55,7 +56,7 @@ public class Menu {
     /**
      * Function for creating action
      */
-    void create_action(){
+    void create_action() throws UnknownHostException {
         for(String word : raw_data.split(" ")){
             switch(word){
                 case "exit":

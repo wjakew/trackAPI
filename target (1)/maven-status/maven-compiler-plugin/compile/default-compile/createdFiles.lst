@@ -4,6 +4,8 @@ com/jakubwawak/trackAPI/Validation_Check.class
 com/jakubwawak/administrator/RandomString.class
 com/jakubwawak/database/Database_Admin.class
 com/jakubwawak/trackAPI/HealthMonitor_Handler.class
+com/jakubwawak/database/Database_Project.class
+com/jakubwawak/administrator/Menu.class
 com/jakubwawak/database/Database_Connector.class
 com/jakubwawak/administrator/Password_Validator.class
 com/jakubwawak/wrapper/Wrapper.class
