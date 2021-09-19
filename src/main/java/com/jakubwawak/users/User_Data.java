@@ -4,6 +4,7 @@ import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import javax.sound.midi.Track;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -144,6 +145,26 @@ public class User_Data {
     }
 
     /**
+     * Function for checking login avaiablity
+     */
+    boolean check_login_avaiability() throws SQLException {
+        String query = "SELECT user_login from USER_DATA where user_login = ?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setString(1,this.user_login);
+
+            ResultSet rs = ppst.executeQuery();
+
+            return !rs.next();
+        } catch (SQLException throwables) {
+            TrackApiApplication.database.log("Failed to check login avability","USERLOGINCREATOR-ERROR");
+            return false;
+        }
+    }
+
+    /**
      * Function for registering user
      */
     public void register() throws SQLException, NoSuchAlgorithmException {
@@ -152,6 +173,10 @@ public class User_Data {
         user_password = generator.buf;
         Password_Validator pv = new Password_Validator(user_password);
         user_password = pv.hash();
+        user_login = user_name.replaceAll(" ","")+user_surname.replaceAll(" ","");
+        if ( this.check_login_avaiability() ){
+            user_login = user_login+"1";
+        }
         String query = "INSERT INTO USER_DATA\n" +
                 "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
                 "VALUES\n" +
