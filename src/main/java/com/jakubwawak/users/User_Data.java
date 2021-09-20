@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.users;
 
 import com.jakubwawak.administrator.Password_Validator;
@@ -174,6 +179,8 @@ public class User_Data {
         Password_Validator pv = new Password_Validator(user_password);
         user_password = pv.hash();
         user_login = user_name.replaceAll(" ","")+user_surname.replaceAll(" ","");
+        user_login = user_login.toLowerCase();
+        user_category = "CLIENT";
         if ( this.check_login_avaiability() ){
             user_login = user_login+"1";
         }
@@ -186,12 +193,13 @@ public class User_Data {
 
             ppst.setString(1,user_name);
             ppst.setString(2,user_surname);
-            ppst.setString(3,user_surname);
+            ppst.setString(3,user_email);
             ppst.setString(4,user_login);
             ppst.setString(5,generator.buf);
             ppst.setString(6,user_category);
 
             ppst.execute();
+            TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
             this.user_password = generator.buf;
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
