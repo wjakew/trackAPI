@@ -164,6 +164,7 @@ public class Database_Connector {
             ppst.setInt(1,user_id);
 
             ppst.execute();
+            log("Session was removed for user_id "+user_id,"SESSION-RM");
             return 1;
         }catch(SQLException e){
             log("Failed to remove session ("+e.toString()+")","SESSION-ERR");

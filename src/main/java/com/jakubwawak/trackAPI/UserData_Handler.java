@@ -88,4 +88,18 @@ public class UserData_Handler {
         return ud;
     }
 
+    @GetMapping("/password-reset/{token}/{user_email}")
+    public User_Data reset_password(@PathVariable String user_email,@PathVariable String token) throws SQLException {
+        TokenCheck tc = new TokenCheck(token);
+        User_Data ud = new User_Data();
+        if(tc.check() == 1){
+            ud.user_email = user_email;
+            ud.reset_password();
+        }
+        else{
+            ud.user_id = -6;
+        }
+        return ud;
+    }
+
 }

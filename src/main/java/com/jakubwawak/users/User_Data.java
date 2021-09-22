@@ -7,7 +7,9 @@ package com.jakubwawak.users;
 
 import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.administrator.RandomString;
+import com.jakubwawak.maintanance.MailConnector;
 import com.jakubwawak.trackAPI.TrackApiApplication;
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import javax.sound.midi.Track;
 import java.security.NoSuchAlgorithmException;
@@ -117,6 +119,29 @@ public class User_Data {
     }
 
     /**
+     * Function for checking email avability
+     * @throws SQLException
+     */
+    public void check_email_avability() throws SQLException {
+        String query = "SELECT user_email FROM USER_DATA where user_email=?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setString(1,user_email);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if (!rs.next()){
+                user_id = -7;
+            }
+        }catch (SQLException e){
+            TrackApiApplication.database.log("Faield to check email avability ("+e.toString()+")","EMAIL-CHECK-ERROR");
+            user_id = -6;
+        }
+    }
+
+    /**
      * Function for login to database
      * @param user_login
      * @param password
@@ -129,7 +154,7 @@ public class User_Data {
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setString(1,user_login);
             ppst.setString(2,pv.hash());
-            TrackApiApplication.database.log("Trying to authorize "+user_login+" with "+password,"USER-LOGIN");
+            TrackApiApplication.database.log("Trying to authorize "+user_login+" with "+password+"("+pv.hash()+")","USER-LOGIN");
 
             ResultSet rs = ppst.executeQuery();
 
@@ -195,15 +220,75 @@ public class User_Data {
             ppst.setString(2,user_surname);
             ppst.setString(3,user_email);
             ppst.setString(4,user_login);
-            ppst.setString(5,generator.buf);
+            ppst.setString(5,pv.hash());
             ppst.setString(6,user_category);
 
             ppst.execute();
             TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
             this.user_password = generator.buf;
+            try{
+                MailConnector mc = new MailConnector();
+                mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
+                TrackApiApplication.database.log("Login data send to "+user_email,"MAIL-REGISTER-SUCCESFULL");
+            }catch(Exception e){
+                TrackApiApplication.database.log("Failed to send login data to "+user_email+" ("+e.toString()+")","MAIL-REGISTER-FAILED");
+            }
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
         }
+    }
+
+    /**
+     * Function for reseting password
+     * @throws SQLException
+     */
+    public void reset_password() throws SQLException {
+        TrackApiApplication.database.log("Trying to reset password for user "+user_email,"PASSWORD-RESET");
+        try{
+            check_email_avability();
+            if ( user_id != -7){
+                String query = "SELECT user_id from USER_DATA where user_email = ?;";
+
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+                ppst.setString(1,this.user_email);
+
+                RandomString generator = new RandomString(14);
+
+                ResultSet rs = ppst.executeQuery();
+
+                if (rs.next()){
+                    int user_id = rs.getInt("user_id");
+
+                    Password_Validator pv = new Password_Validator(generator.buf);
+
+                    String query2 = "UPDATE USER_DATA SET user_password = ? where user_id = ?;";
+
+                    ppst = TrackApiApplication.database.con.prepareStatement(query2);
+
+                    ppst.setString(1,pv.hash());
+                    ppst.setInt(2,user_id);
+
+                    ppst.execute();
+                    user_password = generator.buf;
+
+                    try{
+                        MailConnector mc = new MailConnector();
+                        mc.send(user_email,"Password reset for the TRACK Service","Your new password is: "+user_password);
+                        TrackApiApplication.database.log("Mail with new password send to "+user_email,"MAIL-SEND-SUCCESS");
+                    }catch(Exception e){
+                        TrackApiApplication.database.log("Failed to send email to "+user_email+" ("+e.toString()+")","MAIL-SEND-ERROR");
+                    }
+                    TrackApiApplication.database.log("Password for user successfuly reset","PASSWORD-RESET-CRT");
+                }
+                else{
+                    user_id = -5;
+                }
+            }
+        } catch (Exception e) {
+            TrackApiApplication.database.log("Failed to reset password for user_id ("+e.toString(),"PASSWORD-RESET-FAILED");
+            user_id = -5;
+        }
+
     }
 
 

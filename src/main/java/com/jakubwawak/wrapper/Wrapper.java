@@ -11,6 +11,8 @@ public class Wrapper {
     public int app_tk;
     public int user_tk;
 
+    public Response response;
+
     public Wrapper(int user_id,String token) throws SQLException {
 
         TokenCheck tc = new TokenCheck(token);
