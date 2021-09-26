@@ -102,4 +102,19 @@ public class UserData_Handler {
         return ud;
     }
 
+    @GetMapping ("/password-check/{token}/{session_token}/{password}")
+    public User_Data check_password(@PathVariable String token, @PathVariable String session_token,@PathVariable String password) throws SQLException {
+        TokenCheck tc = new TokenCheck(token);
+        User_Data ud = new User_Data();
+        if(tc.check() == 1){
+            ud.user_session = session_token;
+            ud.user_password = password;
+            ud.check_password();
+        }
+        else{
+            ud.user_id = -6;
+        }
+        return ud;
+    }
+
 }

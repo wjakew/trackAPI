@@ -171,6 +171,7 @@ public class User_Data {
 
         } catch (SQLException | NoSuchAlgorithmException e) {
             TrackApiApplication.database.log("Failed to login user ("+e.toString()+")","ERROR-USR3");
+            user_id = -5;
         }
     }
 
@@ -235,6 +236,7 @@ public class User_Data {
             }
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
+            this.user_password = "error";
         }
     }
 
@@ -288,8 +290,49 @@ public class User_Data {
             TrackApiApplication.database.log("Failed to reset password for user_id ("+e.toString(),"PASSWORD-RESET-FAILED");
             user_id = -5;
         }
-
     }
 
+    /**
+     * Function for checking if given password is correct
+     */
+    public void check_password() throws SQLException {
+        String query = "SELECT user_id FROM SESSION_TOKEN where session_token = ?;";
 
+        try{
+            TrackApiApplication.database.log("Trying to check password for session "+this.user_session,"PASSWORD-CHECK");
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setString(1,this.user_session);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if ( rs.next() ){
+                TrackApiApplication.database.log("Session found!","PASSWORD-CHECK");
+                int user_id = rs.getInt("user_id");
+                query = "SELECT user_id FROM USER_DATA WHERE user_id = ? and user_password = ?;";
+
+                ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+                ppst.setInt(1,user_id);
+                ppst.setString(2,this.user_password);
+
+                rs = ppst.executeQuery();
+
+                if ( rs.next() ){
+                    this.user_id = user_id;
+                }
+                else{
+                    this.user_id = -5;
+                }
+
+            }
+            else{
+                this.user_id = -5;
+            }
+
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to check password ("+e.toString()+")","PASSWORD-CHECK-ERROR");
+            this.user_id = -7;
+        }
+    }
 }
