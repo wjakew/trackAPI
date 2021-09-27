@@ -123,6 +123,34 @@ public class Database_Connector {
     }
 
     /**
+     * Function for getting user_id by current session
+     * @param session_token
+     * @return modes
+     * @throws SQLException
+     * return codes:
+     * -5 user not found
+     * -6 database error
+     */
+    public int get_userid_bysession(String session_token) throws SQLException {
+        String query = "SELECT user_id FROM SESSION_TOKEN WHERE session_token = ?;";
+
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+
+            ppst.setString(1,session_token);
+
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()){
+                return rs.getInt("user_id");
+            }
+            return -5;
+        } catch (SQLException e) {
+            log("Failed to get user_id by given session ("+e.toString()+")","SESSION-USERID-ERROR");
+            return -6;
+        }
+    }
+
+    /**
      * Function for creating session
      * @param user_id
      * @return String

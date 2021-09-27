@@ -16,6 +16,38 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+/**
+ * OBJECT RETURN CODES
+ *
+ * user_id field return codes:
+ *
+ * -99 - session validation failed
+ * -11 - app token validation failed
+ * -88 - database error while validation session
+ *
+ * check_email_avability()
+ * -5 user not found
+ * -6 database error
+ *
+ * login()
+ * -5 user not found
+ * -6 database error
+ *
+ * check_login_avaiability()
+ * true - login clear to use
+ * false - login is taken
+ *
+ * register()
+ * any > 0 - user_id
+ * -8 - error sending email
+ * -6 - database error
+ *
+ * reset_password()
+ * -7 - email address not found
+ * -8 - error sending email
+ * -6 - database error
+ * -5 - user with email address not found
+ */
 
 /**
  * Object for representing user data
@@ -133,7 +165,7 @@ public class User_Data {
             ResultSet rs = ppst.executeQuery();
 
             if (!rs.next()){
-                user_id = -7;
+                user_id = -5;
             }
         }catch (SQLException e){
             TrackApiApplication.database.log("Faield to check email avability ("+e.toString()+")","EMAIL-CHECK-ERROR");
@@ -150,11 +182,10 @@ public class User_Data {
         String query = "SELECT * FROM USER_DATA where user_login = ? and user_password = ?;";
 
         try{
-            Password_Validator pv = new Password_Validator(password);
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setString(1,user_login);
-            ppst.setString(2,pv.hash());
-            TrackApiApplication.database.log("Trying to authorize "+user_login+" with "+password+"("+pv.hash()+")","USER-LOGIN");
+            ppst.setString(2,password);
+            TrackApiApplication.database.log("Trying to authorize "+user_login+" with "+password+"("+password+")","USER-LOGIN");
 
             ResultSet rs = ppst.executeQuery();
 
@@ -169,9 +200,9 @@ public class User_Data {
                 user_id = -5;
             }
 
-        } catch (SQLException | NoSuchAlgorithmException e) {
+        } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to login user ("+e.toString()+")","ERROR-USR3");
-            user_id = -5;
+            user_id = -6;
         }
     }
 
@@ -192,6 +223,29 @@ public class User_Data {
         } catch (SQLException throwables) {
             TrackApiApplication.database.log("Failed to check login avability","USERLOGINCREATOR-ERROR");
             return false;
+        }
+    }
+
+    /**
+     * Function for getting user_id data by given login
+     * @param user_login
+     * @return
+     */
+    int get_userid_by_login(String user_login) throws SQLException {
+        String query = "SELECT user_id FROM USER_DATA WHERE user_login = ?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,user_login);
+            ResultSet rs = ppst.executeQuery();
+
+            if (rs.next()){
+                return rs.getInt("user_id");
+            }
+            return -7;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get user_id ("+e.toString()+")","USERID-ERROR");
+            return -6;
         }
     }
 
@@ -227,16 +281,18 @@ public class User_Data {
             ppst.execute();
             TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
             this.user_password = generator.buf;
+            this.user_id = get_userid_by_login(this.user_login);
             try{
                 MailConnector mc = new MailConnector();
                 mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
                 TrackApiApplication.database.log("Login data send to "+user_email,"MAIL-REGISTER-SUCCESFULL");
             }catch(Exception e){
                 TrackApiApplication.database.log("Failed to send login data to "+user_email+" ("+e.toString()+")","MAIL-REGISTER-FAILED");
+                this.user_id = -8;
             }
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
-            this.user_password = "error";
+            this.user_id = -6;
         }
     }
 
@@ -279,6 +335,7 @@ public class User_Data {
                         TrackApiApplication.database.log("Mail with new password send to "+user_email,"MAIL-SEND-SUCCESS");
                     }catch(Exception e){
                         TrackApiApplication.database.log("Failed to send email to "+user_email+" ("+e.toString()+")","MAIL-SEND-ERROR");
+                        this.user_id = -8;
                     }
                     TrackApiApplication.database.log("Password for user successfuly reset","PASSWORD-RESET-CRT");
                 }
@@ -288,7 +345,7 @@ public class User_Data {
             }
         } catch (Exception e) {
             TrackApiApplication.database.log("Failed to reset password for user_id ("+e.toString(),"PASSWORD-RESET-FAILED");
-            user_id = -5;
+            user_id = -6;
         }
     }
 
@@ -309,12 +366,12 @@ public class User_Data {
             if ( rs.next() ){
                 TrackApiApplication.database.log("Session found!","PASSWORD-CHECK");
                 int user_id = rs.getInt("user_id");
-                query = "SELECT user_id FROM USER_DATA WHERE user_id = ? and user_password = ?;";
+                String query2 = "SELECT user_id FROM USER_DATA WHERE user_id = ? and user_password = ?;";
 
-                ppst = TrackApiApplication.database.con.prepareStatement(query);
+                PreparedStatement ppst2 = TrackApiApplication.database.con.prepareStatement(query2);
 
-                ppst.setInt(1,user_id);
-                ppst.setString(2,this.user_password);
+                ppst2.setInt(1,user_id);
+                ppst2.setString(2,this.user_password);
 
                 rs = ppst.executeQuery();
 
@@ -332,7 +389,7 @@ public class User_Data {
 
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to check password ("+e.toString()+")","PASSWORD-CHECK-ERROR");
-            this.user_id = -7;
+            this.user_id = -6;
         }
     }
 }

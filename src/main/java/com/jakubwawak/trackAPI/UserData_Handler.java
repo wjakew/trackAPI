@@ -1,5 +1,6 @@
 package com.jakubwawak.trackAPI;
 
+import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.administrator.TokenCheck;
 import com.jakubwawak.users.User_Data;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class UserData_Handler {
             ud.load_data(user_id);
         }
         else{
-            ud.user_id = -4;
+            ud.user_id = -5;
         }
         return ud;
     }
@@ -53,7 +54,7 @@ public class UserData_Handler {
             ud.login(user_login,user_password);
         }
         else{
-            ud.user_id = -6;
+            ud.user_id = -11;
         }
         return ud;
     }
@@ -83,7 +84,7 @@ public class UserData_Handler {
             ud.user_category = "DEVELOPER";
         }
         else{
-            ud.user_id = -6;
+            ud.user_id = -11;
         }
         return ud;
     }
@@ -97,7 +98,7 @@ public class UserData_Handler {
             ud.reset_password();
         }
         else{
-            ud.user_id = -6;
+            ud.user_id = -11;
         }
         return ud;
     }
@@ -109,10 +110,22 @@ public class UserData_Handler {
         if(tc.check() == 1){
             ud.user_session = session_token;
             ud.user_password = password;
-            ud.check_password();
+            Session_Validator sv = new Session_Validator(ud.user_session);
+            int session_flag = sv.validate();
+
+            if ( session_flag == 1){
+                ud.check_password();
+            }
+            else if ( session_flag == 2){
+                ud.user_id = -99;
+            }
+            else{
+                ud.user_id = -88;
+            }
+
         }
         else{
-            ud.user_id = -6;
+            ud.user_id = -11;
         }
         return ud;
     }

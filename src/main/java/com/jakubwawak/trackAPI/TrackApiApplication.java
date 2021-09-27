@@ -13,16 +13,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.Console;
 import com.jakubwawak.database.*;
+import org.springframework.context.annotation.ComponentScan;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "2609REV01";
+	public static String build = "2709REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;

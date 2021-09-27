@@ -15,7 +15,7 @@ h3
 {
     font-family: "Courier New";
     text-align: left;
-    font-size: 20px;
+    font-size: 13px;
 }
 body
 {
@@ -24,7 +24,7 @@ body
     color: black;
 }
 .container {
-    text-align: center;
+    text-align: left;
     left: 0;
     right: 0;
 }
@@ -39,7 +39,7 @@ body
     content:'';
     position: absolute;
     width: 420px;
-    height: 340px;
+    height: 540px;
     margin: auto;
     z-index: -1;
     border: 5px solid black;
