@@ -8,6 +8,8 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
+import com.jakubwawak.trackAPI.TrackApiApplication;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,8 +17,9 @@ import java.util.ArrayList;
 
 public class Database_Connector {
 
+    public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.1";
+    public final String version = "v0.0.4";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -53,7 +56,8 @@ public class Database_Connector {
         admin_id = -3;
         configuration = null;
         run_time = null;
-        //log("Started! Database Connector initzialazed");
+        log("Started! Database Connector initzialazed","DATABASE");
+        log("Session validation time set to: "+SESSION_TIME,"DATABASE");
     }
 
     /**
@@ -70,7 +74,7 @@ public class Database_Connector {
             String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code) VALUES (?,?); ";
             System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
             if ( con == null){
-                System.out.println("Bład bazy: con=null ("+log+")");
+                System.out.println("DATABASE: con=null ("+log+")");
             }
             else{
                 PreparedStatement ppst = con.prepareStatement(query);
@@ -151,6 +155,29 @@ public class Database_Connector {
     }
 
     /**
+     * Function for checking if user_id exists in the database
+     * @param user_id
+     * @return
+     */
+    boolean check_userid(int user_id) throws SQLException {
+        String query = "SELECT user_id FROM USER_DATA WHERE user_id=?;";
+
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if (rs.next())
+                return true;
+            return false;
+        }catch(SQLException e){
+            log("Failed to check user_id ("+e.toString()+")","USERID-CHECK-ERROR");
+            return false;
+        }
+    }
+
+    /**
      * Function for creating session
      * @param user_id
      * @return String
@@ -164,17 +191,64 @@ public class Database_Connector {
 
             RandomString session = new RandomString(15);
 
-            ppst.setInt(1,user_id);
-            ppst.setString(2,session.buf);
-            lt = lt.plusMinutes(15);
-            log("Created new session: "+session.buf+"for user_id "+user_id,"SESSION-CRT");
-            ppst.setObject(3,lt);
+            if ( check_userid(user_id)){
+                ppst.setInt(1,user_id);
+                ppst.setString(2,session.buf);
+                lt = lt.plusMinutes(SESSION_TIME);
+                log("Created new session: |"+session.buf+"| for user_id "+user_id,"SESSION-CRT");
+                ppst.setObject(3,lt);
 
-            ppst.execute();
-            return session.buf;
+                ppst.execute();
+                log("Session expires at "+lt.toString(),"SESSION-CRT");
+                return session.buf;
+            }
+            else{
+                log("user_id not found. Cannot create session","SESSION-CRT-NOUSER");
+                return null;
+            }
+
         } catch (SQLException e) {
             log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
             return null;
+        }
+    }
+    /**
+     * Function for showing current user sessions
+     * @return ArrayList
+     */
+    public ArrayList<String> list_current_sessions() throws SQLException {
+        ArrayList<String> data = new ArrayList<>();
+        String query = "SELECT * FROM SESSION_TOKEN;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+
+            ResultSet rs = ppst.executeQuery();
+
+            while(rs.next()){
+                data.add("user:"+rs.getInt("user_id")+" - "+rs.getString("session_token")
+                        + " - expires at:"+rs.getObject("session_token_time",LocalDateTime.class).toString());
+            }
+        } catch (SQLException e) {
+            log("Failed to list current sessions ("+e.toString()+")","SESSION-ERROR");
+        }
+        if ( data.size() == 0)
+            data.add("Empty");
+        return data;
+    }
+
+    /**
+     * Function for removing all active sessions
+     * @return int
+     */
+    public void remove_current_sessions() throws SQLException {
+        String query = "DELETE FROM SESSION_TOKEN;";
+        try{
+            log("Trying to remove ALL active sessions","SESSION-RM-ALL");
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.execute();
+            log("Removed ALL active sessions","SESSION-RM-ALL");
+        }catch(SQLException e){
+            log("Failed to remove all active sessions ("+e.toString()+")","SESSION-RM-ERROR");
         }
     }
 

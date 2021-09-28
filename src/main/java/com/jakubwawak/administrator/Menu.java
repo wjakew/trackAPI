@@ -62,6 +62,7 @@ public class Menu {
      * Function for creating action
      */
     void create_action() throws IOException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
+        int index = 0;
         for(String word : raw_data.split(" ")){
             switch(word){
                 case "exit":
@@ -83,7 +84,33 @@ public class Menu {
                             }
                         }
                     }
+                    break;
+                case "crsession":
+                    try {
+                        int user_id = Integer.parseInt(raw_data.split(" ")[index + 1]);
+                        TrackApiApplication.database.create_session(user_id);
+                    } catch (Exception e) {}
+                    break;
+                case "rmsession":
+                    if ( raw_data.split(" ").length > 1 ){
+                        try {
+                            int user_id = Integer.parseInt(raw_data.split(" ")[index + 1]);
+                            TrackApiApplication.database.remove_session(user_id);
+                        } catch (NumberFormatException e) {}
+                    }
+                    else{
+                        TrackApiApplication.database.remove_current_sessions();
+                    }
+                    break;
+                case "session":
+                    ArrayList<String> data = TrackApiApplication.database.list_current_sessions();
+                    System.out.println("Current sessions:");
+                    for(String line: data){
+                        System.out.println(line);
+                    }
+                    break;
             }
+            index++;
         }
     }
 }

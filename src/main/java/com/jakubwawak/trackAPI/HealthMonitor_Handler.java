@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.trackAPI;
 
 import com.jakubwawak.maintanance.HealthMonitor;

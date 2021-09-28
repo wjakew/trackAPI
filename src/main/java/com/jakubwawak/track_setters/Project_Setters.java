@@ -6,7 +6,6 @@
 package com.jakubwawak.track_setters;
 
 import com.jakubwawak.administrator.Session_Validator;
-import com.jakubwawak.administrator.TokenCheck;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +35,7 @@ public class Project_Setters {
         Project project = new Project();
         TrackApiApplication.database.log("User trying to add new project to database","PROJECT-ADD");
         Session_Validator sv = new Session_Validator(session_token);
-        if ( sv.connector_validation_project(app_token,project)){
+        if ( sv.connector_validation(app_token)){
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             if ( user_id > 0){
                 project.user_id = user_id;
@@ -66,7 +65,7 @@ public class Project_Setters {
         project.project_id = project_id;
         Session_Validator sv = new Session_Validator(session_token);
 
-        if ( sv.connector_validation_project(app_token,project) ){
+        if ( sv.connector_validation(app_token) ){
             project.update(code,value);
         }
 

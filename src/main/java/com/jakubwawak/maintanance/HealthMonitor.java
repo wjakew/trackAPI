@@ -45,10 +45,14 @@ public class HealthMonitor {
      */
     public String info(){
         String data = "trackAPI status:\n";
-        data = data + "start time: "+start_time+"\n";
-        data = data + "database status:"+database_status+"\n";
-        data = data + "version: "+version+", build number: "+build_number+"\n";
-        data = data + "database ip: "+database_ip;
+        try{
+            data = data + "start time: "+start_time+"\n";
+            data = data + "database status:"+database_status+"\n";
+            data = data + "version: "+version+", build number: "+build_number+"\n";
+            data = data + "database ip: "+database_ip;
+        }catch(NullPointerException e){
+            data = data + "no database connected";
+        }
         return data;
     }
 }

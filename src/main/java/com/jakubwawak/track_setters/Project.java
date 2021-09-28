@@ -63,9 +63,9 @@ public class Project {
      */
     public void database_load() throws SQLException {
         String query = "INSERT INTO PROJECT\n" +
-                "(project_name,project_desc,project_creation_date,project_state)\n" +
+                "(project_name,project_desc,project_creation_date,project_state,user_id)\n" +
                 "VALUE\n" +
-                "(?,?,?,?);";
+                "(?,?,?,?,?);";
 
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
@@ -73,7 +73,7 @@ public class Project {
             ppst.setString(2,project_desc);
             ppst.setObject(3,project_creation_date);
             ppst.setString(4,project_state);
-
+            ppst.setInt(5,user_id);
             ppst.execute();
             flag = 1;
         } catch (SQLException e) {

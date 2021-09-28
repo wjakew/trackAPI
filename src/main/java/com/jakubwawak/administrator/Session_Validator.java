@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.administrator;
 
 
@@ -16,15 +21,16 @@ public class Session_Validator {
     public String session_token;
     public LocalDateTime session_due;
     public int validation_flag;
+    public int flag;
 
     /**
      * Constructor
      * @param session_token
      */
-    public Session_Validator(String session_token){
+    public Session_Validator(String session_token) throws SQLException {
         this.session_token = session_token;
         this.session_due = null;
-        validation_flag = -1;
+        validation_flag = validate();
     }
 
     /**
@@ -85,22 +91,22 @@ public class Session_Validator {
     /**
      * Function for validating connection
      * @param app_token
-     * @param project
      * @return boolean
      */
-    public boolean connector_validation_project(String app_token, Project project) throws SQLException {
+    public boolean connector_validation(String app_token) throws SQLException {
         TokenCheck tc = new TokenCheck(app_token);
         if ( tc.check() == 1){
-            if ( validate() == 1){
+            TrackApiApplication.database.log("Validation status: "+validation_flag,"SESSION-FLAG-STATUS");
+            if ( validation_flag == 1){
                 TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION");
                 return true;
             }
             TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION-FAILED");
-            project.flag = -99;
+            flag = -99;
             return false;
         }
         TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION-TOKEN");
-        project.flag = -11;
+        flag = -11;
         return false;
     }
 
@@ -120,17 +126,18 @@ public class Session_Validator {
             ppst.setString(1,session_token);
             TrackApiApplication.database.log("Trying to validate session. Token: "+session_token,"VALIDATION-START");
             ResultSet rs = ppst.executeQuery();
-
             if ( rs.next() ){
-                TrackApiApplication.database.log("Session validated! Token: "+session_token,"VALIDATION-CORRECT");
+                TrackApiApplication.database.log("Session found. Checking data","VALIDATION-CHECK");
                 LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
                 LocalDateTime session_time = rs.getObject("session_token_time",LocalDateTime.class);
                 if ( now.isBefore(session_time)){
+                    TrackApiApplication.database.log("Session validated! Token: "+session_token,"VALIDATION-CORRECT");
                     session_due = session_time;
                     validation_flag = 1;
                     return 1;
                 }
                 else{
+                    TrackApiApplication.database.log("Session token expired!","VALIDATION-EXPIRED");
                     validation_flag = 2;
                     return 2;
                 }
