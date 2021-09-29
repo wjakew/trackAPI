@@ -3,9 +3,10 @@
  kubawawak@gmail.com
  all rights reserved
  */
-package com.jakubwawak.track_setters;
+package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class Project {
 
     /**
      * flag return codes:
-     *  1 - project loaded to database
+     *  1 - object loaded to database
      * -1 - database error
      * -5 - user not found
      * -99 - session has expired
@@ -118,6 +119,24 @@ public class Project {
             flag = 1;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to update project ("+e.toString()+")","PROJECT-UPDATE-FAILED");
+            flag = -1;
+        }
+    }
+    /**
+     * Function for removing Project by given project_id
+     * @return Project
+     */
+    public void remove() throws SQLException {
+        String query = "DELETE FROM PROJECT WHERE project_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,this.project_id);
+            TrackApiApplication.database.log("Trying to remove project_id "+project_id,"PROJECT-REMOVE");
+            ppst.execute();
+            flag = 1;
+            TrackApiApplication.database.log("Project project_id "+project_id+" removed.","PROJECT-REMOVE-SUCCESSFUL");
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove project ("+e.toString()+")","PROJECT-REMOVE-FAILED");
             flag = -1;
         }
     }

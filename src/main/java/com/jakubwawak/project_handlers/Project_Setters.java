@@ -3,7 +3,7 @@
  kubawawak@gmail.com
  all rights reserved
  */
-package com.jakubwawak.track_setters;
+package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.trackAPI.TrackApiApplication;
@@ -57,6 +57,22 @@ public class Project_Setters {
         return project;
     }
 
+    @GetMapping("/project-remove/{app_token}/{session_token}/{project_id}")
+    public Project project_remove(@PathVariable String app_token,@PathVariable String session_token,
+                                  @PathVariable int project_id) throws SQLException {
+        Project project = new Project();
+        Session_Validator sv = new Session_Validator(session_token);
+
+        if ( sv.connector_validation(app_token)){
+            project.project_id = project_id;
+            project.remove();
+        }
+        else{
+            project.project_id = sv.flag;
+        }
+        return project;
+    }
+
     @GetMapping("/project-update/{app_token}/{session_token}/{project_id}/{code}/{value}")
     public Project project_update(@PathVariable String app_token,@PathVariable String session_token,
                                   @PathVariable int project_id,@PathVariable String code, @PathVariable String value) throws SQLException {
@@ -68,7 +84,6 @@ public class Project_Setters {
         if ( sv.connector_validation(app_token) ){
             project.update(code,value);
         }
-
         return project;
     }
 }
