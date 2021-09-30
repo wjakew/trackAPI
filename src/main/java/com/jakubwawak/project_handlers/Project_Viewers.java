@@ -7,6 +7,7 @@ package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.database.Database_Project;
+import com.jakubwawak.maintanance.Viewer;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class Project_Viewers {
 
     @GetMapping("/project-viewer/{app_token}/{session_token}")
-    public Viewer get_all_projects(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
+    public Viewer get_all_projects(@PathVariable String app_token, @PathVariable String session_token) throws SQLException {
         TrackApiApplication.database.log("Loading glances of projects for user","PROJECT-VIEWER-GLANCES");
         ArrayList<String> data = new ArrayList<>();
         Session_Validator sv = new Session_Validator(session_token);

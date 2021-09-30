@@ -1,4 +1,9 @@
-package com.jakubwawak.project_handlers;
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
+package com.jakubwawak.maintanance;
 
 import com.jakubwawak.administrator.Session_Validator;
 

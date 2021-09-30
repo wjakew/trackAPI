@@ -96,14 +96,14 @@ public class Session_Validator {
         if ( tc.check() == 1){
             TrackApiApplication.database.log("Validation status: "+validation_flag,"SESSION-FLAG-STATUS");
             if ( validation_flag == 1){
-                TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION");
+                TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"CONNECT-VALIDATION");
                 return true;
             }
-            TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION-FAILED");
+            TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"CONNECT-VALIDATION-FAILED");
             flag = -99;
             return false;
         }
-        TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"PROJECT-CONNECT-VALIDATION-TOKEN");
+        TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"CONNECT-VALIDATION-TOKEN");
         flag = -11;
         return false;
     }

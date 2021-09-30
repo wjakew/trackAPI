@@ -24,15 +24,13 @@ public class Task_Setters {
      * @param task_name
      * @param task_desc
      * @param task_priority
-     * @param task_state
      * @return
      * @throws SQLException
      */
-    @GetMapping("/task-set/{app_token}/{session_token}/{project_id}/{task_name}/{task_desc}/{task_priority}/{task_state}")
+    @GetMapping("/task-set/{app_token}/{session_token}/{project_id}/{task_name}/{task_desc}/{task_priority}")
     public Task task_set(@PathVariable String app_token,@PathVariable String session_token,
                          @PathVariable int project_id, @PathVariable String task_name,
-                         @PathVariable String task_desc, @PathVariable int task_priority,
-                         @PathVariable String task_state) throws SQLException {
+                         @PathVariable String task_desc, @PathVariable int task_priority) throws SQLException {
         Task task = new Task();
         Session_Validator sv = new Session_Validator(session_token);
 
@@ -42,7 +40,7 @@ public class Task_Setters {
             task.task_name = task_name;
             task.task_desc = task_desc;
             task.task_priority = task_priority;
-            task.task_state = task_state;
+            task.task_state = "UNDONE";
 
             task.database_load();
         }
@@ -76,4 +74,19 @@ public class Task_Setters {
         }
         return task;
     }
+
+    @GetMapping ("/task-remove/{app_token}/{session_token}/{task_id}")
+    public Task task_remove(@PathVariable String app_token,@PathVariable String session_token, @PathVariable int task_id ) throws SQLException {
+        Task task = new Task();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token)){
+            task.task_id = task_id;
+            task.remove();
+        }
+        else{
+            task.flag = sv.flag;
+        }
+        return task;
+    }
+
 }

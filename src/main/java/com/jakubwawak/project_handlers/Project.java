@@ -7,6 +7,7 @@ package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import javax.sound.midi.Track;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -129,15 +130,34 @@ public class Project {
     public void remove() throws SQLException {
         String query = "DELETE FROM PROJECT WHERE project_id = ?;";
         try{
+            remove_tasks();
+            TrackApiApplication.database.log("Trying to remove project_id "+project_id,"PROJECT-REMOVE");
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setInt(1,this.project_id);
-            TrackApiApplication.database.log("Trying to remove project_id "+project_id,"PROJECT-REMOVE");
             ppst.execute();
             flag = 1;
             TrackApiApplication.database.log("Project project_id "+project_id+" removed.","PROJECT-REMOVE-SUCCESSFUL");
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to remove project ("+e.toString()+")","PROJECT-REMOVE-FAILED");
             flag = -1;
+        }
+    }
+
+    /**
+     * Function for removing projects tasks
+     */
+    private void remove_tasks() throws SQLException {
+        String query = "DELETE FROM TASK WHERE project_id = ?;";
+        TrackApiApplication.database.log("Removing tasks belong to project_id "+project_id,"PROJECT-TASK-REMOVE");
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Project task removed","PROJECT-TASK-REMOVE-SUCCESS");
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove task from project_id "+project_id
+                    +" ("+e.toString()+")","PROJECT-TASK-REMOVE-FAILED");
+
         }
     }
 }

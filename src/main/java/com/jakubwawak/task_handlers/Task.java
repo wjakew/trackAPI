@@ -7,6 +7,8 @@ package com.jakubwawak.task_handlers;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import javax.sound.midi.Track;
+import java.nio.channels.spi.AbstractSelectionKey;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -123,6 +125,24 @@ public class Task {
             TrackApiApplication.database.log("Failed to update task ("+e.toString()+")","TASK-UPDATE-FAILED");
             flag = -1;
         }
+    }
+
+    /**
+     * Function for removing task from database
+     */
+    public void remove() throws SQLException {
+        String query = "DELETE FROM TASK WHERE task_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Task removed. task_id"+task_id,"TASK-REMOVE-SUCCESS");
+            flag = 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove task ("+e.toString()+")","TASK-REMOVE-FAILED");
+            flag = -1;
+        }
+
     }
 
 
