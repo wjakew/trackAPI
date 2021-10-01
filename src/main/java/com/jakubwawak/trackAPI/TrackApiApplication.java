@@ -7,6 +7,7 @@ package com.jakubwawak.trackAPI;
 
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.Menu;
+import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.database.Database_Admin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +25,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "3009REV01";
+	public static String build = "0110REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -75,8 +76,8 @@ public class TrackApiApplication {
 			password = sc.nextLine();
 		}
 		Database_Admin da = new Database_Admin(database);
-
-		if ( da.log_admin(admin_login,password)){
+		Password_Validator pv = new Password_Validator(password);
+		if ( da.log_admin(admin_login,pv.hash())){
 			System.out.println("Admin logged");
 			return true;
 		}

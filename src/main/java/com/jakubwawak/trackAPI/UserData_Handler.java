@@ -108,31 +108,47 @@ public class UserData_Handler {
         return ud;
     }
 
-    @GetMapping ("/password-check/{token}/{session_token}/{password}")
-    public User_Data check_password(@PathVariable String token, @PathVariable String session_token,@PathVariable String password) throws SQLException {
-        TokenCheck tc = new TokenCheck(token);
+    @GetMapping("/password-reset/{app_token}/{session_token}/{current}/{new_password}")
+    public User_Data password_reset(@PathVariable String app_token, @PathVariable String session_token,
+                                    @PathVariable String current,@PathVariable String new_password) throws SQLException {
+        Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("Request for changing password from session |"+session_token+"|","PASSWORD-CHANGE");
         User_Data ud = new User_Data();
-        if(tc.check() == 1){
+        if (sv.connector_validation(app_token)) {
+            int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
+            ud.user_id = user_id;
+            ud.user_password = current;
             ud.user_session = session_token;
-            ud.user_password = password;
-            Session_Validator sv = new Session_Validator(ud.user_session);
-            int session_flag = sv.validate();
-
-            if ( session_flag == 1){
-                ud.check_password();
-            }
-            else if ( session_flag == 2){
-                ud.user_id = -99;
+            ud.check_password();
+            if ( ud.user_id != -5){
+                ud.user_password = new_password;
+                ud.set_password();
+                TrackApiApplication.database.log("Request successful. Password changed","PASSWORD-CHANGE-SUCCESS");
             }
             else{
-                ud.user_id = -88;
+                TrackApiApplication.database.log("Request failed. Password validation error","PASSWORD-CHANGE-VALIDATION");
             }
-
         }
         else{
             ud.user_id = -11;
         }
+
         return ud;
     }
 
+    @GetMapping ("/password-check/{app_token}/{session_token}/{password}")
+    public User_Data check_password(@PathVariable String app_token, @PathVariable String session_token,@PathVariable String password) throws SQLException {
+        User_Data ud = new User_Data();
+        Session_Validator sv = new Session_Validator(session_token);
+
+        if(sv.connector_validation(app_token)){
+            ud.user_session = session_token;
+            ud.user_password = password;
+            ud.check_password();
+        }
+        else{
+            ud.user_id = sv.flag;
+        }
+        return ud;
+    }
 }

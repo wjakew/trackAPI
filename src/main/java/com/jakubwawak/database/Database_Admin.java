@@ -33,7 +33,6 @@ public class Database_Admin {
      * @throws NoSuchAlgorithmException
      */
     public boolean log_admin(String login,String password) throws NoSuchAlgorithmException, SQLException {
-        Password_Validator pv = new Password_Validator(password);
         String query = "SELECT * FROM USER_DATA where user_login = ?;";
 
         try{
@@ -44,7 +43,7 @@ public class Database_Admin {
             ResultSet rs = ppst.executeQuery();
 
             if ( rs.next() ){
-                if ( pv.hash().equals(rs.getString("user_password"))){
+                if ( password.equals(rs.getString("user_password"))){
                     if ( rs.getString("user_category").equals("ADMIN")){
                         database.admin_id = rs.getInt("user_id");
                         database.log("Admin "+login+" logged to trackAPI","ADM_LOGIN");

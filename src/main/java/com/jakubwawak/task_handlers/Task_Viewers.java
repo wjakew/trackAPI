@@ -18,7 +18,7 @@ import java.sql.SQLException;
 @RestController
 public class Task_Viewers {
 
-    @GetMapping("/task-viewer/{app_token}/{session_token}/mode}")
+    @GetMapping("/task-viewer/{app_token}/{session_token}/{mode}")
     public Viewer get_all_tasks(@PathVariable String app_token, @PathVariable String session_token,@PathVariable int mode) throws SQLException {
         TrackApiApplication.database.log("Loading glances for task in mode: "+mode,"TASK-VIEWER-GLANCES");
         Viewer viewer = new Viewer();
