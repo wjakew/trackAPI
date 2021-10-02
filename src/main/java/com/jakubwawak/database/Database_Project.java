@@ -5,6 +5,7 @@
  */
 package com.jakubwawak.database;
 
+import com.jakubwawak.project_handlers.Project;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import java.sql.PreparedStatement;
@@ -46,5 +47,29 @@ public class Database_Project {
             TrackApiApplication.database.log("Failed to get project glances ("+e.toString()+")","PROJECT-GLANCES-ERROR");
         }
         return data;
+    }
+
+    /**
+     * Function for getting project
+     * @param project_id
+     * @return Project
+     */
+    public Project get_project(int project_id) throws SQLException {
+        String query = "SELECT * FROM PROJECT WHERE project_id=?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ResultSet rs = ppst.executeQuery();
+
+            if ( rs.next() ){
+                TrackApiApplication.database.log("Project project_id "+project_id+" loaded.","PROJECT-GET-SUCCESS");
+                return new Project(rs);
+            }
+            return null;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get project ("+e.toString()+")","PROJECT-GET-ERROR");
+            return null;
+        }
     }
 }

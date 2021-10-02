@@ -9,6 +9,7 @@ import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import javax.sound.midi.Track;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +34,7 @@ public class Project {
      *  1 - object loaded to database
      * -1 - database error
      * -5 - user not found
+     * -6 - project not found
      * -99 - session has expired
      * -11 - invalid app token
      * -88 - database error when checking session token
@@ -58,6 +60,21 @@ public class Project {
         project_desc = "";
         project_creation_date = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         project_state = "";
+    }
+
+    /**
+     * Constructor with database support
+     * @param rs
+     */
+    public Project (ResultSet rs) throws SQLException {
+        flag = 0;
+
+        project_id = rs.getInt("project_id");
+        user_id = rs.getInt("user_id");
+        project_name = rs.getString("project_name");
+        project_desc = rs.getString("project_desc");
+        project_creation_date = rs.getObject("project_creation_date",LocalDateTime.class);
+        project_state = rs.getString("project_state");
     }
 
     /**
