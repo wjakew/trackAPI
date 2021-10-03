@@ -6,6 +6,7 @@
 package com.jakubwawak.task_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
+import com.jakubwawak.database.Database_Log;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,6 @@ public class Task_Setters {
             task.task_desc = task_desc;
             task.task_priority = task_priority;
             task.task_state = "UNDONE";
-
             task.database_load();
         }
         else{
@@ -68,6 +68,9 @@ public class Task_Setters {
         if (sv.connector_validation(app_token)){
             task.task_id = task_id;
             task.update(code,value);
+            Database_Log dl = new Database_Log();
+            dl.object_log("Task updated. "+code+" set to "+value,"TASK",task_id,
+                    TrackApiApplication.database.get_userid_bysession(session_token));
         }
         else{
             task.flag = sv.flag;
@@ -82,6 +85,9 @@ public class Task_Setters {
         if ( sv.connector_validation(app_token)){
             task.task_id = task_id;
             task.remove();
+            Database_Log dl = new Database_Log();
+            dl.object_log("Task removed","TASK",task_id,
+                    TrackApiApplication.database.get_userid_bysession(session_token));
         }
         else{
             task.flag = sv.flag;

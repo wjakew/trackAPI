@@ -6,6 +6,7 @@
 package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
+import com.jakubwawak.database.Database_Log;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,6 +67,8 @@ public class Project_Setters {
         if ( sv.connector_validation(app_token)){
             project.project_id = project_id;
             project.remove();
+            Database_Log dl = new Database_Log();
+            dl.object_log("Removed project.","PROJECT",project_id,TrackApiApplication.database.get_userid_bysession(session_token));
         }
         else{
             project.project_id = sv.flag;
@@ -83,6 +86,9 @@ public class Project_Setters {
 
         if ( sv.connector_validation(app_token) ){
             project.update(code,value);
+            Database_Log dl = new Database_Log();
+            dl.object_log("Updated project. "+code+" set to "+value,"PROJECT",project_id,
+                    TrackApiApplication.database.get_userid_bysession(session_token));
         }
         return project;
     }

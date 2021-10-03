@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.issue_handlers;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
@@ -37,19 +42,20 @@ public class Issue {
      * -6 - issue not found
      * -99 - session has expired
      * -11 - invalid app token
+     * -22 - failed to parse date
      * -88 - database error when checking session token
      */
-    int flag;
-    int issue_id;
-    int user_id;
-    int project_id;
-    String issue_name;
-    String issue_desc;
-    int issue_priority;
-    int issue_group;
-    String issue_state;
-    LocalDateTime issue_time_creation;
-    LocalDateTime issue_time_due;
+    public int flag;
+    public int issue_id;
+    public int user_id;
+    public int project_id;
+    public String issue_name;
+    public String issue_desc;
+    public int issue_priority;
+    public int issue_group;
+    public String issue_state;
+    public LocalDateTime issue_time_creation;
+    public LocalDateTime issue_time_due;
 
     /**
      * Connstructor
@@ -63,7 +69,7 @@ public class Issue {
         issue_desc = "";
         issue_priority = 1;
         issue_group = 1;
-        issue_state = "";
+        issue_state = "UNDONE";
         issue_time_creation = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         issue_time_due = null;
     }
@@ -92,7 +98,7 @@ public class Issue {
             ppst.setObject(9,issue_time_due);
 
             ppst.execute();
-            TrackApiApplication.database.log("Loaded to databaseissue "+issue_name+" for project_id "+project_id,"ISSUE-LOAD");
+            TrackApiApplication.database.log("Loaded to database issue "+issue_name+" for project_id "+project_id,"ISSUE-LOAD");
             flag = 1;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load issue to database ("+e.toString()+")","ISSUE-LOAD-FAILED");
