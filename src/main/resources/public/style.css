@@ -39,7 +39,7 @@ body
     content:'';
     position: absolute;
     width: 420px;
-    height: 740px;
+    height: 1040px;
     margin: auto;
     z-index: -1;
     border: 5px solid black;

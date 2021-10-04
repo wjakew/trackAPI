@@ -6,7 +6,6 @@
 package com.jakubwawak.issue_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
-import com.jakubwawak.database.Database_Log;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,13 +30,14 @@ public class Issue_Setters {
      * @return Issue
      * @throws SQLException
      */
-    @GetMapping("/issue-set/{app_token}/{session_token}/project_id/issue_name/issue_desc" +
-            "/issue_priority/issue_time_due")
+    @GetMapping("/issue-set/{app_token}/{session_token}/{project_id}/{issue_name}/{issue_desc}" +
+            "/{issue_priority}/{issue_time_due}")
     public Issue issue_set(@PathVariable String app_token, @PathVariable String session_token,
                      @PathVariable int project_id, @PathVariable String issue_name,@PathVariable String issue_desc,
                      @PathVariable int issue_priority,
                      @PathVariable String issue_time_due) throws SQLException {
         Issue issue = new Issue();
+        TrackApiApplication.database.log("Trying to add new issue","ISSUE-SET");
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
             issue.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
@@ -53,9 +53,27 @@ public class Issue_Setters {
                 LocalDateTime dateTime = LocalDateTime.parse(issue_time_due, formatter);
                 issue.issue_time_due = dateTime;
                 issue.database_load();
+                TrackApiApplication.database.log("New issue added","ISSUE-SET-SUCCESS");
             }catch(Exception e){
-                issue.flag = -22;
+                issue.issue_time_due = null;
+                issue.database_load();
+                TrackApiApplication.database.log("New issue added without due date","ISSUE-SET-SUCCESS");
             }
+        }
+        else{
+            issue.flag = sv.flag;
+        }
+        return issue;
+    }
+
+    @GetMapping("/issue-remove/{app_token}/{session_token}/{issue_id}")
+    public Issue issue_remove(@PathVariable String app_token, @PathVariable String session_token,@PathVariable int issue_id) throws SQLException {
+        Issue issue = new Issue();
+        issue.issue_id = issue_id;
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            issue.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
+            issue.remove();
         }
         else{
             issue.flag = sv.flag;

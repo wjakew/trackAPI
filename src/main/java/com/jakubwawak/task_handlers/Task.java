@@ -7,9 +7,8 @@ package com.jakubwawak.task_handlers;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
-import javax.sound.midi.Track;
-import java.nio.channels.spi.AbstractSelectionKey;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Task {
@@ -60,6 +59,20 @@ public class Task {
         task_desc = "";
         task_priority = 1;
         task_state = "";
+    }
+
+    /**
+     * Constructor with database support
+     * @param rs
+     */
+    public Task(ResultSet rs) throws SQLException {
+        task_id = rs.getInt("task_id");
+        user_id = rs.getInt("user_id");
+        project_id = rs.getInt("project_id");
+        task_name = rs.getString("task_name");
+        task_desc = rs.getString("task_desc");
+        task_priority = rs.getInt("task_priority");
+        task_state = rs.getString("task_state");
     }
 
     /**

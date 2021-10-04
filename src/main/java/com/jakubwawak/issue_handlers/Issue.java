@@ -106,4 +106,22 @@ public class Issue {
         }
     }
 
+    /**
+     * Function for removing issue
+     */
+    public void remove() throws SQLException {
+        String query = "DELETE FROM ISSUE WHERE issue_id=?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,this.issue_id);
+
+            ppst.execute();
+            TrackApiApplication.database.log("Issue issue_id "+issue_id+" removed","ISSUE-REMOVE-SUCCESS");
+            flag = 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove issue ("+e.toString()+")","ISSUE-REMOVE-FAILED");
+            flag = -1;
+        }
+    }
+
 }

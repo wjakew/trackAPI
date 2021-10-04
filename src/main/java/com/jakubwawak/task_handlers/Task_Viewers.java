@@ -35,4 +35,54 @@ public class Task_Viewers {
         }
         return viewer;
     }
+
+    @GetMapping("/task-get/{app_token}/{session_token}/{task_id}")
+    public Task get_task(@PathVariable String app_token,@PathVariable String session_token, @PathVariable int task_id) throws SQLException {
+        Task task = new Task();
+        Database_Task dt = new Database_Task(TrackApiApplication.database);
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token)){
+            task = dt.get_task(task_id);
+            if ( task!= null) {
+                TrackApiApplication.database.log("Data for task task_id " + task_id + "loaded.", "TASK-DATA-GET");
+                return task;
+            }
+            TrackApiApplication.database.log("Data for task not found","TASK-DATA-FAILED");
+            task.flag = -1;
+            return task;
+        }
+        else{
+            task.flag = sv.flag;
+        }
+        return task;
+    }
+
+    @GetMapping("/task-history/{app_token}/{session_token}/{task_id}")
+    public Viewer get_task_history(@PathVariable String app_token,@PathVariable String session_token, @PathVariable int task_id) throws SQLException {
+        Viewer view = new Viewer();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token)){
+            Database_Task dt = new Database_Task(TrackApiApplication.database);
+            view.view = dt.get_task_history(task_id);
+            TrackApiApplication.database.log("View for task history loaded","TASK-VIEWER-HISTORY");
+        }
+        else{
+            view.flag = sv.flag;
+        }
+        return view;
+    }
+
+    @GetMapping ("/task-archive/{app_token}/{session_token}")
+    public Viewer get_task_archive(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
+        Viewer view = new Viewer();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token)){
+            Database_Task dt = new Database_Task(TrackApiApplication.database);
+            view.view = dt.load_archive(TrackApiApplication.database.get_userid_bysession(session_token));
+        }
+        else{
+            view.flag = sv.flag;
+        }
+        return view;
+    }
 }

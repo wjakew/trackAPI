@@ -31,9 +31,9 @@ public class Database_Issue {
     public ArrayList<String> get_all_issues_glances(int user_id,int mode) throws SQLException {
         String query = "";
         if ( mode == 0)
-            query = "SELECT * FROM ISSUE WHERE user_id = ?;";
+            query = "SELECT * FROM ISSUE WHERE user_id = ? and issue_state = 'UNDONE';";
         else
-            query = "SELECT * FROM ISSUE WHERE user_id = ? and project_id = ?;";
+            query = "SELECT * FROM ISSUE WHERE user_id = ? and project_id = ? and issue_state = 'UNDONE';";
         ArrayList<String> data = new ArrayList<>();
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);

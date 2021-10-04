@@ -148,6 +148,7 @@ public class Project {
         String query = "DELETE FROM PROJECT WHERE project_id = ?;";
         try{
             remove_tasks();
+            remove_issues();
             TrackApiApplication.database.log("Trying to remove project_id "+project_id,"PROJECT-REMOVE");
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setInt(1,this.project_id);
@@ -175,6 +176,24 @@ public class Project {
             TrackApiApplication.database.log("Failed to remove task from project_id "+project_id
                     +" ("+e.toString()+")","PROJECT-TASK-REMOVE-FAILED");
 
+        }
+    }
+
+    /**
+     * Function for removing project issues
+     * @throws SQLException
+     */
+    private void remove_issues() throws SQLException {
+        String query = "DELETE FROM ISSUE WHERE project_id =?;";
+        TrackApiApplication.database.log("Removing issues belong to project_id "+project_id,"PROJECT-ISSUE-REMOVE");
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Issues removed","PROJECT-ISSUES-SUCCESS");
+        }catch(SQLException e ){
+            TrackApiApplication.database.log("Failed to remove issues belong to project_id "+project_id+" ("+e.toString()+")","PROJECT-ISSUE-FAILED");
         }
     }
 }
