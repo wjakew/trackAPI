@@ -154,3 +154,7 @@ INSERT INTO TOKEN
 (user_id,token_value)
 VALUES
 (1,"testtoken");
+INSERT INTO PROGRAMCODES
+(programcodes_key, programcodes_values)
+VALUES
+("service_tag","servicexd");

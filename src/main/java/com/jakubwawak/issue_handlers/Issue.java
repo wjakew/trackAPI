@@ -9,6 +9,7 @@ import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import javax.sound.midi.Track;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -71,6 +72,24 @@ public class Issue {
         issue_group = 1;
         issue_state = "UNDONE";
         issue_time_creation = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        issue_time_due = null;
+    }
+
+    /**
+     * Connstructor with database support
+     * @param rs
+     */
+    public Issue(ResultSet rs) throws SQLException {
+        flag = 1;
+        issue_id = rs.getInt("issue_id");
+        user_id = rs.getInt("user_id");
+        project_id = rs.getInt("project_id");
+        issue_name = rs.getString("issue_name");
+        issue_desc = rs.getString("issue_desc");
+        issue_priority =rs.getInt("issue_priority");
+        issue_group =rs.getInt("issue_group");
+        issue_state = rs.getString("issue_state");
+        issue_time_creation = rs.getObject("issue_time_creation",LocalDateTime.class);
         issue_time_due = null;
     }
 
