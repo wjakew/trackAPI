@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.Console;
 import com.jakubwawak.database.*;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +24,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "0510REV01";
+	public static String build = "0610REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -44,6 +43,7 @@ public class TrackApiApplication {
 				if ( authorize() ){
 					header();
 					SpringApplication.run(TrackApiApplication.class, args);
+					System.out.println("trackAPI is running currently. To check commands type /help/");
 				}
 			}
 		}

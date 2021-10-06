@@ -15,6 +15,8 @@ drop table if exists PRIVILAGES;
 drop table if exists SESSION_TOKEN;
 drop table if exists TOKEN;
 drop table if exists OBJECT_HISTORY;
+drop table if exists BOARD_ELEMENT;
+drop table if exists BOARD;
 drop table if exists USER_DATA;
 
 
@@ -139,22 +141,43 @@ CREATE TABLE ISSUE
   CONSTRAINT fk_issue FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
   CONSTRAINT fk_issue2 FOREIGN KEY (project_id) REFERENCES TASK(task_id)
 );
+-- table for storing board data
+CREATE TABLE BOARD
+(
+    board_id INT PRIMARY KEY AUTO_INCREMENT,
+    board_name VARCHAR(100),
+    user_id INT,
+    board_desc VARCHAR(200),
+    board_time TIMESTAMP,
+
+    CONSTRAINT fk_board FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing board elements
+CREATE TABLE BOARD_ELEMENT
+(
+    board_element_id INT PRIMARY KEY AUTO_INCREMENT,
+    board_list_object VARCHAR(10),
+    object_id INT,
+    board_id INT,
+
+    CONSTRAINT  fk_boardelement FOREIGN KEY (board_id) REFERENCES BOARD(board_id)
+);
 -- startup inserts
 INSERT INTO PROGRAMCODES
 (programcodes_key,programcodes_values)
 VALUES
-("DATABASEVERSION","100");
+('DATABASEVERSION','100');
 
 INSERT INTO USER_DATA
 (user_name,user_surname,user_email,user_login,user_password,user_category)
 VALUES
-("admin","admin","none","admin","21232f297a57a5a743894a0e4a801fc3","ADMIN");
+('admin','admin','none','admin','21232f297a57a5a743894a0e4a801fc3','ADMIN');
 -- with every user creation blank project gonna be created
 INSERT INTO TOKEN
 (user_id,token_value)
 VALUES
-(1,"testtoken");
+(1,'testtoken');
 INSERT INTO PROGRAMCODES
 (programcodes_key, programcodes_values)
 VALUES
-("service_tag","servicexd");
+('service_tag','servicexd');

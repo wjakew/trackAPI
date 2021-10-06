@@ -72,6 +72,7 @@ public class Menu {
                     break;
                 case "info":
                     HealthMonitor hm = new HealthMonitor();
+                    System.out.println("till death we do art. ~Jakub Wawak 2021");
                     System.out.println(hm.info());
                     break;
                 case "rerun":
@@ -89,14 +90,18 @@ public class Menu {
                     try {
                         int user_id = Integer.parseInt(raw_data.split(" ")[index + 1]);
                         TrackApiApplication.database.create_session(user_id);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        System.out.println("no arguments.");
+                    }
                     break;
                 case "rmsession":
                     if ( raw_data.split(" ").length > 1 ){
                         try {
                             int user_id = Integer.parseInt(raw_data.split(" ")[index + 1]);
                             TrackApiApplication.database.remove_session(user_id);
-                        } catch (NumberFormatException e) {}
+                        } catch (NumberFormatException e) {
+                            System.out.println("no arguments.");
+                        }
                     }
                     else{
                         TrackApiApplication.database.remove_current_sessions();
@@ -108,6 +113,14 @@ public class Menu {
                     for(String line: data){
                         System.out.println(line);
                     }
+                    break;
+                case "help":
+                    System.out.println("crsession");
+                    System.out.println("rmsession");
+                    System.out.println("session");
+                    System.out.println("info");
+                    System.out.println("rerun");
+                    System.out.println("exit");
                     break;
             }
             index++;

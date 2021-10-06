@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  entrc_database:
+    image: mysql:5.7
+    volumes:
+      - database_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'trackapi_database'
+
+      MYSQL_USER: 'trackapi_admin'
+
+      MYSQL_PASSWORD: 'password'
+
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # ports exposed on the container
+      - '3306:3306'
+    expose:
+      # specified port for the database connection
+      - '3306'
+    # data section
+# Names our volume
+volumes:
+  trackapi_database-db:
