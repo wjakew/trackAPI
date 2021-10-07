@@ -31,4 +31,32 @@ public class Board_Viewers {
         }
         return viewer;
     }
+
+    @GetMapping("/board-get/{app_token}/{session_token}/{board_name}")
+    public Board get_board(@PathVariable String app_token,@PathVariable String session_token,@PathVariable String board_name) throws SQLException {
+        Board board = new Board();
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            board.board_name = board_name;
+            board.get_board_id();
+        }
+        else{
+            board.flag = sv.flag;
+        }
+        return board;
+    }
+
+    @GetMapping("/board-viewer-element/{app_token}/{session_token}/{board_id}")
+    public Viewer get_board_elements(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int board_id) throws SQLException {
+        Viewer viewer = new Viewer();
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            Database_Board db = new Database_Board();
+            viewer.view = db.load_board_elements(board_id);
+        }
+        else{
+            viewer.sv = sv;
+        }
+        return viewer;
+    }
 }

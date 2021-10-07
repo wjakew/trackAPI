@@ -32,12 +32,13 @@ public class Board_Setters {
         return board;
     }
 
-    @GetMapping("/board-remove/{app_token}/{session_token}/{board_id")
+    @GetMapping("/board-remove/{app_token}/{session_token}/{board_id}")
     public Board remove_board(@PathVariable String app_token, @PathVariable String session_token,@PathVariable int board_id) throws SQLException {
         Board board = new Board();
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
             board.board_id = board_id;
+            board.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             board.remove();
         }else{
             board.flag = sv.flag;

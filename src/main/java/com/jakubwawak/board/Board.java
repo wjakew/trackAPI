@@ -7,6 +7,7 @@ package com.jakubwawak.board;
 
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
+import javax.sound.midi.Track;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,6 +64,28 @@ public class Board {
     }
 
     /**
+     * Function for getting board_id just by board_name
+     */
+    public void get_board_id() throws SQLException {
+        String query = "SELECT board_id FROM BOARD WHERE board_name = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,board_name);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next()){
+                board_id = rs.getInt("board_id");
+                flag = 1;
+                TrackApiApplication.database.log("Loaded board_id","BOARD-GETID-SUCCESS");
+            }
+            else{
+                flag = -1;
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get board id ("+e.toString()+")","BOARD-GETID-FAILED");
+        }
+    }
+
+    /**
      * Function for loading data to database
      */
     public void database_load() throws SQLException {
@@ -81,6 +104,7 @@ public class Board {
             ppst.execute();
             flag = 1;
             TrackApiApplication.database.log("Board loaded to database","BOARD-LOAD-SUCCESS");
+            get_board_id();
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load board to database ("+e.toString(),"BOARD-LOAD-FAILED");
             flag = -1;
@@ -94,13 +118,37 @@ public class Board {
     public void remove() throws SQLException {
         String query = "DELETE FROM BOARD WHERE board_id = ?;";
         try{
+            if ( board_element_remove() == 1){
+                TrackApiApplication.database.log("Board elements deleted","BOARDEL-REMOVE-SUCCESS");
+            }
+            else{
+                TrackApiApplication.database.log("WARNING: BOARD ELEMENTS FAILED TO DELETE","BOARDEL-REMOVE-FAILED");
+            }
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
-            ppst.setInt(1,user_id);
+            ppst.setInt(1,board_id);
             ppst.execute();
             flag = 1;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to remove board","BOARD-REMOVE-FAILED");
             flag = -1;
+        }
+    }
+
+    /**
+     * Function for removing board elements from board
+     * @return Integer
+     * @throws SQLException
+     */
+    public int board_element_remove() throws SQLException {
+        String query = "DELETE FROM BOARD_ELEMENT WHERE board_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,board_id);
+            ppst.execute();
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove board elements ("+e.toString()+")","ELEMENTS-REMOVE-FAILED");
+            return -1;
         }
     }
 }

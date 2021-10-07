@@ -122,7 +122,7 @@ CREATE TABLE TASK
   task_state VARCHAR(100), -- CODES: UNDONE, DONE, date ( time to finish )
 
   CONSTRAINT fk_task FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
-  CONSTRAINT fk_task2 FOREIGN KEY (project_id) REFERENCES TASK(task_id)
+  CONSTRAINT fk_task2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
 );
 -- table for storing issue data
 CREATE TABLE ISSUE
@@ -139,7 +139,7 @@ CREATE TABLE ISSUE
   issue_time_due TIMESTAMP,
 
   CONSTRAINT fk_issue FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
-  CONSTRAINT fk_issue2 FOREIGN KEY (project_id) REFERENCES TASK(task_id)
+  CONSTRAINT fk_issue2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
 );
 -- table for storing board data
 CREATE TABLE BOARD

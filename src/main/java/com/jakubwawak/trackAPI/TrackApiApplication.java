@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "0610REV01";
+	public static String build = "0710REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -99,7 +99,7 @@ public class TrackApiApplication {
 		System.out.println("Connecting to database..");
 		database = new Database_Connector();
 		System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
-		System.out.print("continue?");
+		System.out.print("continue(y/n)?");
 		String ans = sc.nextLine();
 		if (ans.equals("y")){
 			try{

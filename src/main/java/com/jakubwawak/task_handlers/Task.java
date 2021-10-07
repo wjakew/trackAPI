@@ -62,6 +62,23 @@ public class Task {
     }
 
     /**
+     * Function for getting task name
+     */
+    public void get_name() throws SQLException {
+        String query = "SELECT task_name FROM TASK WHERE task_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_id);
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()){
+                task_name = rs.getString("task_name");
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get task name ("+e.toString()+")","TASK-NAME-FAILED");
+        }
+    }
+
+    /**
      * Constructor with database support
      * @param rs
      */

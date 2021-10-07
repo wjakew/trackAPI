@@ -1,6 +1,7 @@
 package com.jakubwawak.board;
 
 import com.jakubwawak.administrator.Session_Validator;
+import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +46,7 @@ public class BoardManager {
                     break;
             }
             be.object_id = object_id;
+            TrackApiApplication.database.log("Trying to add element: "+be.board_list_object+" id: "+be.board_element_id+" to board_id "+be.board_id,"BOARDMANAGER");
             be.database_load();
         }
         else{

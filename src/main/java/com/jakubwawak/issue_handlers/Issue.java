@@ -94,6 +94,24 @@ public class Issue {
     }
 
     /**
+     * Function for getting issue name
+     * @throws SQLException
+     */
+    public void get_name() throws SQLException {
+        String query = "SELECT issue_name FROM ISSUE WHERE issue_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,issue_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                issue_name = rs.getString("issue_name");
+            }
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to get issue name ("+e.toString()+")","ISSUE-NAME-FAILED");
+        }
+    }
+
+    /**
      * Function for loading database
      */
     public void database_load() throws SQLException {
