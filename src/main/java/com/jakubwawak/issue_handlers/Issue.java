@@ -112,6 +112,28 @@ public class Issue {
     }
 
     /**
+     * Function for checking issue state
+     * @return Boolean
+     */
+    public int check_state() throws SQLException {
+        String query = "SELECT issue_state FROM ISSUE where issue_id = ?;";
+        try {
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1, issue_id);
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()) {
+                if (rs.getString("issue_state").equals("DONE")) {
+                    return 1;
+                }
+            }
+            return 0;
+        }catch (SQLException e){
+            TrackApiApplication.database.log("Failed to check issue state ("+e.toString()+")","ISSUE-STATE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for loading database
      */
     public void database_load() throws SQLException {

@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.board;
 
 import com.jakubwawak.administrator.Session_Validator;

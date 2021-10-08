@@ -71,13 +71,15 @@ public class Database_Board {
                         Issue issue = new Issue();
                         issue.issue_id = rs.getInt("object_id");
                         issue.get_name();
-                        data.add(issue.issue_id+":ISSUE| "+issue.issue_name);
+                        if ( issue.check_state() == 0)
+                            data.add(issue.issue_id+":ISSUE| "+issue.issue_name);
                         break;
                     case "TASK":
                         Task task = new Task();
                         task.task_id = rs.getInt("object_id");
                         task.get_name();
-                        data.add(task.task_id+":TASK| "+task.task_name);
+                        if (task.check_state() == 0)
+                            data.add(task.task_id+":TASK| "+task.task_name);
                         break;
                 }
             }

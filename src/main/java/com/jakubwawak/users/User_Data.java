@@ -104,6 +104,23 @@ public class User_Data {
     }
 
     /**
+     * Function for getting user login data
+     */
+    public void get_login() throws SQLException {
+        String query = "SELECT user_login FROM USER_DATA WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                user_login = rs.getString("user_login");
+            }
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to get user login ("+e.toString()+")","USER-LOGIN-FAILED");
+        }
+    }
+
+    /**
      *Function for loading data by given user_id
      * @param user_id
      */
@@ -231,7 +248,7 @@ public class User_Data {
      * @param user_login
      * @return
      */
-    int get_userid_by_login(String user_login) throws SQLException {
+    public int get_userid_by_login(String user_login) throws SQLException {
         String query = "SELECT user_id FROM USER_DATA WHERE user_login = ?;";
 
         try{

@@ -9,6 +9,7 @@ drop table if exists PROGRAM_LOG;
 
 drop table if exists ISSUE;
 drop table if exists TASK;
+drop table if exists SHARED_ELEMENTS;
 drop table if exists PROJECT;
 drop table if exists LOG_HISTORY;
 drop table if exists PRIVILAGES;
@@ -46,6 +47,16 @@ CREATE TABLE USER_DATA
   user_login VARCHAR(25),
   user_password VARCHAR(50),
   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
+);
+
+-- table for storing shared projects
+CREATE TABLE SHARED_ELEMENTS
+(
+    user_id INT,
+    project_id INT,
+
+    constraint fk_sharedelements FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
+    constraint fk_sharedelements2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
 );
 -- table for storing object story
 CREATE TABLE OBJECT_HISTORY

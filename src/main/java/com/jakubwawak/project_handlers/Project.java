@@ -5,6 +5,7 @@
  */
 package com.jakubwawak.project_handlers;
 
+import com.jakubwawak.shared_handler.Shared;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import javax.sound.midi.Track;
@@ -149,6 +150,9 @@ public class Project {
         try{
             remove_tasks();
             remove_issues();
+            Shared shared = new Shared();
+            shared.project_id = project_id;
+            shared.remove();
             TrackApiApplication.database.log("Trying to remove project_id "+project_id,"PROJECT-REMOVE");
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setInt(1,this.project_id);

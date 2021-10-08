@@ -62,6 +62,28 @@ public class Task {
     }
 
     /**
+     * Function for checking state
+     * @return Integer
+     */
+    public int check_state() throws SQLException {
+        String query = "SELECT task_state FROM TASK WHERE task_id=?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_id);
+            ResultSet rs = ppst.executeQuery();
+            if(rs.next()){
+                if ( rs.getString("task_state").equals("DONE")){
+                    return 1;
+                }
+            }
+            return 0;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to check task state ("+e.toString()+")","TASK-STATE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for getting task name
      */
     public void get_name() throws SQLException {

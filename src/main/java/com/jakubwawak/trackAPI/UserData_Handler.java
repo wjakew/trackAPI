@@ -38,6 +38,20 @@ public class UserData_Handler {
         return ud;
     }
 
+    @GetMapping("/user-check/{app_token}/{session_token}/{user_login}")
+    public User_Data check_user_login(@PathVariable String app_token,@PathVariable String session_token,
+                                      @PathVariable String user_login) throws SQLException {
+        User_Data user = new User_Data();
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            user.get_userid_by_login(user_login);
+        }
+        else{
+            user.user_id = sv.flag;
+        }
+        return user;
+    }
+
     /**
      * Function for login in user
      * @param token
