@@ -48,16 +48,6 @@ CREATE TABLE USER_DATA
   user_password VARCHAR(50),
   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
 );
-
--- table for storing shared projects
-CREATE TABLE SHARED_ELEMENTS
-(
-    user_id INT,
-    project_id INT,
-
-    constraint fk_sharedelements FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
-    constraint fk_sharedelements2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
-);
 -- table for storing object story
 CREATE TABLE OBJECT_HISTORY
 (
@@ -120,6 +110,15 @@ CREATE TABLE PROJECT
   project_state VARCHAR(100), -- CODES: active, unactive, date ( time to finish )
 
   CONSTRAINT fk_project FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing shared projects
+CREATE TABLE SHARED_ELEMENTS
+(
+    user_id INT,
+    project_id INT,
+
+    constraint fk_sharedelements FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
+    constraint fk_sharedelements2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
 );
 -- table for storing task data
 CREATE TABLE TASK

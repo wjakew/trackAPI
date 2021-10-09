@@ -104,6 +104,41 @@ public class User_Data {
     }
 
     /**
+     * Function for administration to manual add user
+     * @param user_login
+     * @param user_password
+     * @throws SQLException
+     */
+    public void manual_adder(String user_login,String user_password) throws SQLException {
+        this.user_login = user_login;
+        this.user_password = user_password;
+
+        String query = "INSERT INTO USER_DATA\n" +
+                "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
+                "VALUES\n" +
+                "(?,?,?,?,?,?);";
+        try{
+            Password_Validator pv = new Password_Validator(this.user_password);
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+            ppst.setString(1,user_name);
+            ppst.setString(2,user_surname);
+            ppst.setString(3,user_email);
+            ppst.setString(4,user_login);
+            ppst.setString(5,pv.hash());
+            ppst.setString(6,user_category);
+
+            ppst.execute();
+            TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+user_login,"REGISTER-SUCCESS");
+            user_id = 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to register user ( "+e.toString()+")","REGISTER-FAILED");
+        } catch (NoSuchAlgorithmException e) {
+            TrackApiApplication.database.log("Failed to register user ( "+e.toString()+")","REGISTER-FAILED");
+        }
+    }
+
+    /**
      * Function for getting user login data
      */
     public void get_login() throws SQLException {
@@ -138,6 +173,74 @@ public class User_Data {
             }
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load data by user_id ("+e.toString()+")","ERROR_USR1");
+        }
+    }
+
+    /**
+     * Function for reseting password
+     * @param user_id
+     * @throws SQLException
+     */
+    public void reset_password(int user_id) throws SQLException {
+        String query = "SELECT user_email FROM USER_DATA WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next()){
+                String user_email = rs.getString("user_email");
+                if ( user_email.equals("")){
+                    TrackApiApplication.database.log("user_email field is empty","USER-RESET");
+                }
+                else{
+                    RandomString generator = new RandomString(14);
+                    Password_Validator pv = new Password_Validator(generator.buf);
+
+                    String query2 = "UPDATE USER_DATA SET user_password = ? where user_id = ?;";
+
+                    ppst = TrackApiApplication.database.con.prepareStatement(query2);
+
+                    ppst.setString(1,pv.hash());
+                    ppst.setInt(2,user_id);
+
+                    ppst.execute();
+                    user_password = generator.buf;
+
+                    try{
+                        MailConnector mc = new MailConnector();
+                        mc.send(user_email,"Password reset for the TRACK Service","Your new password is: "+user_password);
+                        TrackApiApplication.database.log("Mail with new password send to "+user_email,"MAIL-SEND-SUCCESS");
+                    }catch(Exception e){
+                        TrackApiApplication.database.log("Failed to send email to "+user_email+" ("+e.toString()+")","MAIL-SEND-ERROR");
+                        this.user_id = -8;
+                    }
+                    TrackApiApplication.database.log("Password for user successfuly reset","PASSWORD-RESET-CRT");
+                }
+            }
+            else{
+                TrackApiApplication.database.log("no user with given user_id","USER-RESET");
+            }
+        } catch (SQLException | NoSuchAlgorithmException e) {
+            TrackApiApplication.database.log("Failed to reset user password ("+e.toString()+")","USER-RESET-FAILED");
+        }
+    }
+
+    /**
+     * Function for updating user_email
+     * @param user_id
+     * @param user_email
+     * @throws SQLException
+     */
+    public void update_email(int user_id,String user_email) throws SQLException {
+        String query = "UPDATE USER_DATA SET user_email = ? WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,user_email);
+            ppst.setInt(2,user_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Updated user_email. Set to "+user_email,"UPDATE-EMAIL-SUCCESS");
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to update user_email ("+e.toString()+")","UPDATE-EMAIL-FAILED");
         }
     }
 

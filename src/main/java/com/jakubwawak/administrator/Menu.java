@@ -7,6 +7,7 @@ package com.jakubwawak.administrator;
 
 import com.jakubwawak.maintanance.HealthMonitor;
 import com.jakubwawak.trackAPI.TrackApiApplication;
+import com.jakubwawak.users.User_Data;
 import org.springframework.boot.SpringApplication;
 
 import java.io.IOException;
@@ -107,17 +108,78 @@ public class Menu {
                         TrackApiApplication.database.remove_current_sessions();
                     }
                     break;
-                case "session":
+                case "lssession":
                     ArrayList<String> data = TrackApiApplication.database.list_current_sessions();
                     System.out.println("Current sessions:");
                     for(String line: data){
                         System.out.println(line);
                     }
                     break;
+                case "cruser":
+                    if (raw_data.split(" ").length == 3 ){
+                        try{
+                            String user_login = raw_data.split(" ")[1];
+                            String user_password = raw_data.split(" ")[2];
+                            User_Data user = new User_Data();
+                            user.manual_adder(user_login,user_password);
+                        }catch(Exception e){
+                            System.out.println("wrong arguments.");
+                        }
+                    }
+                    else{
+                        System.out.println("no arguments.");
+                    }
+                    break;
+                case "lsuser":
+                    if ( raw_data.split(" ").length > 1 ){
+                        try{
+                            if ( raw_data.split(" ")[1].equals("active")){
+                                System.out.println("Showing active users:");
+                                for(String line : TrackApiApplication.database.list_active_users()){
+                                    System.out.println(line);
+                                }
+                                System.out.println("end");
+                            }
+                        }catch(Exception e){
+                            System.out.println("wrong arguments.");
+                        }
+                    }
+                    else{
+                        System.out.println("Showing all users:");
+                        for(String line : TrackApiApplication.database.list_users()){
+                            System.out.println(line);
+                        }
+                        System.out.println("end.");
+                    }
+                    break;
+                case "mnuser":
+                    String[] user_input = raw_data.split(" ");
+                    try{
+                        int user_id = Integer.parseInt(user_input[1]);
+                        switch(user_input.length){
+                            case 4:
+                                // email adder
+                                User_Data user = new User_Data();
+                                user.update_email(user_id,user_input[3]);
+                                break;
+                            case 3:
+                                // automatic password reset
+                                User_Data user2 = new User_Data();
+                                user2.reset_password(user_id);
+                                break;
+                        }
+                    }catch(Exception e){
+                        System.out.println("wrong arguments.");
+                    }
+                    break;
                 case "help":
-                    System.out.println("crsession");
-                    System.out.println("rmsession");
-                    System.out.println("session");
+                    System.out.println("crsession [crsession -user_id]");
+                    System.out.println("rmsession [rmsession, rmsession -user_id]");
+                    System.out.println("lssession");
+                    System.out.println("rmuser [rmuser -user_id]");
+                    System.out.println("crusser [crusser -login -password]");
+                    System.out.println("lsuser [lsuser, lsuser active]");
+                    System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset]");
                     System.out.println("info");
                     System.out.println("rerun");
                     System.out.println("exit");

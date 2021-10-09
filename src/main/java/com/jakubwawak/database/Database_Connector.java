@@ -9,7 +9,9 @@ package com.jakubwawak.database;
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.trackAPI.TrackApiApplication;
+import com.jakubwawak.users.User_Data;
 
+import javax.sound.midi.Track;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -345,5 +347,65 @@ public class Database_Connector {
         }
     }
 
+    /**
+     * Function for listing users
+     * @return ArrayList
+     * @throws SQLException
+     */
+    public ArrayList<String> list_users() throws SQLException {
+        ArrayList<String> data = new ArrayList<>();
+        String query = "SELECT * FROM USER_DATA;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add("id: "+rs.getInt("user_id")+ " login: "+rs.getString("user_login"));
+            }
+            if ( data.size() == 0){
+                data.add("Empty");
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to load user list ("+e.toString()+")","USER-LIST-FAILED");
+            data.add("error");
+        }
+        return data;
+    }
 
+    /**
+     * Function for listing active users
+     * @return ArrayList
+     */
+    public ArrayList<String> list_active_users() throws SQLException {
+        ArrayList<String> data = new ArrayList<>();
+        /**
+         * CREATE TABLE SESSION_TOKEN
+         * (
+         *   session_token_id INT AUTO_INCREMENT PRIMARY KEY,
+         *   user_id INT,
+         *   session_token VARCHAR(20),
+         *   session_token_time TIMESTAMP,
+         *
+         *   CONSTRAINT fk_session_token FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        String query = "SELECT * from SESSION_TOKEN;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                int user_id = rs.getInt("user_id");
+                User_Data user = new User_Data();
+                user.load_data(user_id);
+                data.add("id: "+user_id+" login: "+user.user_login+" session: "+rs.getString("session_token")
+                        +" expires: "+rs.getObject("session_token_time",LocalDateTime.class).toString());
+            }
+            if (data.size() == 0){
+                data.add("Empty");
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get list of active users ("+e.toString()+")","USERAC-LIST-FAILED");
+            data.add("error");
+        }
+        return data;
+    }
 }
