@@ -165,4 +165,17 @@ public class UserData_Handler {
         }
         return ud;
     }
+
+    @GetMapping ("/user-email-set/{app_token}/{session_token}/{email_value}")
+    public User_Data set_email(@PathVariable String app_token,@PathVariable String session_token,@PathVariable String email_value) throws SQLException {
+        User_Data ud = new User_Data();
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            ud.update_email(TrackApiApplication.database.get_userid_bysession(session_token),email_value);
+        }
+        else{
+            ud.flag = sv.flag;
+        }
+        return ud;
+    }
 }

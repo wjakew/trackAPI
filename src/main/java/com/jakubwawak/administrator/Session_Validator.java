@@ -99,11 +99,13 @@ public class Session_Validator {
                 TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"CONNECT-VALIDATION");
                 return true;
             }
-            TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"CONNECT-VALIDATION-FAILED");
-            flag = -99;
-            return false;
+            else{
+                TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"CONNECT-VALIDATION-FAILED");
+                flag = -99;
+                return false;
+            }
         }
-        TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"CONNECT-VALIDATION-TOKEN");
+        TrackApiApplication.database.log("------Connection validation failed for "+session_token+"/"+app_token,"CONNECT-VALIDATION-TOKEN");
         flag = -11;
         return false;
     }

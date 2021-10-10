@@ -69,16 +69,15 @@ public class Database_Share {
      */
     public ArrayList<String> load_sharedtouser(int user_id) throws SQLException {
         ArrayList<String> data = new ArrayList<>();
-        String query = "SELECT project_id WHERE user_id = ?;";
+        String query = "SELECT project_id FROM SHARED_ELEMENTS WHERE user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             while(rs.next()){
-                Project project = new Project();
-                project.project_id = rs.getInt("project_id");
-                project.database_load();
-                data.add(project.project_id+":"+project.project_name);
+                Project project = new Project(rs.getInt("project_id"));
+                if ( project.flag == 1)
+                    data.add(project.project_id+":"+project.project_name);
             }
             if ( data.size() == 0)
                 data.add("Empty");

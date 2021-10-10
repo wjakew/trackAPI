@@ -24,7 +24,8 @@ public class Shared_Handler {
         Session_Validator sv = new Session_Validator(session_token);
         if (sv.connector_validation(app_token)){
             User_Data user = new User_Data();
-            user.user_id = user.get_userid_by_login(user_login);
+            user.user_login = user_login;
+            user.get_userid_by_login(user_login);
             shared.project_id = project_id;
             shared.user_id = user.user_id;
             shared.database_load();

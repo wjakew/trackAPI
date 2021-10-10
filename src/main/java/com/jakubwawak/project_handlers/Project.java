@@ -64,6 +64,31 @@ public class Project {
     }
 
     /**
+     * Constructor with database load
+     * @param project_id
+     */
+    public Project(int project_id) throws SQLException {
+        String query = "SELECT * FROM PROJECT WHERE project_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                this.project_id = rs.getInt("project_id");
+                user_id = rs.getInt("user_id");
+                project_name = rs.getString("project_name");
+                project_desc = rs.getString("project_desc");
+                project_creation_date = rs.getObject("project_creation_date",LocalDateTime.class);
+                project_state = rs.getString("project_state");
+                flag = 1;
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to load project from database ("+e.toString()+")","PROJECT-LOAD-FAILED");
+            flag = -1;
+        }
+    }
+
+    /**
      * Constructor with database support
      * @param rs
      */

@@ -67,6 +67,7 @@ public class User_Data {
      * );
      */
 
+    public int flag;
     public int user_id;
     public String user_name;
     public String user_surname;
@@ -80,6 +81,7 @@ public class User_Data {
      * Main default constructor
      */
     public User_Data(){
+        flag = 0;
         user_id = -1;
         user_name = "";
         user_surname = "";
@@ -239,8 +241,10 @@ public class User_Data {
             ppst.setInt(2,user_id);
             ppst.execute();
             TrackApiApplication.database.log("Updated user_email. Set to "+user_email,"UPDATE-EMAIL-SUCCESS");
+            flag = 1;
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to update user_email ("+e.toString()+")","UPDATE-EMAIL-FAILED");
+            flag = -1;
         }
     }
 
@@ -351,7 +355,7 @@ public class User_Data {
      * @param user_login
      * @return
      */
-    public int get_userid_by_login(String user_login) throws SQLException {
+    public void get_userid_by_login(String user_login) throws SQLException {
         String query = "SELECT user_id FROM USER_DATA WHERE user_login = ?;";
 
         try{
@@ -360,12 +364,33 @@ public class User_Data {
             ResultSet rs = ppst.executeQuery();
 
             if (rs.next()){
-                return rs.getInt("user_id");
+                this.user_id = rs.getInt("user_id");
+            }else{
+                user_id = -7;
             }
-            return -7;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to get user_id ("+e.toString()+")","USERID-ERROR");
-            return -6;
+            user_id = -6;
+        }
+    }
+
+    /**
+     * Function for checking if email is connected to account
+     * @return Boolean
+     */
+    boolean check_email_connected() throws SQLException {
+        String query = "SELECT user_id FROM USER_DATA WHERE user_email = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,user_email);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to check if email is connected ( "+e.toString()+")","EMAIL-CHECK-FAILED");
+            return true;
         }
     }
 
@@ -374,45 +399,52 @@ public class User_Data {
      */
     public void register() throws SQLException, NoSuchAlgorithmException {
         TrackApiApplication.database.log("Trying to register new user..","REGISTER");
-        RandomString generator = new RandomString(12);
-        user_password = generator.buf;
-        Password_Validator pv = new Password_Validator(user_password);
-        user_password = pv.hash();
-        user_login = user_name.replaceAll(" ","")+user_surname.replaceAll(" ","");
-        user_login = user_login.toLowerCase();
-        user_category = "CLIENT";
-        if ( this.check_login_avaiability() ){
-            user_login = user_login+"1";
+        if ( check_email_connected()){
+            TrackApiApplication.database.log("Email is connected to another user. Aborted","REGISTER");
+            user_id = -7;
         }
-        String query = "INSERT INTO USER_DATA\n" +
-                "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
-                "VALUES\n" +
-                "(?,?,?,?,?,?);";
-        try{
-            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+        else{
+            RandomString generator = new RandomString(12);
+            user_password = generator.buf;
+            Password_Validator pv = new Password_Validator(user_password);
+            user_password = pv.hash();
+            user_login = user_name.replaceAll(" ","")+user_surname.replaceAll(" ","");
+            user_login = user_login.toLowerCase();
+            user_category = "CLIENT";
 
-            ppst.setString(1,user_name);
-            ppst.setString(2,user_surname);
-            ppst.setString(3,user_email);
-            ppst.setString(4,user_login);
-            ppst.setString(5,pv.hash());
-            ppst.setString(6,user_category);
-
-            ppst.execute();
-            TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
-            this.user_password = generator.buf;
-            this.user_id = get_userid_by_login(this.user_login);
-            try{
-                MailConnector mc = new MailConnector();
-                mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
-                TrackApiApplication.database.log("Login data send to "+user_email,"MAIL-REGISTER-SUCCESFULL");
-            }catch(Exception e){
-                TrackApiApplication.database.log("Failed to send login data to "+user_email+" ("+e.toString()+")","MAIL-REGISTER-FAILED");
-                this.user_id = -8;
+            if ( this.check_login_avaiability() ){
+                user_login = user_login+"1";
             }
-        }catch(SQLException e){
-            TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
-            this.user_id = -6;
+            String query = "INSERT INTO USER_DATA\n" +
+                    "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
+                    "VALUES\n" +
+                    "(?,?,?,?,?,?);";
+            try{
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+                ppst.setString(1,user_name);
+                ppst.setString(2,user_surname);
+                ppst.setString(3,user_email);
+                ppst.setString(4,user_login);
+                ppst.setString(5,pv.hash());
+                ppst.setString(6,user_category);
+
+                ppst.execute();
+                TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
+                this.user_password = generator.buf;
+                this.get_userid_by_login(this.user_login);
+                try{
+                    MailConnector mc = new MailConnector();
+                    mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
+                    TrackApiApplication.database.log("Login data send to "+user_email,"MAIL-REGISTER-SUCCESFULL");
+                }catch(Exception e){
+                    TrackApiApplication.database.log("Failed to send login data to "+user_email+" ("+e.toString()+")","MAIL-REGISTER-FAILED");
+                    this.user_id = -8;
+                }
+            }catch(SQLException e){
+                TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
+                this.user_id = -6;
+            }
         }
     }
 
