@@ -11,10 +11,13 @@ import com.jakubwawak.users.User_Data;
 import org.springframework.boot.SpringApplication;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Scanner;
 
 /**
@@ -75,6 +78,19 @@ public class Menu {
                     HealthMonitor hm = new HealthMonitor();
                     System.out.println("till death we do art. ~Jakub Wawak 2021");
                     System.out.println(hm.info());
+                    System.out.println("LAN data: ");
+                    Enumeration e2 = NetworkInterface.getNetworkInterfaces();
+                    while(e2.hasMoreElements())
+                    {
+                        NetworkInterface n = (NetworkInterface) e2.nextElement();
+                        Enumeration ee = n.getInetAddresses();
+                        while (ee.hasMoreElements())
+                        {
+                            InetAddress i = (InetAddress) ee.nextElement();
+                            System.out.println(i.getHostAddress());
+                        }
+                    }
+                    System.out.println("end.");
                     break;
                 case "rerun":
                     System.out.println("Trying to rerun application...");
@@ -172,6 +188,55 @@ public class Menu {
                         System.out.println("wrong arguments.");
                     }
                     break;
+                case "pauser":
+                    if ( raw_data.split(" ").length == 3){
+                        try{
+                            int user_id = Integer.parseInt(raw_data.split(" ")[1]);
+                            String user_category = raw_data.split(" ")[2];
+                            TrackApiApplication.database.update_user_category(user_id,user_category);
+                        }catch(Exception e){
+                            System.out.println("wrong arguments.");
+                        }
+                    }
+                    else{
+                        System.out.println("wrong arguments.");
+                    }
+                    break;
+                case "servicetag":
+                    if ( raw_data.split(" ").length == 2 ){
+                        TrackApiApplication.database.update_servicetag(raw_data.split(" ")[1]);
+                    }
+                    else{
+                        System.out.println("wrong arguments.");
+                    }
+                    break;
+                case "lsapptoken":
+                    System.out.println("Active apptoken data:");
+                    for(String line : TrackApiApplication.database.list_apptoken()){
+                        System.out.println(line);
+                    }
+                    System.out.println("end.");
+                    break;
+                case "crapptoken":
+                    try{
+                        int user_id = Integer.parseInt(raw_data.split(" ")[1]);
+                        TrackApiApplication.database.create_apptoken(user_id);
+                    }catch(Exception e){
+                        System.out.println("wrong arguments.");
+                    }
+                    break;
+                case "rmapptoken":
+                    try{
+                        int user_id = Integer.parseInt(raw_data.split(" ")[1]);
+                        TrackApiApplication.database.remove_apptoken(user_id);
+                    }catch(Exception e){
+                        System.out.println("wrong arguments.");
+                    }
+                    break;
+                case "clear":
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    break;
                 case "help":
                     System.out.println("crsession [crsession -user_id]");
                     System.out.println("rmsession [rmsession, rmsession -user_id]");
@@ -180,7 +245,13 @@ public class Menu {
                     System.out.println("crusser [crusser -login -password]");
                     System.out.println("lsuser [lsuser, lsuser active]");
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset]");
+                    System.out.println("pauser [pauser -user_id -user_category");
+                    System.out.println("servicetag [servicetag -new_tag]");
+                    System.out.println("lsapptoken");
+                    System.out.println("crapptoken [crapptoken -user_id]");
+                    System.out.println("rmapptoken [rmapptoken -user_id]");
                     System.out.println("info");
+                    System.out.println("clear");
                     System.out.println("rerun");
                     System.out.println("exit");
                     break;

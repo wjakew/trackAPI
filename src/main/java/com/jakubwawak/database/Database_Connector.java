@@ -16,6 +16,8 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Database_Connector {
 
@@ -407,5 +409,141 @@ public class Database_Connector {
             data.add("error");
         }
         return data;
+    }
+
+    /**
+     * Function for updating servicetag
+     * @param new_servicetag
+     * @return Integer
+     */
+    public int update_servicetag(String new_servicetag) throws SQLException {
+        String query = "UPDATE PROGRAMCODES SET programcodes_values = ? where programcodes_key = 'servicetag';";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,new_servicetag);
+            ppst.execute();
+            TrackApiApplication.database.log("Updated servicetag!","SERVICETAG-UPDATE");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to update servicetag ("+e.toString()+")","SERVICETAG-UPDATE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for listing apptokens
+     * @return ArrayList
+     */
+    public ArrayList<String> list_apptoken() throws SQLException {
+        String query = "SELECT * FROM TOKEN;";
+        ArrayList<String> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add("user_id: "+rs.getInt("user_id")+" apptoken: "+rs.getString("token_value"));
+            }
+            if ( data.size() == 0){
+                data.add("Empty");
+            }
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to list apptoken data ("+e.toString()+")","APPTOKEN-LIST-FAILED");
+            data.add("error");
+        }
+        return data;
+    }
+
+    /**
+     * Function for creating apptokens
+     * @param user_id
+     * @return
+     * @throws SQLException
+     */
+    public int create_apptoken(int user_id) throws SQLException {
+        /**
+         * CREATE TABLE TOKEN
+         * (
+         *   token_id INT AUTO_INCREMENT PRIMARY KEY,
+         *   user_id INT,
+         *   token_value VARCHAR(100),
+         *
+         *   CONSTRAINT fk_token FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        String query = "INSERT INTO TOKEN (user_id,token_value) VALUES (?,?);";
+        RandomString generator = new RandomString(10);
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setString(2,generator.buf);
+            ppst.execute();
+            TrackApiApplication.database.log("Created apptoken for user_id: "+user_id+" token: |"+generator.buf+"|","APPTOKEN");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to create apptoken ("+e.toString()+")","APPTOKEN-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing apptoken
+     * @param user_id
+     * @return Integer
+     */
+    public int remove_apptoken(int user_id) throws SQLException {
+        String query = "DELETE FROM TOKEN WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Removed apptoken for user_id: "+user_id,"APPTOKEN-REMOVE");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove apptoken ("+e.toString()+")","APPTOKEN-REMOVE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for updating user_category
+     * @param user_id
+     * @param user_category
+     * @return Integer
+     */
+    public int update_user_category(int user_id,String user_category) throws SQLException {
+        /**
+         * CREATE TABLE USER_DATA
+         * (
+         *   user_id INT PRIMARY KEY AUTO_INCREMENT,
+         *   user_name VARCHAR(150),
+         *   user_surname VARCHAR(200),
+         *   user_email VARCHAR(200),
+         *   user_login VARCHAR(25),
+         *   user_password VARCHAR(50),
+         *   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
+         * );
+         */
+
+        String query = "UPDATE USER_DATA SET user_category = ? WHERE user_id = ?;";
+        String[] objects = {"ADMIN","DEVELOPER","CLIENT"};
+        List<String> data = Arrays.asList(objects);
+
+        if ( data.contains(user_category)){
+            try{
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+                ppst.setString(1,user_category);
+                ppst.setInt(2,user_id);
+                ppst.execute();
+                TrackApiApplication.database.log("Updated user_category to "+user_category+" for user_id: "+user_id,"USER-CATEGORY");
+                return 1;
+            } catch (SQLException e) {
+                TrackApiApplication.database.log("Failed to update user_category ("+e.toString()+")","USER-CATEGORY-UPDATE");
+                return -1;
+            }
+        }
+        else{
+            TrackApiApplication.database.log("Wrong user_category name","USER-CATEGORY-WRNAME");
+            return -2;
+        }
     }
 }
