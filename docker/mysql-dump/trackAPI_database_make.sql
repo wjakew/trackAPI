@@ -4,6 +4,7 @@
 -- all rights reserved
 CREATE DATABASE IF NOT EXISTS trackapi_database;
 USE trackapi_database;
+SET SQL_MODE='ALLOW_INVALID_DATES';
 -- database drop and reload
 drop table if exists PROGRAMCODES;
 drop table if exists PROGRAM_LOG;
