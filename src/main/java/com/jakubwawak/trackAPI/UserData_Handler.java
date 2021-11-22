@@ -95,12 +95,16 @@ public class UserData_Handler {
             ud.user_name = user_name;
             ud.user_surname = user_surname;
             ud.user_email = user_email;
+            ud.user_category = "DEVELOPER";
             ud.register();
             if ( ud.user_password.equals("")){
                 ud = new User_Data();
                 ud.user_id = -6;
             }
-            ud.user_category = "DEVELOPER";
+            int user_id = TrackApiApplication.database.get_userid_bylogin(ud.user_login);
+            if ( user_id > 0 ){
+
+            }
         }
         else{
             ud.user_id = -11;

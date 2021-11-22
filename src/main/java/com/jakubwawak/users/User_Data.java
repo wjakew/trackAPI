@@ -433,6 +433,7 @@ public class User_Data {
                 TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
                 this.user_password = generator.buf;
                 this.get_userid_by_login(this.user_login);
+                this.create_user_configuration();
                 try{
                     MailConnector mc = new MailConnector();
                     mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
@@ -445,6 +446,30 @@ public class User_Data {
                 TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
                 this.user_id = -6;
             }
+        }
+    }
+
+    /**
+     * Function for creating first configuration
+     * @return Integer
+     */
+    public int create_user_configuration() throws SQLException {
+        String query = "INSERT INTO USER_CONFIGURATION\n" +
+                        "(user_id,config1,config2,config3)\n" +
+                        "VALUES\n" +
+                        "(?,?,?,?);";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setString(2,"DARK");
+            ppst.setString(3,"");
+            ppst.setString(4,"");
+            ppst.execute();
+            TrackApiApplication.database.log("Created user configuration ","USER-CONFIGURATION");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to create user configuration ("+e.toString()+")","USER-CONFIGURATION-FAILED");
+            return -1;
         }
     }
 

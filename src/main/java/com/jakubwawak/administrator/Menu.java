@@ -251,22 +251,22 @@ public class Menu {
                     System.out.flush();
                     break;
                 case "help":
-                    System.out.println("crsession [crsession -user_id]");
-                    System.out.println("rmsession [rmsession, rmsession -user_id]");
-                    System.out.println("lssession");
-                    System.out.println("rmuser [rmuser -user_id]");
-                    System.out.println("crusser [crusser -login -password]");
-                    System.out.println("lsuser [lsuser, lsuser active]");
-                    System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset]");
-                    System.out.println("pauser [pauser -user_id -user_category");
-                    System.out.println("servicetag [servicetag -new_tag]");
-                    System.out.println("lsapptoken");
-                    System.out.println("crapptoken [crapptoken -user_id]");
-                    System.out.println("rmapptoken [rmapptoken -user_id]");
-                    System.out.println("info");
-                    System.out.println("clear");
-                    System.out.println("rerun");
-                    System.out.println("exit");
+                    System.out.println("crsession [crsession -user_id] - creates session for given user");
+                    System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
+                    System.out.println("lssession - lists all sessions");
+                    System.out.println("rmuser [rmuser -user_id] - removes user by given user_id");
+                    System.out.println("crusser [crusser -login -password] - creates user with given login and password");
+                    System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
+                    System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");
+                    System.out.println("pauser [pauser -user_id -user_category] - sets category for user");
+                    System.out.println("servicetag [servicetag -new_tag] - sets new service tag value");
+                    System.out.println("lsapptoken - lists all active apptokens");
+                    System.out.println("crapptoken [crapptoken -user_id] - creates new apptoken");
+                    System.out.println("rmapptoken [rmapptoken -user_id] - removes active apptokens");
+                    System.out.println("info - printing info about the program");
+                    System.out.println("clear - clears terminal");
+                    System.out.println("rerun - running api again");
+                    System.out.println("exit - closing api without warning ");
                     break;
             }
             index++;

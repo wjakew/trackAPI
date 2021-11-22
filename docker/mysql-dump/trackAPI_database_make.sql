@@ -20,6 +20,8 @@ drop table if exists TOKEN;
 drop table if exists OBJECT_HISTORY;
 drop table if exists BOARD_ELEMENT;
 drop table if exists BOARD;
+drop table if exists USER_SNIPPET;
+drop table if exists USER_CONFIGURATION;
 drop table if exists USER_DATA;
 
 
@@ -174,11 +176,33 @@ CREATE TABLE BOARD_ELEMENT
 
     CONSTRAINT  fk_boardelement FOREIGN KEY (board_id) REFERENCES BOARD(board_id)
 );
+--  for storing snippets
+CREATE TABLE USER_SNIPPET
+(
+    user_snippet_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_snippet_time TIMESTAMP,
+    user_id INT,
+    user_snippet_title VARCHAR(250),
+    user_snippet_content TEXT,
+
+    CONSTRAINT fk_usersnippet FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- for storing user configuration
+CREATE TABLE USER_CONFIGURATION
+(
+    user_configuration_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    config1 VARCHAR(10),
+    config2 VARCHAR(20),
+    config3 VARCHAR(30),
+
+    CONSTRAINT  fk_userconfiguration FOREIGN KEY(user_id) REFERENCES USER_DATA(user_id)
+);
 -- startup inserts
 INSERT INTO PROGRAMCODES
 (programcodes_key,programcodes_values)
 VALUES
-('DATABASEVERSION','100');
+('DATABASEVERSION','101');
 
 INSERT INTO USER_DATA
 (user_name,user_surname,user_email,user_login,user_password,user_category)
@@ -193,3 +217,7 @@ INSERT INTO PROGRAMCODES
 (programcodes_key, programcodes_values)
 VALUES
 ('service_tag','servicexd');
+INSERT INTO USER_CONFIGURATION
+(user_id,config1,config2,config3)
+VALUES
+(1,"DARK","","");

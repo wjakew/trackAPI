@@ -159,6 +159,28 @@ public class Database_Connector {
     }
 
     /**
+     * Function for getting user login by given user id
+     * @param user_login
+     * @return Integer
+     */
+    public int get_userid_bylogin(String user_login) throws SQLException {
+        String query = "SELECT user_id FROM USER_DATA WHERE user_login = ?;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setString(1,user_login);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                TrackApiApplication.database.log("User found by login","USER-DATA-GET");
+                rs.getInt("user_id");
+            }
+            return 0;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get user by login ("+e.toString()+")","USER-DATA-GET-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for checking if user_id exists in the database
      * @param user_id
      * @return
