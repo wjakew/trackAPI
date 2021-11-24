@@ -80,7 +80,7 @@ public class User_Snippet {
      * @return String
      */
     public String get_glance(){
-        return user_id+":"+user_snippet_title+"\n"+user_snippet_content;
+        return user_snippet_id+":"+user_snippet_title+"\n"+user_snippet_content;
     }
 
     /**

@@ -1,13 +1,16 @@
 package com.jakubwawak.maintanance;
 
+import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.sound.midi.Track;
+import java.nio.channels.spi.AbstractSelectionKey;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class MailConnector{
 
@@ -30,7 +33,10 @@ public class MailConnector{
     public void send(String to, String subject, String text) throws SQLException {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("main.tes.instruments@gmail.com");
+            if ( TrackApiApplication.configuration.check_mail_data())
+                message.setFrom(TrackApiApplication.configuration.mail_email_address);
+            else
+                message.setFrom("main.tes.instruments@gmail.com");
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);
@@ -49,10 +55,16 @@ public class MailConnector{
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-
-        mailSender.setUsername("main.tes.instruments@gmail.com");
-        mailSender.setPassword("minidysk");
-
+        if (TrackApiApplication.configuration.check_mail_data()){
+            mailSender.setUsername(TrackApiApplication.configuration.mail_email_address);
+            mailSender.setPassword(TrackApiApplication.configuration.mail_email_password);
+        }
+        else{
+            mailSender.setUsername("main.tes.instruments@gmail.com");
+            Scanner sc = new Scanner(System.in);
+            String email_password = sc.nextLine();
+            mailSender.setPassword(email_password);
+        }
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");

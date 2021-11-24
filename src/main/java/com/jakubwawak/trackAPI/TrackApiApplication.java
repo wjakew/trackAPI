@@ -23,8 +23,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.1.0";
-	public static String build = "2211REV01";
+	public static String version = "v1.1.1";
+	public static String build = "241121REV06";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -99,6 +99,7 @@ public class TrackApiApplication {
 		System.out.println("Connecting to database..");
 		database = new Database_Connector();
 		System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
+		System.out.println("Using password: "+configuration.database_password.substring(0,2)+"XXXXX");
 		System.out.print("continue(y/n)?");
 		String ans = sc.nextLine();
 		if (ans.equals("y")){
