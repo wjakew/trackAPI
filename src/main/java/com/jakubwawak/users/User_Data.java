@@ -561,7 +561,7 @@ public class User_Data {
             load_email();
             if ( !user_email.equals("")){
                 try{
-                    mc.send(this.user_email,"NOTIFICATION PASSWORD CHANGED","Your password was changed.");
+                    mc.send(this.user_email,"TRACK NOTIFICATION PASSWORD CHANGED","Your password was changed.");
                 }catch(Exception e){
                     TrackApiApplication.database.log("Failed to send email ("+e.toString()+")","MAIL-SEND-ERROR");
                 }

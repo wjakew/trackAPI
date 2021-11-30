@@ -23,8 +23,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.1.0";
-	public static String build = "2211REV01";
+	public static String version = "v1.1.2";
+	public static String build = "301121REV06";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -38,21 +38,36 @@ public class TrackApiApplication {
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		clear_console();
 		header();
-		if ( load_configuration() ){
-			if ( load_database_connection() ){
-				if ( authorize() ){
-					header();
-					SpringApplication.run(TrackApiApplication.class, args);
-					System.out.println("trackAPI is running currently. To check commands type /help/");
+		System.out.print("Loaded startup arguments: ");
+		for(String arg : args){
+			System.out.println(arg);
+		}
+		System.out.println("\nLoaded "+args.length+" arguments.");
+		if ( args.length == 0){
+			// normal startup
+			if ( load_configuration() ){
+				if ( load_database_connection() ){
+					if ( authorize() ){
+						header();
+						SpringApplication.run(TrackApiApplication.class, args);
+						System.out.println("trackAPI is running currently. To check commands type /help/");
+					}
 				}
 			}
+			else{
+				System.out.println("Program aborted");
+			}
+			// main menu
+			menu = new Menu();
+			menu.run();
 		}
 		else{
-			System.out.println("Program aborted");
+			//fast startup
+			for(String arg : args){
+
+			}
+
 		}
-		// main menu
-		menu = new Menu();
-		menu.run();
 	}
 
 	/**
@@ -99,6 +114,7 @@ public class TrackApiApplication {
 		System.out.println("Connecting to database..");
 		database = new Database_Connector();
 		System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
+		System.out.println("Using password: "+configuration.database_password.substring(0,2)+"XXXXX");
 		System.out.print("continue(y/n)?");
 		String ans = sc.nextLine();
 		if (ans.equals("y")){

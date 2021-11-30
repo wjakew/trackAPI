@@ -22,6 +22,8 @@ public class Configuration {
      * name%data
      * user%data
      * password%data
+     * email_address%XXXXXXXXXXXX
+     * email_pass%XXXXXXXXXXX
      * -----------------------
      */
 
@@ -29,6 +31,8 @@ public class Configuration {
     public String database_name;
     public String database_user;
     public String database_password;
+
+    public String mail_email_address,mail_email_password;
 
     public boolean exists,error;
 
@@ -52,6 +56,8 @@ public class Configuration {
         database_name = "";
         database_user = "";
         database_password ="";
+        mail_email_address = "";
+        mail_email_password = "";
     }
 
     /**
@@ -88,6 +94,12 @@ public class Configuration {
             else if (line.contains("password")){
                 this.database_password = line.split("%")[1];
             }
+            else if (line.contains("email_address")){
+                this.mail_email_address = line.split("%")[1];
+            }
+            else if (line.contains("email_pass")){
+                this.mail_email_password = line.split("%")[1];
+            }
         }
     }
 
@@ -113,10 +125,29 @@ public class Configuration {
                 System.out.print("database password?");
                 this.database_password = sc.nextLine();
             }
+            System.out.print("mail address provider(leave blank to use default)?");
+            this.mail_email_address = sc.nextLine();
+            if ( !this.mail_email_address.equals("")){
+                if ( cnsl != null){
+                    char[] ch = cnsl.readPassword("password?");
+                    this.mail_email_password= String.copyValueOf(ch);
+                }
+                else{
+                    System.out.print("password?");
+                    this.mail_email_password = sc.nextLine();
+                }
+            }
         }catch(Exception e){
             System.out.println("ERROR-CON02 Failed to load data from user ("+e.toString()+")");
         }
+    }
 
+    /**
+     * Function for checking if email data is correct
+     * @return boolean
+     */
+    public boolean check_mail_data(){
+        return !(this.mail_email_address.equals("") || this.mail_email_password.equals(""));
     }
 
     /**
@@ -130,12 +161,16 @@ public class Configuration {
              * name%data
              * user%data
              * password%data
+             * email_address%XXXXXXXXXXXX
+             * email_pass%XXXXXXXXXXX
              */
             FileWriter fw = new FileWriter(file_src);
             fw.write("ip%"+this.database_ip+"\n");
             fw.write("name%"+this.database_name+"\n");
             fw.write("user%"+this.database_user+"\n");
             fw.write("password%"+this.database_password+"\n");
+            fw.write("email_address%"+this.mail_email_address+"\n");
+            fw.write("email_pass%"+this.mail_email_password+"\n");
 
             fw.close();
         }catch(IOException e) {
@@ -153,6 +188,11 @@ public class Configuration {
         System.out.println("database name: "+database_name);
         System.out.println("database user: "+database_user);
         System.out.println("database password: "+database_password);
+        System.out.println("email password: "+mail_email_password);
+        System.out.println("email address: "+mail_email_address);
+        if ( mail_email_password.equals("") || mail_email_address.equals("") ){
+            System.out.println("WARNING! EMAIL ADDRESS OR PASSWORD EMPTY!!!");
+        }
     }
 
     /**
@@ -160,6 +200,6 @@ public class Configuration {
      * @return boolean
      */
     public boolean validation(){
-        return file_lines.size() == 4;
+        return file_lines.size() >= 4;
     }
 }

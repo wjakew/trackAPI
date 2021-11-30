@@ -249,6 +249,16 @@ public class Menu {
                 case "clear":
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
+                    TrackApiApplication.header();
+                    break;
+                case "config":
+                    if ( raw_data.split(" ").length == 2 && raw_data.split(" ")[1].equals("create")){
+                        TrackApiApplication.configuration.load_user_data();
+                        TrackApiApplication.configuration.copy_configuration();
+                    }
+                    else{
+                        TrackApiApplication.configuration.show_configuration();
+                    }
                     break;
                 case "help":
                     System.out.println("crsession [crsession -user_id] - creates session for given user");
@@ -266,6 +276,7 @@ public class Menu {
                     System.out.println("info - printing info about the program");
                     System.out.println("clear - clears terminal");
                     System.out.println("rerun - running api again");
+                    System.out.println("config [config, config create] - shows config, creates new config");
                     System.out.println("exit - closing api without warning ");
                     break;
             }

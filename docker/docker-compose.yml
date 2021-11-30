@@ -3,7 +3,7 @@ services:
   trackapi_database:
     image: mysql:5.7
     volumes:
-      - ./mysql-dump:/docker-entrypoint-initdb.d/trackAPI_database_make.sql
+      - ./mysql-dump:/docker-entrypoint-initdb.d/trackAPI_database_make.sql:ro
     restart: always
     environment:
       MYSQL_DATABASE: 'trackapi_database'

@@ -31,6 +31,22 @@ public class User_Snippet_Handler {
         return us;
     }
 
+    @GetMapping("/snippet-get/{app_token}/{session_token}/{user_snippet_id}")
+    public User_Snippet get_snippet(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int user_snippet_id) throws SQLException {
+        TrackApiApplication.database.log("Got job for getting snippet data","JOB-SNIPPET-GET");
+        User_Snippet us = new User_Snippet();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token)){
+            Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
+            us = ds.get_user_snippet(user_snippet_id);
+            us.flag = 1;
+        }
+        else{
+            us.flag = sv.flag;
+        }
+        return us;
+    }
+
     @GetMapping("/snippet-remove/{app_token}/{session_token}/{user_snippet_id}")
     public User_Snippet remove_snippet(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int user_snippet_id) throws SQLException {
         TrackApiApplication.database.log("Got job for snippet removal","JOB-SNIPPET-REMOVE");
