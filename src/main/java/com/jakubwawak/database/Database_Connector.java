@@ -23,7 +23,7 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.4";
+    public final String version = "v0.0.5";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -31,7 +31,7 @@ public class Database_Connector {
     public Connection con;
 
     // variable for debug purposes
-    final int debug = 1;
+    public int debug = 1;
 
     public boolean connected;                      // flag for checking connection to the database
     public String ip;                              // ip data for the connector
@@ -97,6 +97,35 @@ public class Database_Connector {
                 database_log.clear();
             }
         }
+    }
+
+    /**
+     * Function for showing log
+     * @param size
+     */
+    public void show_log(int size){
+        System.out.println("Showing log: ");
+        if ( size != 0 ){
+            int log_size = database_log.size();
+            if ( log_size > size ){
+                int start = log_size - size;
+                for ( int i = start; i < log_size; i++){
+                    System.out.println(i+": "+database_log.get(i));
+                }
+            }
+            else{
+                System.out.println("Log size smaller than number.");
+                for (String line : database_log){
+                    System.out.println(line);
+                }
+            }
+        }
+        else{
+            for (String line : database_log){
+                System.out.println(line);
+            }
+        }
+        System.out.println("END OF LOG");
     }
 
     /**

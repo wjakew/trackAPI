@@ -40,6 +40,34 @@ public class Database_Snippet {
         this.database = database;
     }
 
+
+    /**
+     * Function for checking if user is a snippet owner
+     * @param user_snippet_id
+     * @param user_id
+     * @return boolean
+     */
+    boolean snippet_owner(int user_snippet_id,int user_id) throws SQLException {
+        String query = "SELECT user_snippet_id from USER_SNIPPET WHERE user_snippet_id = ? and user_id = ?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_snippet_id);
+            ppst.setInt(2,user_id);
+
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                TrackApiApplication.database.log("User is owner. - "+user_snippet_id+"/"+user_id,"SNIPPET-OWNER");
+                return true;
+            }
+            TrackApiApplication.database.log("User is not an owner. - "+user_snippet_id+"/"+user_id,"SNIPPET-OWNER");
+            return false;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to check snippet owner ("+e.toString()+")","SNIPPET-OWNER-FAILED");
+            return false;
+        }
+    }
+
     /**
      * Function for adding snippet to database
      * @param to_add
@@ -70,15 +98,22 @@ public class Database_Snippet {
      * @param user_snippet_id
      * @return
      */
-    public User_Snippet get_user_snippet(int user_snippet_id) throws SQLException {
+    public User_Snippet get_user_snippet(int user_snippet_id,int user_id) throws SQLException {
         String query = "SELECT * FROM USER_SNIPPET WHERE user_snippet_id=?;";
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setInt(1,user_snippet_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
-                TrackApiApplication.database.log("User snippet loaded from database","USER-SNIPPET-GET");
-                return new User_Snippet(rs);
+                if (snippet_owner(user_snippet_id,user_id)) {
+                    TrackApiApplication.database.log("User snippet loaded from database", "USER-SNIPPET-GET");
+                    return new User_Snippet(rs);
+                }
+                else{
+                    User_Snippet us = new User_Snippet();
+                    us.flag = -2;
+                    return us;
+                }
             }
             TrackApiApplication.database.log("User snippet not found, loading blank","USER-SNIPPET-GET-BLANK");
             return new User_Snippet();
@@ -122,17 +157,42 @@ public class Database_Snippet {
      * @return Integer
      * @throws SQLException
      */
-    public int user_snippet_remove(int user_snippet_id) throws SQLException {
+    public int user_snippet_remove(int user_snippet_id,int user_id) throws SQLException {
         String query = "DELETE FROM USER_SNIPPET WHERE user_snippet_id=?;";
         try{
-            PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,user_snippet_id);
-            ppst.execute();
-            TrackApiApplication.database.log("User snippet removed","SNIPPET-REMOVE");
-            return 1;
+            if ( snippet_owner(user_snippet_id,user_id)){
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,user_snippet_id);
+                ppst.execute();
+                TrackApiApplication.database.log("User snippet removed","SNIPPET-REMOVE");
+                return 1;
+            }
+            else{
+                return -2;
+            }
+
         }catch(SQLException e){
             TrackApiApplication.database.log("Failed to remove Snippet ("+e.toString()+")","SNIPPET-REMOVE-FAILED");
             return -1;
         }
+    }
+
+    /**
+     * Function for sharing snippet
+     * @param user_snippet_id
+     * @param owner_id
+     * @param sender_id;
+     * @return Integer
+     */
+    public int user_snippet_share(int user_snippet_id,int owner_id,int sender_id) throws SQLException {
+        if ( snippet_owner(user_snippet_id,owner_id)){
+            User_Snippet us = get_user_snippet(user_snippet_id,owner_id);
+            us.user_id = sender_id;
+            add_snippet(us);
+            TrackApiApplication.database.log("Owner (user_id:"+owner_id
+                    +") shared (user_snippet_id:"+user_snippet_id+") with (user_id:"+sender_id+")","SNIPPET-SHARE");
+            return us.flag;
+        }
+        return -2;
     }
 }

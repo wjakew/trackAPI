@@ -61,6 +61,29 @@ public class Configuration {
     }
 
     /**
+     * Configuration with custom file
+     * @param file_src
+     */
+    public Configuration(String file_src){
+        file_object = new File(file_src);
+        this.file_src = file_src;
+        exists = false;
+        error = false;
+        file_lines = new ArrayList<>();
+
+        if ( file_object.exists() ){
+            exists = true;
+        }
+
+        database_ip = "";
+        database_name = "";
+        database_user = "";
+        database_password ="";
+        mail_email_address = "";
+        mail_email_password = "";
+    }
+
+    /**
      * Function for reading file content
      * @throws FileNotFoundException
      */

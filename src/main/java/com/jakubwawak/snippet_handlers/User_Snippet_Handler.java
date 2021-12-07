@@ -38,7 +38,7 @@ public class User_Snippet_Handler {
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
             Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
-            us = ds.get_user_snippet(user_snippet_id);
+            us = ds.get_user_snippet(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token));
             us.flag = 1;
         }
         else{
@@ -55,14 +55,33 @@ public class User_Snippet_Handler {
         Session_Validator sv = new Session_Validator(session_token);
         if (sv.connector_validation(app_token)){
             Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
-            if ( ds.user_snippet_remove(user_snippet_id) == 1 ){
+            int ret_code = ds.user_snippet_remove(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token));
+            if ( ret_code == 1 ){
                 us.flag = 1;
             }
-            us.flag = 0;
+            else if ( ret_code == -2)
+                us.flag = -2;
+            else
+                us.flag = 0;
         }
         else{
             us.flag = sv.flag;
         }
+        return us;
+    }
+
+    @GetMapping("/snippet-share/{app_token}/{session_token}/{user_snippet_id}/{user_id}")
+    public User_Snippet share_snippet(@PathVariable String app_token, @PathVariable String session_token, @PathVariable int user_snippet_id,
+                                      int user_id) throws SQLException {
+        Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
+        Session_Validator sv = new Session_Validator(session_token);
+        User_Snippet us = new User_Snippet();
+        if ( sv.connector_validation(app_token) ){
+            int flag = ds.user_snippet_share(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token),user_id);
+            us.flag = flag;
+            return us;
+        }
+        us.flag = sv.flag;
         return us;
     }
 

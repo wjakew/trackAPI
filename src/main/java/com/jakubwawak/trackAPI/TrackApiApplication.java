@@ -23,8 +23,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.1.3";
-	public static String build = "041121REV06";
+	public static String version = "v1.1.4";
+	public static String build = "061121REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -47,8 +47,9 @@ public class TrackApiApplication {
 			// normal startup
 			if ( load_configuration() ){
 				if ( load_database_connection() ){
-					if ( authorize() ){
+					if ( authorize(1) ){
 						header();
+						System.out.println("Please wait till Spring initializes...");
 						SpringApplication.run(TrackApiApplication.class, args);
 						System.out.println("trackAPI is running currently. To check commands type /help/");
 					}
@@ -64,7 +65,53 @@ public class TrackApiApplication {
 		else{
 			//fast startup
 			for(String arg : args){
+				if ( arg.contains(".trak") ){
+					System.out.println("Using configuration file: "+arg);
+					configuration = new Configuration(arg);
+					if ( configuration.exists ){
+						configuration.read_file();
+						System.out.println("Configuration file reading..");
+						configuration.load_file_data();
+						if ( configuration.validation() ){
+							System.out.println("Configuration data validated!");
+							configuration.show_configuration();
+							// configuration file validated
+							System.out.println("Connecting to database..");
+							database = new Database_Connector();
+							System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
+							System.out.println("Using password: "+configuration.database_password.substring(0,2)+"XXXXX");
+							try{
+								database.connect(configuration.database_ip, configuration.database_name,
+										configuration.database_user,configuration.database_password);
 
+								if (database.connected){
+									System.out.println("Connection to database established");
+									// ready to authorize
+									if ( authorize(0) ){
+										header();
+										System.out.println("Please wait till Spring initializes...");
+										SpringApplication.run(TrackApiApplication.class, args);
+										System.out.println("trackAPI is running currently. To check commands type /help/");
+										menu = new Menu();
+										menu.run();
+									}
+								}
+								else{
+									System.out.println("Connection failed");
+								}
+							}catch(SQLException e){
+								System.out.println("ERROR-TAA01 Failed to connect to database ("+e.toString()+")");
+							}
+						}
+						else{
+							System.out.println("Configuration file not validated, wrong file");
+						}
+					}
+					else{
+						System.out.println("File error: cannot find config file");
+					}
+				}
+				break;
 			}
 
 		}
@@ -73,9 +120,14 @@ public class TrackApiApplication {
 	/**
 	 * Function for authorizing admin on trackAPI
 	 * @return boolean
+	 * @param mode
+	 * mode:
+	 * 1 - console cleared
+	 * 0 - console not cleared before authorization
 	 */
-	public static boolean authorize() throws SQLException, NoSuchAlgorithmException {
-		header();
+	public static boolean authorize(int mode) throws SQLException, NoSuchAlgorithmException {
+		if ( mode == 1)
+			header();
 		Scanner sc = new Scanner(System.in);
 		Console cnsl = System.console();
 		System.out.println("@@ Admin authorization @@");

@@ -35,6 +35,7 @@ public class User_Snippet {
      *  0 - nothing done
      *  1 - object loaded to database
      * -1 - database error
+     * -2 - user not owner
      * -5 - user not found
      * -6 - issue not found
      * -99 - session has expired

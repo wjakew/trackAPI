@@ -109,7 +109,7 @@ public class Menu {
                     System.out.println("Trying to rerun application...");
                     if ( TrackApiApplication.load_configuration() ){
                         if ( TrackApiApplication.load_database_connection() ){
-                            if ( TrackApiApplication.authorize() ){
+                            if ( TrackApiApplication.authorize(1) ){
                                 TrackApiApplication.header();
                                 SpringApplication.run(TrackApiApplication.class);
                             }
@@ -260,6 +260,32 @@ public class Menu {
                         TrackApiApplication.configuration.show_configuration();
                     }
                     break;
+                case "log":
+                    if ( raw_data.split(" ").length == 2 ){
+                        //log -size, log -state
+                        try{
+                            //log -size
+                            int size = Integer.parseInt(raw_data.split(" ")[1]);
+                            TrackApiApplication.database.show_log(size);
+                        }catch(Exception e){
+                            //log -state
+                            switch(raw_data.split(" ")[1]){
+                                case "off":
+                                    System.out.println("Log printing off.");
+                                    TrackApiApplication.database.debug = 0;
+                                    break;
+                                case "on":
+                                    System.out.println("Log printing on.");
+                                    TrackApiApplication.database.debug = 1;
+                                    break;
+                            }
+                        }
+                    }
+                    else{
+                        //log
+                        TrackApiApplication.database.show_log(0);
+                    }
+                    break;
                 case "help":
                     System.out.println("crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
@@ -273,6 +299,7 @@ public class Menu {
                     System.out.println("lsapptoken - lists all active apptokens");
                     System.out.println("crapptoken [crapptoken -user_id] - creates new apptoken");
                     System.out.println("rmapptoken [rmapptoken -user_id] - removes active apptokens");
+                    System.out.println("log [log,log -size,log -state] - shows log, shows last -size amount of log, turn on/off log printing");
                     System.out.println("info - printing info about the program");
                     System.out.println("clear - clears terminal");
                     System.out.println("rerun - running api again");
