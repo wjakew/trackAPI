@@ -44,6 +44,7 @@ public class Database_Connector {
     public Configuration configuration;            // field for storing configuration data
 
     public int admin_id;                           // id currently logged admin
+    public String admin_login;                     // login of currently logged admin
 
     /**
      * Constructor
@@ -58,6 +59,7 @@ public class Database_Connector {
         database_user = "";
         database_password = "";
         admin_id = -3;
+        admin_login = "notlogged";
         configuration = null;
         run_time = null;
         log("Started! Database Connector initzialazed","DATABASE");
@@ -152,6 +154,8 @@ public class Database_Connector {
             run_time = LocalDateTime.now( ZoneId.of( "Europe/Warsaw" ) );
             log("Connected succesfully","CONNECTION");
             log(login_data.substring(0,login_data.length()-25)+"...*END*","CONNECTION");
+            log("Removing old/saved sessions from database...","CONNECTION-GARBAGE-COLLECTOR");
+            remove_current_sessions();
         }catch(SQLException e){
             connected = false;
             log("Failed to connect to database ("+e.toString()+")","ERROR-DB01");

@@ -27,11 +27,14 @@ import java.util.Scanner;
  * Object for creating menu for the system
  */
 public class Menu {
+    public static final String ANSI_GREEN = "\033[1;32m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     public boolean flag;
     Scanner user_input;
     String raw_data;
     ArrayList<String> history;
+    int clear_blank;
     /**
      * Constructor
      */
@@ -39,6 +42,7 @@ public class Menu {
         flag = true;
         history = new ArrayList<>();
         user_input = new Scanner(System.in);
+        clear_blank = 0;
     }
 
     /**
@@ -58,7 +62,7 @@ public class Menu {
     public void run() throws IOException, SQLException, NoSuchAlgorithmException, ClassNotFoundException {
         show_header();
         while(flag) {
-            System.out.print(">");
+            System.out.print(ANSI_GREEN+TrackApiApplication.database.admin_login+"@"+"trackapi"+TrackApiApplication.version+">"+ANSI_RESET);
             raw_data = user_input.nextLine();
             history.add(raw_data);
             create_action();
@@ -83,6 +87,7 @@ public class Menu {
                     System.out.println(hm.info());
                     System.out.println("LAN data: ");
                     Enumeration e2 = NetworkInterface.getNetworkInterfaces();
+                    int counter = 0;
                     while(e2.hasMoreElements())
                     {
                         NetworkInterface n = (NetworkInterface) e2.nextElement();
@@ -90,7 +95,10 @@ public class Menu {
                         while (ee.hasMoreElements())
                         {
                             InetAddress i = (InetAddress) ee.nextElement();
-                            System.out.println(i.getHostAddress());
+                            if ( counter == 2){
+                                System.out.println("LAN ip: "+i.getHostAddress());
+                            }
+                            counter++;
                         }
                     }
                     try{
@@ -145,17 +153,16 @@ public class Menu {
                     }
                     break;
                 case "cruser":
-                    if (raw_data.split(" ").length == 3 ){
-                        try{
+                    if (raw_data.split(" ").length == 3) {
+                        try {
                             String user_login = raw_data.split(" ")[1];
                             String user_password = raw_data.split(" ")[2];
                             User_Data user = new User_Data();
-                            user.manual_adder(user_login,user_password);
-                        }catch(Exception e){
+                            user.manual_adder(user_login, user_password);
+                        } catch (Exception e) {
                             System.out.println("wrong arguments.");
                         }
-                    }
-                    else{
+                    } else {
                         System.out.println("no arguments.");
                     }
                     break;
@@ -247,9 +254,23 @@ public class Menu {
                     }
                     break;
                 case "clear":
-                    System.out.print("\033[H\033[2J");
-                    System.out.flush();
-                    TrackApiApplication.header();
+                    if ( raw_data.split(" ").length == 1){
+                        System.out.print("\033[H\033[2J");
+                        System.out.flush();
+                        TrackApiApplication.header();
+                    }
+                    else{
+                        if ( raw_data.split(" ")[1].equals("blank")){
+                            if ( clear_blank == 1){
+                                clear_blank = 0;
+                                System.out.println("Clear blank false");
+                            }
+                            else{
+                                clear_blank = 1;
+                                System.out.println("Clear blank true");
+                            }
+                        }
+                    }
                     break;
                 case "config":
                     if ( raw_data.split(" ").length == 2 && raw_data.split(" ")[1].equals("create")){
@@ -286,6 +307,13 @@ public class Menu {
                         TrackApiApplication.database.show_log(0);
                     }
                     break;
+                case "":
+                    if ( clear_blank == 1){
+                        System.out.print("\033[H\033[2J");
+                        System.out.flush();
+                        TrackApiApplication.header();
+                    }
+                    break;
                 case "help":
                     System.out.println("crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
@@ -301,7 +329,7 @@ public class Menu {
                     System.out.println("rmapptoken [rmapptoken -user_id] - removes active apptokens");
                     System.out.println("log [log,log -size,log -state] - shows log, shows last -size amount of log, turn on/off log printing");
                     System.out.println("info - printing info about the program");
-                    System.out.println("clear - clears terminal");
+                    System.out.println("clear [clear. clear blank]- clears the terminal, sets 'enter' key as clear");
                     System.out.println("rerun - running api again");
                     System.out.println("config [config, config create] - shows config, creates new config");
                     System.out.println("exit - closing api without warning ");

@@ -46,6 +46,7 @@ public class Database_Admin {
                 if ( password.equals(rs.getString("user_password"))){
                     if ( rs.getString("user_category").equals("ADMIN")){
                         database.admin_id = rs.getInt("user_id");
+                        database.admin_login = login;
                         database.log("Admin "+login+" logged to trackAPI","ADM_LOGIN");
                         return true;
                     }
