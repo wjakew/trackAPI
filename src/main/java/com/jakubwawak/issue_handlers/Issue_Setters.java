@@ -37,6 +37,7 @@ public class Issue_Setters {
                      @PathVariable int issue_priority,
                      @PathVariable String issue_time_due) throws SQLException {
         Issue issue = new Issue();
+        TrackApiApplication.database.log("NEW JOB: ISSUE-SET","JOB-GOT");
         TrackApiApplication.database.log("Trying to add new issue","ISSUE-SET");
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
@@ -70,6 +71,7 @@ public class Issue_Setters {
     public Issue issue_remove(@PathVariable String app_token, @PathVariable String session_token,@PathVariable int issue_id) throws SQLException {
         Issue issue = new Issue();
         issue.issue_id = issue_id;
+        TrackApiApplication.database.log("NEW JOB: ISSUE-REMOVE","JOB-GOT");
         Session_Validator sv = new Session_Validator(session_token);
         if (sv.connector_validation(app_token)){
             issue.user_id = TrackApiApplication.database.get_userid_bysession(session_token);

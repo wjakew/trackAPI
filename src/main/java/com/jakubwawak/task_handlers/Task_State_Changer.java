@@ -20,6 +20,7 @@ public class Task_State_Changer {
         Database_Task dt = new Database_Task(TrackApiApplication.database);
         Task task = new Task();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: TASK-DONE","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             if( dt.set_task_done(task_id) == 1){
                 task.flag = 1;
@@ -36,6 +37,7 @@ public class Task_State_Changer {
         Database_Task dt = new Database_Task(TrackApiApplication.database);
         Task task = new Task();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: TASK-OPEN","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             if ( dt.set_task_open(task_id) == 1){
                 task.flag = 1;

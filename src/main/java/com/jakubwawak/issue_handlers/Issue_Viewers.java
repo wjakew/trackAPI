@@ -23,6 +23,7 @@ public class Issue_Viewers {
                                  @PathVariable int mode) throws SQLException {
         Session_Validator sv = new Session_Validator(session_token);
         Viewer viewer = new Viewer();
+        TrackApiApplication.database.log("NEW JOB: ISSUE-VIEWER","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
@@ -39,6 +40,7 @@ public class Issue_Viewers {
         Issue issue = new Issue();
         TrackApiApplication.database.log("Issue get invoked","ISSUE-GET");
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ISSUE-GET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             issue = di.get_issue(issue_id);
@@ -54,6 +56,7 @@ public class Issue_Viewers {
     public Viewer get_history(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int issue_id) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ISSUE-HISTORY","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             viewer.view = di.get_issue_history(issue_id);
@@ -68,6 +71,7 @@ public class Issue_Viewers {
     public Viewer get_issue_archive(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ISSUE-ARCHIVE","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             viewer.sv = sv;

@@ -29,6 +29,7 @@ public class UserData_Handler {
     public User_Data get_user(@PathVariable String token,@PathVariable int user_id) throws SQLException {
         TokenCheck tc = new TokenCheck(token);
         User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: USER","JOB-GOT");
         if (tc.check() == 1){
             ud.load_data(user_id);
         }
@@ -43,6 +44,7 @@ public class UserData_Handler {
                                       @PathVariable String user_login) throws SQLException {
         User_Data user = new User_Data();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: USER-CHECK","JOB-GOT");
         if (sv.connector_validation(app_token)){
             user.get_userid_by_login(user_login);
         }
@@ -69,6 +71,7 @@ public class UserData_Handler {
     public User_Data login(@PathVariable String token,@PathVariable String user_login,@PathVariable String user_password) throws SQLException {
         TokenCheck tc = new TokenCheck(token);
         User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: LOGIN","JOB-GOT");
         if ( tc.check() == 1){
             ud.login(user_login,user_password);
         }
@@ -91,6 +94,7 @@ public class UserData_Handler {
     public User_Data register(@PathVariable String token,@PathVariable String user_name,@PathVariable String user_surname,@PathVariable String user_email) throws SQLException, NoSuchAlgorithmException {
         TokenCheck tc = new TokenCheck(token);
         User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: REGISTER","JOB-GOT");
         if(tc.check() == 1){
             ud.user_name = user_name;
             ud.user_surname = user_surname;
@@ -116,6 +120,7 @@ public class UserData_Handler {
     public User_Data reset_password(@PathVariable String user_email,@PathVariable String token) throws SQLException {
         TokenCheck tc = new TokenCheck(token);
         User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: PASSWORD-RESET","JOB-GOT");
         if(tc.check() == 1){
             ud.user_email = user_email;
             ud.reset_password();
@@ -132,6 +137,7 @@ public class UserData_Handler {
         Session_Validator sv = new Session_Validator(session_token);
         TrackApiApplication.database.log("Request for changing password from session |"+session_token+"|","PASSWORD-CHANGE");
         User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: PASSWORD-RESET","JOB-GOT");
         if (sv.connector_validation(app_token)) {
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             ud.user_id = user_id;
@@ -158,7 +164,7 @@ public class UserData_Handler {
     public User_Data check_password(@PathVariable String app_token, @PathVariable String session_token,@PathVariable String password) throws SQLException {
         User_Data ud = new User_Data();
         Session_Validator sv = new Session_Validator(session_token);
-
+        TrackApiApplication.database.log("NEW JOB: PASSWORD-CHECK","JOB-GOT");
         if(sv.connector_validation(app_token)){
             ud.user_session = session_token;
             ud.user_password = password;
@@ -174,6 +180,7 @@ public class UserData_Handler {
     public User_Data set_email(@PathVariable String app_token,@PathVariable String session_token,@PathVariable String email_value) throws SQLException {
         User_Data ud = new User_Data();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: USER-EMAIL-SET","JOB-GOT");
         if (sv.connector_validation(app_token)){
             ud.update_email(TrackApiApplication.database.get_userid_bysession(session_token),email_value);
         }

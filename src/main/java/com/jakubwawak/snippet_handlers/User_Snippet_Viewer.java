@@ -17,6 +17,7 @@ public class User_Snippet_Viewer {
     public Viewer get_snippet_view(@PathVariable String app_token, @PathVariable String session_token) throws SQLException {
         Session_Validator sv = new Session_Validator(session_token);
         Viewer viewer = new Viewer();
+        TrackApiApplication.database.log("NEW JOB: SNIPPET-VIEWER","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
             viewer = ds.load_snippet_glances(TrackApiApplication.database.get_userid_bysession(session_token));

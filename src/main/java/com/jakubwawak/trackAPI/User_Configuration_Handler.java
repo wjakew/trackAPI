@@ -15,6 +15,7 @@ public class User_Configuration_Handler {
     public User_Configuration load_user_configuration(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
         User_Configuration uc = new User_Configuration();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: USER-CONFIGURATION","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             if ( user_id > 0 ){

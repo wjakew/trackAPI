@@ -34,7 +34,7 @@ public class Task_Setters {
                          @PathVariable String task_desc, @PathVariable int task_priority) throws SQLException {
         Task task = new Task();
         Session_Validator sv = new Session_Validator(session_token);
-
+        TrackApiApplication.database.log("NEW JOB: TASK-SET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             task.project_id = project_id;
             task.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
@@ -65,6 +65,7 @@ public class Task_Setters {
                             @PathVariable int task_id, @PathVariable String code, @PathVariable String value) throws SQLException {
         Task task = new Task();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: TASK-UPDATE","JOB-GOT");
         if (sv.connector_validation(app_token)){
             task.task_id = task_id;
             task.update(code,value);

@@ -33,6 +33,7 @@ public class Project_Viewers {
         Session_Validator sv = new Session_Validator(session_token);
         Viewer viewer = new Viewer();
         viewer.sv = sv;
+        TrackApiApplication.database.log("NEW JOB: PROJECT-VIEWER","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Project dp = new Database_Project();
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
@@ -62,6 +63,7 @@ public class Project_Viewers {
     public Project get_project(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int project_id) throws SQLException {
         Database_Project dp = new Database_Project();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: PROJECT-GET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Project project = dp.get_project(project_id);
             if ( project != null){

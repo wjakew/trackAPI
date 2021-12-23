@@ -27,6 +27,7 @@ public class Validation_Check {
     public Session_Validator check_validation(@PathVariable String token, @PathVariable int user_id) throws SQLException {
         TokenCheck tc = new TokenCheck(token);
         Session_Validator sv;
+        TrackApiApplication.database.log("NEW JOB: SESSION-VALIDATION","JOB-GOT");
         if ( tc.check() == 1 ){
             sv = new Session_Validator(user_id);
             sv.validate();

@@ -36,6 +36,7 @@ public class Project_Setters {
         Project project = new Project();
         TrackApiApplication.database.log("User trying to add new project to database","PROJECT-ADD");
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: PROJECT-SET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             if ( user_id > 0){
@@ -63,7 +64,7 @@ public class Project_Setters {
                                   @PathVariable int project_id) throws SQLException {
         Project project = new Project();
         Session_Validator sv = new Session_Validator(session_token);
-
+        TrackApiApplication.database.log("NEW JOB: PROJECT-REMOVE","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             project.project_id = project_id;
             project.remove();
@@ -83,7 +84,7 @@ public class Project_Setters {
         TrackApiApplication.database.log("Trying to update project_id "+project_id,"PROJECT-UPDATE");
         project.project_id = project_id;
         Session_Validator sv = new Session_Validator(session_token);
-
+        TrackApiApplication.database.log("NEW JOB: PROJECT-UPDATE","JOB-GOT");
         if ( sv.connector_validation(app_token) ){
             project.update(code,value);
             Database_Log dl = new Database_Log();

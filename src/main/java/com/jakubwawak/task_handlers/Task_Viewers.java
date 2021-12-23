@@ -24,6 +24,7 @@ public class Task_Viewers {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
         viewer.sv = sv;
+        TrackApiApplication.database.log("NEW JOB: TASK-VIEWER","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Task dt = new Database_Task(TrackApiApplication.database);
             int user_id = TrackApiApplication.database.get_userid_bysession(session_token);
@@ -41,6 +42,7 @@ public class Task_Viewers {
         Task task = new Task();
         Database_Task dt = new Database_Task(TrackApiApplication.database);
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: TASK-GET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             task = dt.get_task(task_id);
             if ( task!= null) {
@@ -61,6 +63,7 @@ public class Task_Viewers {
     public Viewer get_task_history(@PathVariable String app_token,@PathVariable String session_token, @PathVariable int task_id) throws SQLException {
         Viewer view = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: TASK-HISTORY","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Task dt = new Database_Task(TrackApiApplication.database);
             view.view = dt.get_task_history(task_id);

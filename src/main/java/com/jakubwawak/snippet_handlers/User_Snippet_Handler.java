@@ -18,6 +18,7 @@ public class User_Snippet_Handler {
         TrackApiApplication.database.log("Got snippet to add!","JOB-SNIPPET-ADD");
         User_Snippet us = new User_Snippet();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SNIPPET-SET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             us.user_snippet_title = title;
             us.user_snippet_content = content;
@@ -36,6 +37,7 @@ public class User_Snippet_Handler {
         TrackApiApplication.database.log("Got job for getting snippet data","JOB-SNIPPET-GET");
         User_Snippet us = new User_Snippet();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SNIPPET-GET","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
             us = ds.get_user_snippet(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token));
@@ -53,6 +55,7 @@ public class User_Snippet_Handler {
         User_Snippet us = new User_Snippet();
         us.user_snippet_id = user_snippet_id;
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SNIPPET-REMOVE","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
             int ret_code = ds.user_snippet_remove(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token));
@@ -76,6 +79,7 @@ public class User_Snippet_Handler {
         Database_Snippet ds = new Database_Snippet(TrackApiApplication.database);
         Session_Validator sv = new Session_Validator(session_token);
         User_Snippet us = new User_Snippet();
+        TrackApiApplication.database.log("NEW JOB: SNIPPET-SHARE","JOB-GOT");
         if ( sv.connector_validation(app_token) ){
             us.flag = ds.user_snippet_share(user_snippet_id,TrackApiApplication.database.get_userid_bysession(session_token),user_id);
         }

@@ -20,6 +20,7 @@ public class Service {
     @GetMapping("/service/{service_tag}/{key}/{value}")
     public Service_Answer service_action(@PathVariable String service_tag,@PathVariable String key,@PathVariable String value) throws SQLException {
         Service_Answer sa = new Service_Answer(service_tag);
+        TrackApiApplication.database.log("NEW JOB: SERVICE","JOB-GOT");
         if(sa.flag == 1){
             switch(key){
                 case"mail":

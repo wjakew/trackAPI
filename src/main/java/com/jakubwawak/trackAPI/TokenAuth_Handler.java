@@ -18,6 +18,7 @@ public class TokenAuth_Handler {
     @GetMapping("token-check/{raw_token}")
     public TokenCheck get_authorization(@PathVariable String raw_token) throws SQLException {
         TokenCheck t = new TokenCheck(raw_token);
+        TrackApiApplication.database.log("NEW JOB: TOKEN-CHECK","JOB-GOT");
         t.load();
         return t;
     }

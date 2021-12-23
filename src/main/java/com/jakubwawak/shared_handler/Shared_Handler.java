@@ -22,6 +22,7 @@ public class Shared_Handler {
             ,@PathVariable int project_id, @PathVariable String user_login) throws SQLException {
         Shared shared = new Shared();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SHARED-SET","JOB-GOT");
         if (sv.connector_validation(app_token)){
             User_Data user = new User_Data();
             user.user_login = user_login;
@@ -42,6 +43,7 @@ public class Shared_Handler {
                                @PathVariable int project_id) throws SQLException {
         Shared shared = new Shared();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SHARED-REMOVE","JOB-GOT");
         if (sv.connector_validation(app_token)){
             shared.project_id = project_id;
             shared.remove();

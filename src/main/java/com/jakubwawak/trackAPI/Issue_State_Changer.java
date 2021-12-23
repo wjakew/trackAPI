@@ -17,6 +17,7 @@ public class Issue_State_Changer {
                               @PathVariable int issue_id, @PathVariable int issue_group) throws SQLException {
         Issue issue = new Issue();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ISSUE-GROUP","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             if ( di.update_group(issue_id,issue_group,TrackApiApplication.database.get_userid_bysession(session_token)) == 1){
@@ -36,6 +37,7 @@ public class Issue_State_Changer {
     public Issue issue_open(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int issue_id) throws SQLException {
         Issue issue = new Issue();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ISSUE-OPEN","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Issue di = new Database_Issue();
             issue.flag = di.update_group(issue_id,0,TrackApiApplication.database.get_userid_bysession(session_token));

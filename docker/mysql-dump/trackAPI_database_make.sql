@@ -22,6 +22,7 @@ drop table if exists BOARD_ELEMENT;
 drop table if exists BOARD;
 drop table if exists USER_SNIPPET;
 drop table if exists USER_CONFIGURATION;
+drop table if exists TODO;
 drop table if exists USER_DATA;
 
 
@@ -51,6 +52,19 @@ CREATE TABLE USER_DATA
   user_login VARCHAR(25),
   user_password VARCHAR(50),
   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
+) AUTO_INCREMENT = 1000;
+-- table for storing to-dos
+CREATE TABLE TODO
+(
+    todo_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    todo_title VARCHAR(100),
+    todo_desc VARCHAR(350),
+    todo_impor INT,  -- 0 - normal, 1- important
+    todo_colour INT, -- 1 - red, 2 - yellow, 3 - green, 4 - blue
+    todo_state INT,  -- 0 - not done, 1 - in work, 2 - done
+
+    CONSTRAINT fk_todo FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing object story
 CREATE TABLE OBJECT_HISTORY
@@ -202,7 +216,7 @@ CREATE TABLE USER_CONFIGURATION
 INSERT INTO PROGRAMCODES
 (programcodes_key,programcodes_values)
 VALUES
-('DATABASEVERSION','101');
+('DATABASEVERSION','102');
 
 INSERT INTO USER_DATA
 (user_name,user_surname,user_email,user_login,user_password,user_category)
@@ -212,7 +226,7 @@ VALUES
 INSERT INTO TOKEN
 (user_id,token_value)
 VALUES
-(1,'testtoken');
+(1000,'testtoken');
 INSERT INTO PROGRAMCODES
 (programcodes_key, programcodes_values)
 VALUES
@@ -220,4 +234,4 @@ VALUES
 INSERT INTO USER_CONFIGURATION
 (user_id,config1,config2,config3)
 VALUES
-(1,"DARK","","");
+(1000,"DARK","","");

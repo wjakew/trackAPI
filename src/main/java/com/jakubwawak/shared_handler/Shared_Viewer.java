@@ -23,6 +23,7 @@ public class Shared_Viewer {
     public Viewer load_myshares(@PathVariable String app_token, @PathVariable String session_token) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SHARED-VIEWER-MYSHARES","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Share ds = new Database_Share();
             viewer.view = ds.load_user_shares(TrackApiApplication.database.get_userid_bysession(session_token));
@@ -38,6 +39,7 @@ public class Shared_Viewer {
     public Viewer load_sharedtome(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: SHARED-VIEWER-SHAREDTOME","JOB-GOT");
         if(sv.connector_validation(app_token)){
             Database_Share ds = new Database_Share();
             viewer.view = ds.load_sharedtouser(TrackApiApplication.database.get_userid_bysession(session_token));
