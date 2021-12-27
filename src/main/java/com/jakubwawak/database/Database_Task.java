@@ -8,6 +8,7 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.database.Database_Connector;
 import com.jakubwawak.task_handlers.Task;
+import com.jakubwawak.task_handlers.Task_Comment;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import javax.sound.midi.Track;
@@ -185,5 +186,95 @@ public class Database_Task {
             data.add("error");
         }
         return data;
+    }
+
+    /**
+     * Function for getting list of comments
+     * @param task_id
+     * @return String
+     */
+    public ArrayList<String> list_comments(int task_id) throws SQLException {
+        ArrayList<String> data = new ArrayList<>();
+        String query = "SELECT * from TASK_COMMENT where task_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_id);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                Task_Comment tc = new Task_Comment(rs);
+                data.add(tc.get_glance());
+            }
+            if (data.size() == 0 )
+                data.add("Empty");
+            TrackApiApplication.database.log("Loaded list of comments","TASK_C-GET");
+            return data;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to get comments ("+e.toString()+")","TASK_C-GET-FAILED");
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param task_id
+     * @param task_comment_content
+     * @return Integer
+     * return codes:
+     *  1 - comment added
+     * -1 - database error
+     */
+    public int add_comment(int user_id,int task_id,String task_comment_content) throws SQLException {
+        String query = "INSERT INTO TASK_COMMENT (user_id,task_id,task_comment_content)\n" +
+                "VALUES\n" +
+                "(?,?,?);";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setInt(2,task_id);
+            ppst.setString(3,task_comment_content);
+            ppst.execute();
+            return 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to add comment ("+e.toString()+")","TASK_C-ADD-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing comment from database
+     * @param task_comment_id
+     * @return
+     */
+    public int remove_comment(int task_comment_id) throws SQLException {
+        String query = "DELETE FROM TASK_COMMENT WHERE task_comment_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_comment_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Removed comment task_comment_id:"+task_comment_id,"TASK_C-REMOVE");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove comment ("+e.toString()+")","TASK_C-REMOVE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing all comments
+     * @param task_id
+     * @return
+     */
+    public int remove_all_comments(int task_id) throws SQLException {
+        String query = "DELETE FROM TASK_COMMENT WHERE task_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,task_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Removed all comments for task_id:"+task_id,"TASK-ALLREMOVE");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to remove all comments ("+e.toString()+")","TASK-ALLREMOVE-FAILED");
+            return -1;
+        }
     }
 }

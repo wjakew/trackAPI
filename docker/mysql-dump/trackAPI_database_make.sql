@@ -10,6 +10,7 @@ drop table if exists PROGRAMCODES;
 drop table if exists PROGRAM_LOG;
 
 drop table if exists ISSUE;
+drop table if exists TASK_COMMENT;
 drop table if exists TASK;
 drop table if exists SHARED_ELEMENTS;
 drop table if exists PROJECT;
@@ -151,6 +152,17 @@ CREATE TABLE TASK
 
   CONSTRAINT fk_task FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id),
   CONSTRAINT fk_task2 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id)
+);
+-- table for storing comments for tasks
+CREATE TABLE TASK_COMMENT
+(
+    task_comment_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    task_id INT,
+    task_comment_content TEXT,
+
+    CONSTRAINT fk_task_comment FOREIGN KEY(user_id) REFERENCES USER_DATA(user_id),
+    CONSTRAINT fk_task_comment2 FOREIGN KEY(task_id) REFERENCES TASK(task_id)
 );
 -- table for storing issue data
 CREATE TABLE ISSUE
