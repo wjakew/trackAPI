@@ -1,52 +1,13 @@
-2021-12-27 10:40:48.120  INFO 5230 --- [main] c.j.trackAPI.TrackApiApplication         : Starting TrackApiApplication using Java 11.0.13 on jakub-lenovox240 with PID 5230 (/home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI/target/classes started by jakubwawak in /home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI)
-2021-12-27 10:40:48.125  INFO 5230 --- [main] c.j.trackAPI.TrackApiApplication         : No active profile set, falling back to default profiles: default
-2021-12-27 10:40:49.137  INFO 5230 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2021-12-27 10:40:49.144  INFO 5230 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-27 10:40:49.145  INFO 5230 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
-2021-12-27 10:40:49.200  INFO 5230 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-27 10:40:49.201  INFO 5230 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1001 ms
-2021-12-27 10:40:49.441  INFO 5230 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [public/index.html]
-2021-12-27 10:40:49.534  INFO 5230 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-12-27 10:40:49.544  INFO 5230 --- [main] c.j.trackAPI.TrackApiApplication         : Started TrackApiApplication in 1.79 seconds (JVM running for 9.368)
-2021-12-27 10:41:19.792  INFO 5230 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-27 10:41:19.792  INFO 5230 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-27 10:41:19.793  INFO 5230 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2021-12-27 11:15:33.412  INFO 11008 --- [main] c.j.trackAPI.TrackApiApplication         : Starting TrackApiApplication using Java 11.0.13 on jakub-lenovox240 with PID 11008 (/home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI/target/classes started by jakubwawak in /home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI)
-2021-12-27 11:15:33.414  INFO 11008 --- [main] c.j.trackAPI.TrackApiApplication         : No active profile set, falling back to default profiles: default
-2021-12-27 11:15:34.195  INFO 11008 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2021-12-27 11:15:34.202  INFO 11008 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-27 11:15:34.202  INFO 11008 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
-2021-12-27 11:15:34.250  INFO 11008 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-27 11:15:34.250  INFO 11008 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 782 ms
-2021-12-27 11:15:34.477  INFO 11008 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [public/index.html]
-2021-12-27 11:15:34.563  INFO 11008 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-12-27 11:15:34.573  INFO 11008 --- [main] c.j.trackAPI.TrackApiApplication         : Started TrackApiApplication in 1.506 seconds (JVM running for 9.452)
-2021-12-27 11:15:44.675  INFO 11008 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-27 11:15:44.675  INFO 11008 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-27 11:15:44.676  INFO 11008 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2021-12-27 11:38:15.233  INFO 11528 --- [main] c.j.trackAPI.TrackApiApplication         : Starting TrackApiApplication using Java 11.0.13 on jakub-lenovox240 with PID 11528 (/home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI/target/classes started by jakubwawak in /home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI)
-2021-12-27 11:38:15.235  INFO 11528 --- [main] c.j.trackAPI.TrackApiApplication         : No active profile set, falling back to default profiles: default
-2021-12-27 11:38:16.133  INFO 11528 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2021-12-27 11:38:16.140  INFO 11528 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-27 11:38:16.140  INFO 11528 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
-2021-12-27 11:38:16.185  INFO 11528 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-27 11:38:16.185  INFO 11528 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 894 ms
-2021-12-27 11:38:16.419  INFO 11528 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [public/index.html]
-2021-12-27 11:38:16.507  INFO 11528 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-12-27 11:38:16.517  INFO 11528 --- [main] c.j.trackAPI.TrackApiApplication         : Started TrackApiApplication in 1.843 seconds (JVM running for 10.202)
-2021-12-27 11:38:20.932  INFO 11528 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-27 11:38:20.932  INFO 11528 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-27 11:38:20.933  INFO 11528 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2021-12-27 11:42:12.136  INFO 15892 --- [main] c.j.trackAPI.TrackApiApplication         : Starting TrackApiApplication using Java 11.0.13 on jakub-lenovox240 with PID 15892 (/home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI/target/classes started by jakubwawak in /home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI)
-2021-12-27 11:42:12.139  INFO 15892 --- [main] c.j.trackAPI.TrackApiApplication         : No active profile set, falling back to default profiles: default
-2021-12-27 11:42:12.972  INFO 15892 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2021-12-27 11:42:12.980  INFO 15892 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-27 11:42:12.980  INFO 15892 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
-2021-12-27 11:42:13.043  INFO 15892 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-27 11:42:13.043  INFO 15892 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 857 ms
-2021-12-27 11:42:13.319  INFO 15892 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [public/index.html]
-2021-12-27 11:42:13.404  INFO 15892 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2021-12-27 11:42:13.413  INFO 15892 --- [main] c.j.trackAPI.TrackApiApplication         : Started TrackApiApplication in 1.644 seconds (JVM running for 9.566)
-2021-12-27 11:42:26.364  INFO 15892 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-27 11:42:26.365  INFO 15892 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-27 11:42:26.366  INFO 15892 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2021-12-28 08:59:49.765  INFO 2639 --- [main] c.j.trackAPI.TrackApiApplication         : Starting TrackApiApplication using Java 11.0.13 on jakub-lenovox240 with PID 2639 (/home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI/target/classes started by jakubwawak in /home/jakubwawak/PROJEKTY_PROGRAMOWANIE/Aktywne Projekty/src/java projects/trackAPI/application/trackAPI)
+2021-12-28 08:59:49.774  INFO 2639 --- [main] c.j.trackAPI.TrackApiApplication         : No active profile set, falling back to default profiles: default
+2021-12-28 08:59:50.996  INFO 2639 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-12-28 08:59:51.002  INFO 2639 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-12-28 08:59:51.003  INFO 2639 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.52]
+2021-12-28 08:59:51.060  INFO 2639 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-12-28 08:59:51.061  INFO 2639 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1194 ms
+2021-12-28 08:59:51.278  INFO 2639 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [public/index.html]
+2021-12-28 08:59:51.375  INFO 2639 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-12-28 08:59:51.386  INFO 2639 --- [main] c.j.trackAPI.TrackApiApplication         : Started TrackApiApplication in 2.016 seconds (JVM running for 14.731)
+2021-12-28 09:01:33.212  INFO 2639 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-12-28 09:01:33.213  INFO 2639 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-12-28 09:01:33.214  INFO 2639 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
