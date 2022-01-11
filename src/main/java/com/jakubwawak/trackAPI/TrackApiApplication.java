@@ -9,6 +9,7 @@ import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.Menu;
 import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.database.Database_Admin;
+import com.jakubwawak.maintanance.ConsoleColors;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -23,8 +24,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.1.8";
-	public static String build = "281221REV01";
+	public static String version = "v1.1.9";
+	public static String build = "110122REV01";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
@@ -130,7 +131,7 @@ public class TrackApiApplication {
 			header();
 		Scanner sc = new Scanner(System.in);
 		Console cnsl = System.console();
-		System.out.println("@@ Admin authorization @@");
+		System.out.println(ConsoleColors.BLUE_BOLD+"@@ Admin authorization @@"+ConsoleColors.RESET);
 		System.out.print("admin login?");
 		String admin_login = sc.nextLine();
 		String password = "";
@@ -162,7 +163,7 @@ public class TrackApiApplication {
 	public static boolean load_database_connection() throws SQLException, ClassNotFoundException {
 		header();
 		Scanner sc = new Scanner(System.in);
-		System.out.println("@@ Database connector creator @@");
+		System.out.println(ConsoleColors.BLUE_BOLD+"@@ Database connector creator @@"+ConsoleColors.RESET);
 		System.out.println("Connecting to database..");
 		database = new Database_Connector();
 		System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
@@ -198,7 +199,7 @@ public class TrackApiApplication {
 	 */
 	public static boolean load_configuration() throws IOException {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("@@ Configuration Loader @@");
+		System.out.println(ConsoleColors.BLUE_BOLD+"@@ Configuration Loader @@"+ConsoleColors.RESET);
 		configuration = new Configuration();
 		if (configuration.exists){
 			System.out.println("Configuration file exists..");
@@ -266,8 +267,8 @@ public class TrackApiApplication {
 				"| |_| | | (_| | (__|   < (_| | |_) | |\n" +
 				" \\__|_|  \\__,_|\\___|_|\\_\\__,_| .__/|_|\n" +
 				"                             |_|";
-		System.out.print(header);
-		System.out.println("version: "+version+", build: "+build);
+		System.out.print(ConsoleColors.YELLOW_BRIGHT+header+ConsoleColors.RESET);
+		System.out.println(ConsoleColors.YELLOW_BOLD+"version: "+version+", build: "+build+ConsoleColors.RESET);
 
 	}
 

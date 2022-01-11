@@ -5,6 +5,7 @@
  */
 package com.jakubwawak.administrator;
 
+import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.HealthMonitor;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
@@ -53,7 +54,7 @@ public class Menu {
                 "| '_ ` _ \\ / _ \\ '_ \\| | | |\n" +
                 "| | | | | |  __/ | | | |_| |\n" +
                 "|_| |_| |_|\\___|_| |_|\\__,_|";
-        System.out.println(header);
+        System.out.println(ConsoleColors.YELLOW_BOLD + header + ConsoleColors.RESET);
     }
 
     /**
@@ -62,7 +63,7 @@ public class Menu {
     public void run() throws IOException, SQLException, NoSuchAlgorithmException, ClassNotFoundException {
         show_header();
         while(flag) {
-            System.out.print(ANSI_GREEN+TrackApiApplication.database.admin_login+"@"+"trackapi"+TrackApiApplication.version+">"+ANSI_RESET);
+            System.out.print(ConsoleColors.BLUE_BOLD+TrackApiApplication.database.admin_login+"@"+"trackapi"+TrackApiApplication.version+">"+ANSI_RESET);
             raw_data = user_input.nextLine();
             history.add(raw_data);
             create_action();
@@ -82,9 +83,13 @@ public class Menu {
                     System.exit(0);
                     break;
                 case "info":
-                    HealthMonitor hm = new HealthMonitor();
+                    try{
+                        HealthMonitor hm = new HealthMonitor();
+                        System.out.println(hm.info());
+                    }catch(Exception e){
+                        System.out.println("Failed to load health, no server connected");
+                    }
                     System.out.println("till death we do art. ~Jakub Wawak 2021");
-                    System.out.println(hm.info());
                     System.out.println("LAN data: ");
                     Enumeration e2 = NetworkInterface.getNetworkInterfaces();
                     int counter = 0;
@@ -315,7 +320,7 @@ public class Menu {
                     }
                     break;
                 case "help":
-                    System.out.println("crsession [crsession -user_id] - creates session for given user");
+                    System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
                     System.out.println("rmuser [rmuser -user_id] - removes user by given user_id");
@@ -332,7 +337,7 @@ public class Menu {
                     System.out.println("clear [clear. clear blank]- clears the terminal, sets 'enter' key as clear");
                     System.out.println("rerun - running api again");
                     System.out.println("config [config, config create] - shows config, creates new config");
-                    System.out.println("exit - closing api without warning ");
+                    System.out.println("exit - closing api without warning "+ConsoleColors.RESET);
                     break;
             }
             index++;
