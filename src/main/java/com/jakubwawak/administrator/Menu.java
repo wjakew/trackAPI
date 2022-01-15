@@ -50,10 +50,17 @@ public class Menu {
      * Function for showing header
      */
     void show_header(){
-        String header = " _ __ ___   ___ _ __  _   _\n" +
-                "| '_ ` _ \\ / _ \\ '_ \\| | | |\n" +
-                "| | | | | |  __/ | | | |_| |\n" +
-                "|_| |_| |_|\\___|_| |_|\\__,_|";
+        String header = "  ,-.       _,---._ __  / \\\n" +
+                        " /  )    .-'       `./ /   \\\n" +
+                        "(  (   ,'            `/    /|\n" +
+                        " \\  `-\"             \\'\\   / |\n" +
+                        "  `.              ,  \\ \\ /  |\n" +
+                        "   /`.          ,'-`----Y   |\n" +
+                        "  (            ;        |   '\n" +
+                        "  |  ,-.    ,-'         |  /\n" +
+                        "  |  | (   |      menu  | /\n" +
+                        "  )  |  \\  `.___________|/\n" +
+                        "  `--'   `--'";
         System.out.println(ConsoleColors.YELLOW_BOLD + header + ConsoleColors.RESET);
     }
 

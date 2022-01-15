@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.jakubwawak</groupId>
 	<artifactId>trackAPI</artifactId>
-	<version>1.1.8</version>
+	<version>1.1.9</version>
 	<name>trackAPI</name>
 	<description>API for Track</description>
 	<properties>

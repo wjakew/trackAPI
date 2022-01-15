@@ -1,4 +1,4 @@
 ip%localhost
 name%trackapi_database
-user%admin
+user%root
 password%password
