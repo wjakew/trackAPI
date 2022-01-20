@@ -98,13 +98,21 @@ public class Project {
      */
     public Project (ResultSet rs) throws SQLException {
         flag = 0;
+        try{
+            project_id = rs.getInt("project_id");
+            user_id = rs.getInt("user_id");
+            project_name = rs.getString("project_name");
+            project_desc = rs.getString("project_desc");
+            project_creation_date = rs.getObject("project_creation_date",LocalDateTime.class);
+            project_state = rs.getString("project_state");
+            project_members = new ArrayList<>();
+            load_members();
+            flag = 1;
+        }catch(Exception e){
+            TrackApiApplication.database.log("Failed to load project from database ("+e.toString()+")","PROJECT-LOAD-FAILED");
+            flag = -1;
+        }
 
-        project_id = rs.getInt("project_id");
-        user_id = rs.getInt("user_id");
-        project_name = rs.getString("project_name");
-        project_desc = rs.getString("project_desc");
-        project_creation_date = rs.getObject("project_creation_date",LocalDateTime.class);
-        project_state = rs.getString("project_state");
     }
 
     /**

@@ -25,7 +25,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.2.0";
-	public static String build = "200122REV01";
+	public static String build = "210122REV02HC";
 
 	public static Configuration configuration;
 	public static Database_Connector database;
