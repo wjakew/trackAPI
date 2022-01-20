@@ -9,13 +9,13 @@ import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.maintanance.MailConnector;
 import com.jakubwawak.trackAPI.TrackApiApplication;
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
-import javax.sound.midi.Track;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 /**
  * OBJECT RETURN CODES
  *
@@ -32,6 +32,7 @@ import java.sql.SQLException;
  * login()
  * -5 user not found
  * -6 database error
+ * -9 user blocked
  *
  * check_login_avaiability()
  * true - login clear to use
@@ -111,7 +112,7 @@ public class User_Data {
      * @param user_password
      * @throws SQLException
      */
-    public void manual_adder(String user_login,String user_password) throws SQLException {
+    public void manual_register(String user_login, String user_password) throws SQLException {
         this.user_login = user_login;
         this.user_password = user_password;
 
@@ -138,6 +139,58 @@ public class User_Data {
         } catch (NoSuchAlgorithmException e) {
             TrackApiApplication.database.log("Failed to register user ( "+e.toString()+")","REGISTER-FAILED");
         }
+    }
+
+    /**
+     * Function for registering user only by email
+     * @param email
+     */
+    public void manual_register_email(String email) throws SQLException, NoSuchAlgorithmException {
+        TrackApiApplication.database.log("Trying to register new user..","REGISTER");
+            RandomString generator = new RandomString(12);
+            user_password = generator.buf;
+            Password_Validator pv = new Password_Validator(user_password);
+            user_password = pv.hash();
+            user_login = email.split("@")[0].toLowerCase();
+            user_name = user_login;
+            user_surname = user_login;
+            user_category = "CLIENT";
+            user_email = email;
+
+            if ( this.check_login_avaiability() ){
+                user_login = user_login+"1";
+            }
+            String query = "INSERT INTO USER_DATA\n" +
+                    "(user_name,user_surname,user_email,user_login,user_password,user_category)\n" +
+                    "VALUES\n" +
+                    "(?,?,?,?,?,?);";
+            try{
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+
+                ppst.setString(1,user_name);
+                ppst.setString(2,user_surname);
+                ppst.setString(3,user_email);
+                ppst.setString(4,user_login);
+                ppst.setString(5,pv.hash());
+                ppst.setString(6,user_category);
+
+                ppst.execute();
+                TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+generator.buf,"REGISTER-SUCCESS");
+                this.user_password = generator.buf;
+                this.get_userid_by_login(this.user_login);
+                this.create_user_configuration();
+                try{
+                    MailConnector mc = new MailConnector();
+                    mc.send(user_email,"Welcome to TRACK!","Your credentials for using the service\nlogin: "+user_login+"\npassword: "+user_password+"\n\n TRACK TEAM");
+                    TrackApiApplication.database.log("Login data send to "+user_email,"MAIL-REGISTER-SUCCESFULL");
+                }catch(Exception e){
+                    TrackApiApplication.database.log("Failed to send login data to "+user_email+" ("+e.toString()+")","MAIL-REGISTER-FAILED");
+                    this.user_id = -8;
+                }
+            }catch(SQLException e){
+                TrackApiApplication.database.log("Failed to register user ("+e.toString()+")","REGISTER-ERR");
+                this.user_id = -6;
+            }
     }
 
     /**
@@ -298,6 +351,76 @@ public class User_Data {
     }
 
     /**
+     * Function for setting block on the account
+     * @param user_id
+     * @return boolean
+     */
+    public boolean set_block(int user_id) throws SQLException {
+        String query = "INSERT INTO USER_GRAVEYARD (user_id,graveyard_date) VALUES (?,?);";
+        LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setObject(2,ldt);
+            ppst.execute();
+            TrackApiApplication.database.log("Setting block for user_id (user_id:"+user_id+")","USER-BLOCK-SUCCESS");
+            return true;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to set block on user (user_id:"+user_id+") ("+e.toString()+")","USER-BLOCK-FAILED");
+            return false;
+        }
+    }
+
+    /**
+     *Function for removing block from the account
+     * @param user_id
+     * @return boolean
+     */
+    public boolean remove_block(int user_id) throws SQLException {
+        String query = "DELETE FROM USER_GRAVEYARD WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Removed block from account.","USER-BLOCKED-REMOVED");
+            return true;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove block ("+e.toString()+")","USER-BLOCKED-FAILED");
+            return false;
+        }
+    }
+
+    /**
+     * Function for checking user account graveyard
+     * @param user_login
+     * @return boolean
+     */
+    public boolean check_block(String user_login) throws SQLException {
+        get_userid_by_login(user_login);
+        TrackApiApplication.database.log("Checking block on ("+user_login+") (id:"+user_id+")","USR-BLOCK-CHECK");
+        if ( user_id > 0 ){
+            String query = "SELECT * FROM USER_GRAVEYARD WHERE user_id = ?;";
+            try{
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ResultSet rs = ppst.executeQuery();
+                if (rs.next()) {
+                    TrackApiApplication.database.log("Block on account found!", "USR-BLOCK-CHECK");
+                    return true;
+                }
+                TrackApiApplication.database.log("Account not blocked.","USR-BLOCK-CHECK");
+                return false;
+            }catch(Exception e){
+                TrackApiApplication.database.log("Failed to check block... ("+e.toString()+")","USR-BLOCK-FAILED");
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
      * Function for login to database
      * @param user_login
      * @param password
@@ -314,10 +437,17 @@ public class User_Data {
             ResultSet rs = ppst.executeQuery();
 
             if ( rs.next() ){
-                database_loader(rs);
-                TrackApiApplication.database.remove_session(user_login);
-                user_session = TrackApiApplication.database.create_session(user_id);
-                TrackApiApplication.database.log("User "+user_login+" logged in!","USER-SUCCESS");
+                if ( !check_block(rs.getString("user_login"))){
+                    database_loader(rs);
+                    TrackApiApplication.database.remove_session(user_login);
+                    user_session = TrackApiApplication.database.create_session(user_id);
+                    TrackApiApplication.database.log("User "+user_login+" logged in!","USER-SUCCESS");
+                }
+                else{
+                    TrackApiApplication.database.log("User blocked on app.","USER-BLOCKED");
+                    user_id = -9;
+                }
+
             }
             else{
                 TrackApiApplication.database.log("User "+user_login+" failed to login","USER-FAILED");

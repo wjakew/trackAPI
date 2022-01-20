@@ -23,7 +23,7 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.5";
+    public final String version = "v0.0.6";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -210,6 +210,28 @@ public class Database_Connector {
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to get user by login ("+e.toString()+")","USER-DATA-GET-FAILED");
             return -1;
+        }
+    }
+
+    /**
+     * Function for getting user login by given id
+     * @param user_id
+     * @return String
+     */
+    public String get_userlogin_byid(int user_id) throws SQLException {
+        String query = "SELECT user_login FROM USER_DATA WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if(rs.next()){
+                TrackApiApplication.database.log("Login found for given id","USER-DATA-GET");
+                return rs.getString("user_login");
+            }
+            return "blank";
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to get user login by given id ("+e.toString()+")","USER-DATA-GET-FAILED");
+            return null;
         }
     }
 
@@ -462,6 +484,28 @@ public class Database_Connector {
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to get list of active users ("+e.toString()+")","USERAC-LIST-FAILED");
             data.add("error");
+        }
+        return data;
+    }
+
+    /**
+     * Function for listing all blocked users
+     * @return ArrayList
+     */
+    public ArrayList<String> list_blocked_users() throws SQLException {
+        ArrayList<String> data = new ArrayList<>();
+        String query = "SELECT * FROM USER_GRAVEYARD";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ResultSet rs = ppst.executeQuery();
+            while(rs.next()){
+                data.add("user_id: "+rs.getInt("user_id")+" since "+rs.getObject("graveyard_date",LocalDateTime.class).toString());
+            }
+            if ( data.size() == 0 ){
+                data.add("Empty");
+            }
+        }catch(Exception e){
+            TrackApiApplication.database.log("Failed to get list of blocked users ("+e.toString()+")","USER-LISTB-FAILED");
         }
         return data;
     }

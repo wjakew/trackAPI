@@ -7,6 +7,7 @@ package com.jakubwawak.project_handlers;
 
 import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.database.Database_Log;
+import com.jakubwawak.database.Database_Project;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +74,38 @@ public class Project_Setters {
         }
         else{
             project.project_id = sv.flag;
+        }
+        return project;
+    }
+
+    @GetMapping("/project-members-add/{app_token}/{session_token}/{project_id}/{user_id}")
+    public Project project_member_add(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int project_id,
+                                      @PathVariable int user_id) throws SQLException {
+        Project project = new Project();
+        Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: PROJECT-MEMBER-ADD","JOB-GOT");
+        if ( sv.connector_validation(app_token)){
+            Database_Project dp = new Database_Project();
+            project = dp.get_project(project_id);
+            if ( project!= null){
+                project.add_project_member(user_id);
+            }
+        }
+        return project;
+    }
+
+    @GetMapping("/project-members-remove/{app_token}/{session_token}/{project_id}/{user_id}")
+    public Project project_member_remove(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int project_id,
+                                      @PathVariable int user_id) throws SQLException {
+        Project project = new Project();
+        Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: PROJECT-MEMBER-ADD","JOB-GOT");
+        if ( sv.connector_validation(app_token)){
+            Database_Project dp = new Database_Project();
+            project = dp.get_project(project_id);
+            if ( project!= null){
+                project.remove_project_member(user_id);
+            }
         }
         return project;
     }

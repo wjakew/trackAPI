@@ -1,5 +1,5 @@
 -- makefile for mysql database for trackAPI
--- by Jakub Wawak 2021
+-- by Jakub Wawak 2022
 -- kubawawak@gmail.com
 -- all rights reserved
 CREATE DATABASE IF NOT EXISTS trackapi_database;
@@ -13,6 +13,7 @@ drop table if exists ISSUE;
 drop table if exists TASK_COMMENT;
 drop table if exists TASK;
 drop table if exists SHARED_ELEMENTS;
+drop table if exists PROJECT_MEMBERS;
 drop table if exists PROJECT;
 drop table if exists LOG_HISTORY;
 drop table if exists PRIVILAGES;
@@ -24,6 +25,7 @@ drop table if exists BOARD;
 drop table if exists USER_SNIPPET;
 drop table if exists USER_CONFIGURATION;
 drop table if exists TODO;
+drop table if exists USER_GRAVEYARD;
 drop table if exists USER_DATA;
 
 
@@ -54,6 +56,14 @@ CREATE TABLE USER_DATA
   user_password VARCHAR(50),
   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
 ) AUTO_INCREMENT = 1000;
+-- table for storing user graveyard data
+CREATE TABLE USER_GRAVEYARD
+(
+    user_id INT,
+    graveyard_date TIMESTAMP,
+
+    CONSTRAINT fk_usergraveyard1 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
 -- table for storing to-dos
 CREATE TABLE TODO
 (
@@ -129,6 +139,14 @@ CREATE TABLE PROJECT
   project_state VARCHAR(100), -- CODES: active, unactive, date ( time to finish )
 
   CONSTRAINT fk_project FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing shared as members projects
+CREATE TABLE PROJECT_MEMBERS
+(
+    project_id INT,
+    user_id INT,
+    CONSTRAINT fk_projectmembers1 FOREIGN KEY (project_id) REFERENCES PROJECT(project_id),
+    CONSTRAINT fk_projectmembers2 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing shared projects
 CREATE TABLE SHARED_ELEMENTS
@@ -246,4 +264,4 @@ VALUES
 INSERT INTO USER_CONFIGURATION
 (user_id,config1,config2,config3)
 VALUES
-(1000,"DARK","","");
+(1000,'DARK','','');

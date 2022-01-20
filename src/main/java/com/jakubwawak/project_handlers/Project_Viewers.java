@@ -52,6 +52,29 @@ public class Project_Viewers {
         return viewer;
     }
 
+    @GetMapping("/project-viewer-member/{app_token}/{session_token}")
+    public Viewer get_project_member(@PathVariable String app_token,@PathVariable String session_token) throws SQLException {
+        TrackApiApplication.database.log("Loading glances of projects that user is a member","PROJECT-MEMBER-VIEWER-GLANCES");
+        ArrayList<String> data = new ArrayList<>();
+        Session_Validator sv = new Session_Validator(session_token);
+        Viewer viewer = new Viewer();
+        viewer.sv = sv;
+        TrackApiApplication.database.log("NEW JOB: PROJECT-MEMBER-VIEWER","JOB-GOT");
+        if (sv.connector_validation(app_token)){
+            Database_Project dp = new Database_Project();
+            data = dp.get_all_project_member_glances(TrackApiApplication.database.get_userid_bysession(session_token));
+            if (data.size() == 0){
+                data.add("Empty");
+            }
+            viewer.view = data;
+        }
+        else{
+            TrackApiApplication.database.log("Glances falied to load. Wrong validation","PROJECT-VIEWER-ERROR");
+            data.add("error");
+        }
+        return viewer;
+    }
+
     /**
      * Function for
      * @param app_token
@@ -67,6 +90,7 @@ public class Project_Viewers {
         if ( sv.connector_validation(app_token)){
             Project project = dp.get_project(project_id);
             if ( project != null){
+                project.load_members();
                 return project;
             }
             project = new Project();

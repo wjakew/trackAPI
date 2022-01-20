@@ -9,6 +9,7 @@ import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.HealthMonitor;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
+import org.apache.catalina.User;
 import org.springframework.boot.SpringApplication;
 
 import java.io.BufferedReader;
@@ -17,7 +18,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class Menu {
                     }
                     System.out.println("end.");
                     break;
-                case "rerun":
+                case "reload":
                     System.out.println("Trying to rerun application...");
                     if ( TrackApiApplication.load_configuration() ){
                         if ( TrackApiApplication.load_database_connection() ){
@@ -165,19 +165,30 @@ public class Menu {
                     }
                     break;
                 case "cruser":
+                {
                     if (raw_data.split(" ").length == 3) {
+                        //cruser -login -password
                         try {
                             String user_login = raw_data.split(" ")[1];
                             String user_password = raw_data.split(" ")[2];
                             User_Data user = new User_Data();
-                            user.manual_adder(user_login, user_password);
+                            user.manual_register(user_login, user_password);
                         } catch (Exception e) {
                             System.out.println("wrong arguments.");
                         }
-                    } else {
-                        System.out.println("no arguments.");
+                    } else if ( raw_data.split(" ").length == 2) {
+                        //cruser -email
+                        String email = raw_data.split(" ")[1];
+                        if (email.contains("@") && email.contains(".")){
+                            User_Data ud = new User_Data();
+                            ud.manual_register_email(email);
+                        }
+                    }
+                    else{
+                        System.out.println("Wrong arguments, check help.");
                     }
                     break;
+                }
                 case "lsuser":
                     if ( raw_data.split(" ").length > 1 ){
                         try{
@@ -319,6 +330,52 @@ public class Menu {
                         TrackApiApplication.database.show_log(0);
                     }
                     break;
+                case "bluser":
+                {
+                    if(raw_data.split(" ").length == 3){
+                        switch(raw_data.split(" ")[1]){
+                            case"set":
+                            {
+                                //setting block
+                                try{
+                                    int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                    User_Data ud = new User_Data();
+                                    ud.user_id = user_id;
+                                    ud.set_block(ud.user_id);
+                                }catch(NumberFormatException e){
+                                    System.out.println("Failed to parse user_id. Check help.");
+                                }
+                                break;
+                            }
+                            case"remove":
+                            {
+                                //removing block
+                                try{
+                                    int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                    User_Data ud = new User_Data();
+                                    ud.user_id = user_id;
+                                    ud.remove_block(ud.user_id);
+                                }catch(NumberFormatException e){
+                                    System.out.println("Failed to parse user_id. Check help.");
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("Wrong command usage. Check help.");
+                    }
+                    break;
+                }
+                case "lsblock":
+                {
+                    System.out.println("Showing current blocked users:");
+                    ArrayList<String> blocked_list = TrackApiApplication.database.list_blocked_users();
+                    for(String line : blocked_list){
+                        System.out.println(line);
+                    }
+                    break;
+                }
                 case "":
                     if ( clear_blank == 1){
                         System.out.print("\033[H\033[2J");
@@ -330,11 +387,12 @@ public class Menu {
                     System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
-                    System.out.println("rmuser [rmuser -user_id] - removes user by given user_id");
-                    System.out.println("crusser [crusser -login -password] - creates user with given login and password");
+                    System.out.println("cruser [cruser -login -password, cruser -email] - creates user with given login and password");
                     System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");
                     System.out.println("pauser [pauser -user_id -user_category] - sets category for user");
+                    System.out.println("bluser [bluser set -user_id, bluser remove -user_id] - blocks user from the app");
+                    System.out.println("lsblock - lists all blocked users");
                     System.out.println("servicetag [servicetag -new_tag] - sets new service tag value");
                     System.out.println("lsapptoken - lists all active apptokens");
                     System.out.println("crapptoken [crapptoken -user_id] - creates new apptoken");
@@ -342,7 +400,7 @@ public class Menu {
                     System.out.println("log [log,log -size,log -state] - shows log, shows last -size amount of log, turn on/off log printing");
                     System.out.println("info - printing info about the program");
                     System.out.println("clear [clear. clear blank]- clears the terminal, sets 'enter' key as clear");
-                    System.out.println("rerun - running api again");
+                    System.out.println("reload - run api again");
                     System.out.println("config [config, config create] - shows config, creates new config");
                     System.out.println("exit - closing api without warning "+ConsoleColors.RESET);
                     break;

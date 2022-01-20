@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 
 public class Project {
     /**
@@ -32,8 +33,9 @@ public class Project {
 
     /**
      * flag return codes:
-     *  1 - object loaded to database
+     *  1 - database flag (successfuly changed/loaded/updated database)
      * -1 - database error
+     *  2 - project updated
      * -5 - user not found
      * -6 - project not found
      * -99 - session has expired
@@ -48,6 +50,7 @@ public class Project {
     public String project_desc;
     public LocalDateTime project_creation_date;
     public String project_state;
+    public ArrayList<String> project_members;
 
     /**
      * Constructor
@@ -61,6 +64,7 @@ public class Project {
         project_desc = "";
         project_creation_date = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         project_state = "";
+        project_members = new ArrayList<>();
     }
 
     /**
@@ -175,6 +179,7 @@ public class Project {
         try{
             remove_tasks();
             remove_issues();
+            remove_members();
             Shared shared = new Shared();
             shared.project_id = project_id;
             shared.remove();
@@ -204,7 +209,100 @@ public class Project {
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to remove task from project_id "+project_id
                     +" ("+e.toString()+")","PROJECT-TASK-REMOVE-FAILED");
+        }
+    }
 
+    /**
+     * Function for removing project members
+     * @throws SQLException
+     */
+    private void remove_members() throws SQLException {
+        String query = "DELETE FROM PROJECT_MEMBERS WHERE project_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Removed project members","PROJECT-MEMBERS-REMOVE");
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove project members ("+e.toString()+")","PROJECT-MEMBERS-REMOVE-FAILED");
+        }
+    }
+    /**
+     * Function for getting glance of a project
+     * @return String
+     */
+    public String get_glance(){
+        return project_id+": "+project_name;
+    }
+
+    /**
+     * Function for adding project member
+     * @param user_id
+     * return codes:
+     *  1 - project member added
+     * -1 - database error
+     */
+    public int add_project_member(int user_id) throws SQLException {
+        String query = "INSERT INTO PROJECT_MEMBERS (project_id,user_id) VALUES (?,?);";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ppst.setInt(2,user_id);
+            ppst.execute();
+            TrackApiApplication.database.log("Project member added","PROJECT-MEMBER-ADD");
+            flag = 2;
+            return 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to add project member ("+e.toString()+")","PROJECT-MEMBER-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing project members
+     * @param user_id
+     * @return Integer
+     * return codes:
+     *  1 - project member removed
+     * -1 - database error
+     */
+    public int remove_project_member(int user_id) throws SQLException {
+        String query = "DELETE FROM PROJECT_MEMBERS WHERE project_id = ? and user_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+            ppst.setInt(2,user_id);
+            TrackApiApplication.database.log("Project member removed","PROJECT-MEMBER-REMOVE");
+            flag = 2;
+            ppst.execute();
+            return 1;
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to remove project member","PROJECT-MEMBER-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for loading project members
+     */
+    public void load_members() throws SQLException {
+        String query = "SELECT user_id FROM PROJECT_MEMBERS WHERE project_id = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,project_id);
+
+            ResultSet rs = ppst.executeQuery();
+
+            while(rs.next()){
+                int user_id = rs.getInt("user_id");
+                project_members.add(TrackApiApplication.database.get_userlogin_byid(user_id));
+            }
+
+            if (project_members.size() == 0){
+                project_members.add("Empty");
+            }
+        }catch(SQLException e){
+            TrackApiApplication.database.log("Failed to load members ("+e.toString()+")","PROJECT-MEMBERS-FAILED");
         }
     }
 
