@@ -90,7 +90,6 @@ public class Project_Viewers {
         if ( sv.connector_validation(app_token)){
             Project project = dp.get_project(project_id);
             if ( project != null){
-                project.load_members();
                 return project;
             }
             project = new Project();
