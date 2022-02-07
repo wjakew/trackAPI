@@ -26,6 +26,9 @@ drop table if exists USER_SNIPPET;
 drop table if exists USER_CONFIGURATION;
 drop table if exists TODO;
 drop table if exists USER_GRAVEYARD;
+drop table if exists ROOM_MESSAGE;
+drop table if exists ROOM_MEMBER;
+drop table if exists ROOM;
 drop table if exists USER_DATA;
 
 
@@ -63,6 +66,39 @@ CREATE TABLE USER_GRAVEYARD
     graveyard_date TIMESTAMP,
 
     CONSTRAINT fk_usergraveyard1 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for creating rooms
+CREATE TABLE ROOM
+(
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_name VARCHAR(50),
+    room_desc VARCHAR(250),
+    room_password VARCHAR(10),
+    room_code VARCHAR(150)
+);
+-- table for storing room members
+CREATE TABLE ROOM_MEMBER
+(
+    room_member_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_id INT,
+    user_id INT,
+    role INT, -- 1 - admin, 2 - user, 3 - moderator, 4 - spectator
+
+    CONSTRAINT fk_roommember1 FOREIGN KEY (room_id) REFERENCES ROOM(room_id),
+    CONSTRAINT fk_roommember2 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing room messages
+CREATE TABLE ROOM_MESSAGE
+(
+    room_message_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_message_content TEXT,
+    room_id INT,
+    user_id INT,
+    ping_id INT,
+    content_id INT,
+
+    CONSTRAINT fk_roommessage1 FOREIGN KEY (room_id) REFERENCES ROOM(room_id),
+    CONSTRAINT fk_roommessage2 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing to-dos
 CREATE TABLE TODO
