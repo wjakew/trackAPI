@@ -34,7 +34,7 @@ public class Database_Room {
      * @return Boolean
      */
     boolean check_room_codes(String code) throws SQLException {
-        String query = "SELECT FROM ROOM WHERE room_code = ? OR room_password = ?;";
+        String query = "SELECT * FROM ROOM WHERE room_code = ? or room_password = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setString(1,code);
@@ -186,6 +186,7 @@ public class Database_Room {
                 try {
                     return new Room(rs);
                 }catch(SQLException e){
+                    database.log("Failed to get room by object ("+e.toString()+")","GET-ROOM-OBJECT");
                     return null;
                 }
             }
@@ -201,7 +202,7 @@ public class Database_Room {
      * @param user_id
      * @return
      */
-    public ArrayList<Room> list_rooms(int user_id){
+    public ArrayList<Room> list_rooms(int user_id) throws SQLException {
         String query = "SELECT room_id FROM ROOM_MEMBER where user_id = ?;";
         ArrayList<Room> data = new ArrayList<>();
         try{
@@ -212,7 +213,7 @@ public class Database_Room {
                 data.add(get_room(rs.getInt("room_id")));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            database.log("Failed to list rooms ("+e.toString()+")","ROOM-LIST-FAILED");
         }
         return data;
     }

@@ -51,11 +51,11 @@ public class Room {
      * @param rs
      */
     public Room(ResultSet rs) throws SQLException {
-        flag = rs.getInt("flag");
         room_id = rs.getInt("room_id");
         room_name = rs.getString("room_name");
         room_desc = rs.getString("room_desc");
         room_password = rs.getString("room_password");
         room_code = rs.getString("room_code");
+        flag = 1;
     }
 }
