@@ -25,8 +25,12 @@ public class Board_Setters {
             board.board_desc = board_desc;
             board.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             board.database_load();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to set board ("+board_name+"/"+board_desc+")","Board set!");
         }
         else{
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to set board ("+board_name+"/"+board_desc+")","Board failed to set. Wrong validation");
             board.flag = sv.flag;
         }
         return board;
@@ -40,8 +44,12 @@ public class Board_Setters {
             board.board_id = board_id;
             board.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             board.remove();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove board ("+board_id+")","Board removed!");
         }else{
             board.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove board ("+board_id+")","Board failed to remove, wrong validation");
         }
         return board;
     }

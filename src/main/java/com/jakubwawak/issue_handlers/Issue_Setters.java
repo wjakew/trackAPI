@@ -55,14 +55,20 @@ public class Issue_Setters {
                 issue.issue_time_due = dateTime;
                 issue.database_load();
                 TrackApiApplication.database.log("New issue added","ISSUE-SET-SUCCESS");
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add issue ("+issue_name+")","Issue added with date!");
             }catch(Exception e){
                 issue.issue_time_due = null;
                 issue.database_load();
                 TrackApiApplication.database.log("New issue added without due date","ISSUE-SET-SUCCESS");
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add issue ("+issue_name+")","Issue added without date!");
             }
         }
         else{
             issue.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to add issue ("+issue_name+")","Failed to add issue, wrong validation");
         }
         return issue;
     }
@@ -76,9 +82,13 @@ public class Issue_Setters {
         if (sv.connector_validation(app_token)){
             issue.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
             issue.remove();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove issue ("+issue_id+")","Issue removed!");
         }
         else{
             issue.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove issue ("+issue_id+")","Failed to remove issue, wrong validation!");
         }
         return issue;
     }

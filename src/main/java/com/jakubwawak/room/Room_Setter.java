@@ -38,6 +38,45 @@ public class Room_Setter {
         return room;
     }
 
+    @GetMapping("/room-addmember/{app_token}/{session_token}/{room_id}/{user_id}/{role}")
+    public Room add_member(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int room_id,
+                           @PathVariable int user_id,@PathVariable int role) throws SQLException {
+        Room room = new Room();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token) ){
+            Database_Room dr = new Database_Room(TrackApiApplication.database);
+            if ( dr.create_room_member(room_id,user_id,role,
+                    TrackApiApplication.database.get_userid_bysession(session_token)) == 1){
+                room.flag = 1;
+            }
+            else{
+                room.flag = -2;
+            }
+        }
+        else{
+            room.flag = sv.flag;
+        }
+        return room;
+    }
+
+    @GetMapping("/room-removemember/{app_token}/{session_token}/{room_id}/{user_id}")
+    public Room remove_member(@PathVariable String app_token,@PathVariable String session_token,
+                              @PathVariable int room_id, @PathVariable int user_id) throws SQLException {
+        Room room = new Room();
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token) ){
+            Database_Room dr = new Database_Room(TrackApiApplication.database);
+            if ( dr.remove_room_member(room_id,user_id) == 1){
+                room.flag = 1;
+            }
+            room.flag = -2;
+        }
+        else{
+            room.flag = sv.flag;
+        }
+        return room;
+    }
+
     @GetMapping("/room-viewer/{app_token}/{session_token}")
     public Viewer list_rooms(@PathVariable String app_token, @PathVariable String session_token) throws SQLException {
         Viewer viewer = new Viewer();

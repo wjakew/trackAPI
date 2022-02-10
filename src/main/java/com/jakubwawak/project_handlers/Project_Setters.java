@@ -48,13 +48,19 @@ public class Project_Setters {
                 project.database_load();
                 if ( project.flag == 1){
                     TrackApiApplication.database.log("Project added","PROJECT-ADD-SUCCESSFUL");
+                    TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                            session_token,"Trying to set project ("+project_name+")","Project added!");
                 }
                 else{
                     TrackApiApplication.database.log("Failed to add project","PROJECT-ADD-ERROR");
+                    TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                            session_token,"Trying to set project ("+project_name+")","Failed - project add error");
                 }
             }
             else{
                 project.flag= -5;
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to set priject ("+project_name+")","Failed, user_id error");
             }
         }
         return project;
@@ -71,9 +77,13 @@ public class Project_Setters {
             project.remove();
             Database_Log dl = new Database_Log();
             dl.object_log("Removed project.","PROJECT",project_id,TrackApiApplication.database.get_userid_bysession(session_token));
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove project ("+project_id+")","Project removed!");
         }
         else{
             project.project_id = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove project ("+project_id+")","Failed to remove project - vaildation failed");
         }
         return project;
     }
@@ -89,6 +99,8 @@ public class Project_Setters {
             project = dp.get_project(project_id);
             if ( project!= null){
                 project.add_project_member(user_id);
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add member for project ("+project_id+")","Member added (user_id:"+user_id+")!");
             }
         }
         return project;
@@ -105,6 +117,8 @@ public class Project_Setters {
             project = dp.get_project(project_id);
             if ( project!= null){
                 project.remove_project_member(user_id);
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to remove member for project ("+project_id+")","Member removed (user_id:"+user_id+")!");
             }
         }
         return project;
@@ -123,6 +137,8 @@ public class Project_Setters {
             Database_Log dl = new Database_Log();
             dl.object_log("Updated project. "+code+" set to "+value,"PROJECT",project_id,
                     TrackApiApplication.database.get_userid_bysession(session_token));
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to update project ("+project_id+")","Updated "+code+" with "+value);
         }
         return project;
     }

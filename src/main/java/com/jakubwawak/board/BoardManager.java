@@ -53,8 +53,12 @@ public class BoardManager {
             be.object_id = object_id;
             TrackApiApplication.database.log("Trying to add element: "+be.board_list_object+" id: "+be.board_element_id+" to board_id "+be.board_id,"BOARDMANAGER");
             be.database_load();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to update board ("+board_id+")","Board updated!");
         }
         else{
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to update board ("+board_id+")","Board update failed, wrong validation.");
             be.flag = sv.flag;
         }
         return be;
@@ -90,9 +94,13 @@ public class BoardManager {
                     break;
             }
             be.remove();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove board ("+board_id+")","Board removed!");
         }
         else{
             be.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove board ("+board_id+")","Board failed to remove - wrong validation");
         }
         return be;
     }

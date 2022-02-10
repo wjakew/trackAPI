@@ -10,6 +10,7 @@ import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
+import org.apache.tomcat.jni.Local;
 
 import javax.sound.midi.Track;
 import java.sql.*;
@@ -23,7 +24,7 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.6";
+    public final String version = "v0.0.7";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -98,6 +99,46 @@ public class Database_Connector {
             if(database_log.size() > 100){
                 database_log.clear();
             }
+        }
+    }
+
+    /**
+     * Function for saving user connection data
+     * @param user_id
+     * @param session_token
+     * @param request
+     * @param answer
+     */
+    public void connection_logger(int user_id,String session_token,String request,String answer) throws SQLException {
+        LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        /**
+         * CREATE TABLE CONNECTION_LOG
+         * (
+         *     connection_log_id INT AUTO_INCREMENT PRIMARY KEY,
+         *     user_id INT,
+         *     session_token VARCHAR(20),
+         *     connection_time TIMESTAMP,
+         *     connection_request TEXT,
+         *     connection_answer TEXT,
+         *
+         *     CONSTRAINT fk_connectionlog FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        String query = "INSERT INTO CONNECTION_LOG(user_id,session_token,session_time,connection_request,connection_answer)\n" +
+                "VALUES\n" +
+                "(?,?,?,?,?);";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setString(2,session_token);
+            ppst.setObject(3,ldt);
+            ppst.setString(4,request);
+            ppst.setString(5,answer);
+            ppst.execute();
+            log("Added object to connection log!","CON-LOG");
+        } catch (SQLException e) {
+            log("Failed to add to connection log ("+e.toString()+")","CON-LOG-FAILED");
+            log(ldt.toString()+" - user_id: "+user_id+" ("+request+")","CON-LOG-BACKUP");
         }
     }
 

@@ -43,9 +43,13 @@ public class Task_Setters {
             task.task_priority = task_priority;
             task.task_state = "UNDONE";
             task.database_load();
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to add task on task ("+task_name+")","Task added!");
         }
         else{
             task.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to add task on task ("+task_name+")","Task failed to add - wrong validation!");
         }
         return task;
     }
@@ -72,6 +76,8 @@ public class Task_Setters {
             Database_Log dl = new Database_Log();
             dl.object_log("Task updated. "+code+" set to "+value,"TASK",task_id,
                     TrackApiApplication.database.get_userid_bysession(session_token));
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to update task ("+task_id+")","Task updated with "+code+"on "+value+"!");
         }
         else{
             task.flag = sv.flag;
@@ -89,9 +95,13 @@ public class Task_Setters {
             Database_Log dl = new Database_Log();
             dl.object_log("Task removed","TASK",task_id,
                     TrackApiApplication.database.get_userid_bysession(session_token));
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove task("+task_id+")","Task removed!");
         }
         else{
             task.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove task("+task_id+")","Task failed to remove, wrong validation!");
         }
         return task;
     }

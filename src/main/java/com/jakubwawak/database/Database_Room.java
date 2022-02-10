@@ -53,6 +53,29 @@ public class Database_Room {
     }
 
     /**
+     * Function for checking if user is room admin
+     * @param room_id
+     * @param user_id
+     * @return Boolean
+     */
+     int check_room_admin(int room_id,int user_id) throws SQLException {
+        String query = "SELECT room_member_id FROM ROOM_MEMBER WHERE room_id = ? and user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ppst.setInt(2,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                return 1;
+            }
+            return 0;
+        } catch (SQLException e) {
+            database.log("Failed to check room admin ("+e.toString()+")","ROOM-ADMIN-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for creating random li
      * @return String
      */
@@ -135,6 +158,26 @@ public class Database_Room {
      * @param user_id
      * @return Integer
      */
+    public int create_room_member(int room_id,int user_id,int role,int owner_id) throws SQLException {
+        String query = "INSERT INTO ROOM_MEMBER (room_id,user_id,role) VALUES (?,?,?);";
+        try{
+            if (check_room_admin(room_id,owner_id) == 1){
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,room_id);
+                ppst.setInt(2,user_id);
+                ppst.setInt(3,role);
+                ppst.execute();
+                database.log("Created room admin! User (user_id:"+user_id+") is now admin of room_id:"+room_id,"ROOM-ADMIN-CRT");
+                return 1;
+            }
+            database.log("User not room admin - cannot add member","ROOM-ADMIN-NOAUTH");
+            return 0;
+        }catch(SQLException e){
+            database.log("Failed to create room member ("+e.toString()+")","ROOM-ADMIN-FAILED");
+            return -1;
+        }
+    }
+
     public int create_room_member(int room_id,int user_id,int role) throws SQLException {
         String query = "INSERT INTO ROOM_MEMBER (room_id,user_id,role) VALUES (?,?,?);";
         try{
@@ -147,6 +190,30 @@ public class Database_Room {
             return 1;
         }catch(SQLException e){
             database.log("Failed to create room member ("+e.toString()+")","ROOM-ADMIN-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing members from rooms
+     * @param room_id
+     * @param user_id
+     * @return Integer
+     * return codes:
+     *  1 - user removed
+     * -1 - database error
+     */
+    public int remove_room_member(int room_id,int user_id) throws SQLException {
+        String query = "DELETE FROM ROOM_MEMBER WHERE user_id = ? and room_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ppst.setInt(2,user_id);
+            ppst.executeQuery();
+            database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
+            return 1;
+        }catch(SQLException e){
+            database.log("Failed to remove room member ("+e.toString()+")","ROOM-MEMREM-FAILED");
             return -1;
         }
     }

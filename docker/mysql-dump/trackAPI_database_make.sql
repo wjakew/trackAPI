@@ -17,6 +17,7 @@ drop table if exists PROJECT_MEMBERS;
 drop table if exists PROJECT;
 drop table if exists LOG_HISTORY;
 drop table if exists PRIVILAGES;
+drop table if exists CONNECTION_LOG;
 drop table if exists SESSION_TOKEN;
 drop table if exists TOKEN;
 drop table if exists OBJECT_HISTORY;
@@ -143,6 +144,18 @@ CREATE TABLE SESSION_TOKEN
   session_token_time TIMESTAMP,
   
   CONSTRAINT fk_session_token FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing connection log
+CREATE TABLE CONNECTION_LOG
+(
+    connection_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    session_token VARCHAR(20),
+    connection_time TIMESTAMP,
+    connection_request TEXT,
+    connection_answer TEXT,
+
+    CONSTRAINT fk_connectionlog FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing user privilages
 CREATE TABLE PRIVILAGES

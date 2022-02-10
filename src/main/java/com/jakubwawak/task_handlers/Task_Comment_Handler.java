@@ -48,6 +48,8 @@ public class Task_Comment_Handler {
                     task_id,task_comment_content) == 1){
                 TrackApiApplication.database.log("Added comment!","TASK_C-ADD");
                 tc.flag = 1;
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add comment on task ("+task_id+")","Comment added!");
             }
             else{
                 TrackApiApplication.database.log("Failed to authorize","TASK_C-ADD-FAILED");

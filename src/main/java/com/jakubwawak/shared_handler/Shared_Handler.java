@@ -32,6 +32,8 @@ public class Shared_Handler {
             shared.database_load();
             if(shared.flag == 1)
                 TrackApiApplication.database.log("Shared to "+user_login+" project_id: "+project_id+" session("+session_token+")","SHARE-SET-SUCCESS");
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to share project ("+project_id+")","Project shared with (user_id:"+user_login+")!");
         }else{
             shared.flag = sv.flag;
         }
@@ -49,6 +51,8 @@ public class Shared_Handler {
             shared.remove();
             if ( shared.flag == 1)
                 TrackApiApplication.database.log("Removed share of project_id "+project_id,"SHARE-REMOVE-SUCCESS");
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove share on project ("+project_id+")","Removed sharing on project!");
         }
         else{
             shared.flag = sv.flag;
