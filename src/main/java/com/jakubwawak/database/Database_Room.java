@@ -153,6 +153,48 @@ public class Database_Room {
     }
 
     /**
+     * Function for listing room members
+     * @param room_id
+     * @return ArrayList
+     */
+    ArrayList list_room_members(int room_id) throws SQLException {
+        String query = "SELECT * FROM ROOM_MEMBER WHERE room_id = ?;";
+        ArrayList<String> data = new ArrayList<>();
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ResultSet rs = ppst.executeQuery();
+
+            while(rs.next()){
+                int user_id = rs.getInt("user_id");
+                data.add(database.get_userlogin_byid(user_id));
+            }
+
+            if (data.size() == 0){
+                data.add("Empty");
+            }
+        } catch (SQLException e) {
+            database.log("Failed to list room members ("+e.toString()+")","ROOM-LIST-FAILED");
+            data.add("error");
+        }
+        return data;
+    }
+
+    /**
+     * Function for getting string list of room members
+     * @param room_id
+     * @return String
+     * @throws SQLException
+     */
+    public String get_room_members(int room_id) throws SQLException {
+        String data = "";
+        ArrayList<String> members = list_room_members(room_id);
+        for(String member : members){
+            data = data + member + ",";
+        }
+        return data;
+    }
+    /**
      * Function for creating room members
      * @param room_id
      * @param user_id

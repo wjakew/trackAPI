@@ -28,10 +28,14 @@ public class Room_Setter {
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             room.room_code = dr.create_room(room_name,room_desc,TrackApiApplication.database.get_userid_bysession(session_token));
             TrackApiApplication.database.log("Room created","ROOM-CREATE");
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to set room ("+room_name+")","Room added!");
             room.flag = 1;
         }
         else{
             room.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to set room ("+room_name+")","Failed to add room - failed validating!");
             TrackApiApplication.database.log("No auth - room not created","ROOM-NOAUTH");
             room.room_code = "no_auth";
         }
@@ -47,14 +51,20 @@ public class Room_Setter {
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             if ( dr.create_room_member(room_id,user_id,role,
                     TrackApiApplication.database.get_userid_bysession(session_token)) == 1){
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add new room member (room_id:"+room_id+")","Added new member (user_id:"+user_id+") to room");
                 room.flag = 1;
             }
             else{
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to add new room member (room_id:"+room_id+")","Failed to add room member to room, user is not admin.");
                 room.flag = -2;
             }
         }
         else{
             room.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to add new room member (room_id:"+room_id+")","Failed to add room member - wrong validation.");
         }
         return room;
     }
@@ -68,11 +78,20 @@ public class Room_Setter {
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             if ( dr.remove_room_member(room_id,user_id) == 1){
                 room.flag = 1;
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to remove room member(room_id:"+room_id+")","Room member (user_id: "+user_id+") removed!");
             }
-            room.flag = -2;
+            else{
+                room.flag = -2;
+                TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                        session_token,"Trying to remove room member (room_id:"+room_id+")","Failed to remove room, user is not admin");
+            }
+
         }
         else{
             room.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove room member (room_id:"+room_id+")","Failed to remove room, validation error.");
         }
         return room;
     }
@@ -84,6 +103,9 @@ public class Room_Setter {
         if (sv.connector_validation(app_token)){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             viewer.view2 = dr.list_rooms(TrackApiApplication.database.get_userid_bysession(session_token));
+            for(Room r : viewer.view2){
+                viewer.view.add(dr.get_room_members(r.room_id));
+            }
             viewer.flag = 1;
         }
         else{
@@ -100,11 +122,14 @@ public class Room_Setter {
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
-            int ans = dr.remove_room(room_id,room_password);
-            room.flag = ans;
+            room.flag = dr.remove_room(room_id,room_password);
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove room (room_id:"+room_id+")","Room removed!");
         }
         else{
             room.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to remove room (room_id:"+room_id+")","Failed to remove room - wrong validation");
         }
         return room;
     }

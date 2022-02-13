@@ -78,7 +78,7 @@ public class Database_Connector {
         database_log_copy.add("("+actual_date.toString()+")"+" - "+log);
         // load log to database
         if ( debug == 1){
-            String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code) VALUES (?,?); ";
+            String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
             System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
             if ( con == null){
                 System.out.println("DATABASE: con=null ("+log+")");
@@ -90,6 +90,47 @@ public class Database_Connector {
 
                     ppst.setString(1,log);
                     ppst.setString(2,code);
+                    ppst.setString(3,"empty");
+                    ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+                    ppst.execute();
+
+                }catch(SQLException e){}
+            }
+
+            // after 100 records dump to file
+            if(database_log.size() > 100){
+                database_log.clear();
+            }
+        }
+    }
+
+    /**
+     * Function for logging data with session_token data
+     * @param log
+     * @param code
+     * @param session_token
+     * @throws SQLException
+     */
+    public void log(String log,String code,String session_token) throws SQLException{
+        java.util.Date actual_date = new java.util.Date();
+        database_log.add("("+actual_date.toString()+")"+"- "+code+" - "+log);
+        database_log_copy.add("("+actual_date.toString()+")"+" - "+log);
+        // load log to database
+        if ( debug == 1){
+            String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
+            System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
+            if ( con == null){
+                System.out.println("DATABASE: con=null ("+log+")");
+            }
+            else{
+                PreparedStatement ppst = con.prepareStatement(query);
+
+                try{
+
+                    ppst.setString(1,log);
+                    ppst.setString(2,code);
+                    ppst.setString(3,session_token);
+                    ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
                     ppst.execute();
 
                 }catch(SQLException e){}
@@ -322,6 +363,7 @@ public class Database_Connector {
 
                 ppst.execute();
                 log("Session expires at "+lt.toString(),"SESSION-CRT");
+                archive_session(session.buf,user_id);
                 return session.buf;
             }
             else{
@@ -332,6 +374,37 @@ public class Database_Connector {
         } catch (SQLException e) {
             log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
             return null;
+        }
+    }
+
+    /**
+     * Function for saving archived session to database
+     * @param session_token
+     * @param user_id
+     * @throws SQLException
+     */
+    void archive_session(String session_token,int user_id) throws SQLException {
+        /**
+         * CREATE TABLE SESSION_TOKEN_ARCH
+         * (
+         *     session_token_archive_id INT AUTO_INCREMENT PRIMARY KEY,
+         *     user_id INT,
+         *     session_token VARCHAR(20),
+         *     session_token_time TIMESTAMP,
+         *
+         *     CONSTRAINT fk_session_token_arch FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        String query = "INSERT INTO SESSION_TOKEN_ARCH (user_id,session_token,session_token_time) VALUES (?,?,?);";
+        try{
+            PreparedStatement ppst = con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setString(2,session_token);
+            ppst.setObject(3,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+            ppst.execute();
+            log("Saved archive session_token to database","SESSION-ARCH");
+        } catch (SQLException e) {
+            log("Failed to save session_token ("+e.toString()+")","SESSION-ARCH-FAILED");
         }
     }
     /**

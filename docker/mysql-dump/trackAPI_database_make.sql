@@ -45,7 +45,9 @@ CREATE TABLE PROGRAM_LOG
 (
   program_log_id INT AUTO_INCREMENT PRIMARY KEY,
   program_log_code VARCHAR(30),
-  program_log_desc VARCHAR(300)
+  program_log_desc VARCHAR(300),
+  program_log_session_token VARCHAR(10),
+  program_log_time TIMESTAMP
 );
 -- data tables and structure
 
@@ -144,6 +146,16 @@ CREATE TABLE SESSION_TOKEN
   session_token_time TIMESTAMP,
   
   CONSTRAINT fk_session_token FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing archived token data
+CREATE TABLE SESSION_TOKEN_ARCH
+(
+    session_token_archive_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    session_token VARCHAR(20),
+    session_token_time TIMESTAMP,
+
+    CONSTRAINT fk_session_token_arch FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing connection log
 CREATE TABLE CONNECTION_LOG
