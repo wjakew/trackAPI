@@ -158,7 +158,7 @@ public class Database_Room {
      * @return ArrayList
      */
     ArrayList list_room_members(int room_id) throws SQLException {
-        String query = "SELECT * FROM ROOM_MEMBER WHERE room_id = ?;";
+        String query = "SELECT user_id FROM ROOM_MEMBER WHERE room_id = ?;";
         ArrayList<String> data = new ArrayList<>();
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
@@ -178,6 +178,27 @@ public class Database_Room {
             data.add("error");
         }
         return data;
+    }
+
+    /**
+     * Function for getting room admin data
+     * @param room_id
+     * @return String
+     */
+    String get_room_admin(int room_id) throws SQLException {
+        String query = "SELECT user_id FROM ROOM_MEMBER WHERE room_id = ? and role = 1;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ResultSet rs = ppst.executeQuery();
+            if (rs.next()){
+                return rs.getInt("user_id")+": "+database.get_userlogin_byid(rs.getInt("user_id"));
+            }
+            return "0: none";
+        } catch (SQLException e) {
+            database.log("Failed to get room admin ("+e.toString()+")","ROOM-ADM-FAILED");
+            return "-1: error";
+        }
     }
 
     /**
@@ -220,6 +241,14 @@ public class Database_Room {
         }
     }
 
+    /**
+     * Function for creating room member
+     * @param room_id
+     * @param user_id
+     * @param role
+     * @return Integer
+     * @throws SQLException
+     */
     public int create_room_member(int room_id,int user_id,int role) throws SQLException {
         String query = "INSERT INTO ROOM_MEMBER (room_id,user_id,role) VALUES (?,?,?);";
         try{
@@ -319,7 +348,9 @@ public class Database_Room {
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             while(rs.next()){
-                data.add(get_room(rs.getInt("room_id")));
+                Room room = get_room(rs.getInt("room_id"));
+                room.owner_login = this.get_room_admin(room.room_id);
+                data.add(room);
             }
         } catch (SQLException e) {
             database.log("Failed to list rooms ("+e.toString()+")","ROOM-LIST-FAILED");

@@ -34,6 +34,8 @@ public class Room {
     public String room_password;
     public String room_code;
 
+    public String owner_login;
+
     /**
      * Constructor
      */
@@ -44,6 +46,7 @@ public class Room {
         room_desc = "";
         room_password ="";
         room_code = "";
+        owner_login = "";
     }
 
     /**
@@ -57,5 +60,6 @@ public class Room {
         room_password = rs.getString("room_password");
         room_code = rs.getString("room_code");
         flag = 1;
+        owner_login = "";
     }
 }
