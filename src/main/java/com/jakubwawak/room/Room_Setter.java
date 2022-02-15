@@ -4,11 +4,13 @@ import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.database.Database_Room;
 import com.jakubwawak.maintanance.Viewer;
 import com.jakubwawak.trackAPI.TrackApiApplication;
+import org.springframework.format.datetime.DateTimeFormatAnnotationFormatterFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.text.View;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -40,6 +42,21 @@ public class Room_Setter {
             room.room_code = "no_auth";
         }
         return room;
+    }
+
+    @GetMapping("/room-data/{app_token}/{session_token}/{room_id}")
+    public Viewer get_room_data(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int room_id) throws SQLException {
+        Viewer viewer = new Viewer();
+        Session_Validator sv = new Session_Validator(session_token);
+        if (sv.connector_validation(app_token)){
+            Database_Room dr = new Database_Room(TrackApiApplication.database);
+            viewer.view.add(dr.get_room_data(room_id,TrackApiApplication.database.get_userid_bysession(session_token)));
+            viewer.flag = 1;
+        }
+        else{
+            viewer.flag = sv.flag;
+        }
+        return viewer;
     }
 
     @GetMapping("/room-addmember/{app_token}/{session_token}/{room_id}/{user_id}/{role}")

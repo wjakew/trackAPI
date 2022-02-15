@@ -122,6 +122,30 @@ public class Database_Room {
     }
 
     /**
+     * Function for giving
+     * @param room_id
+     * @return String
+     */
+    public String get_room_data(int room_id,int user_id) throws SQLException {
+        if ( check_room_admin(room_id,user_id) == 1){
+            String query = "SELECT room_code,room_password FROM ROOM where room_id = ?";
+            try{
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,room_id);
+                ResultSet rs = ppst.executeQuery();
+                if(rs.next()){
+                    return "Code: "+rs.getString("room_code")+"\nPassword: "+rs.getString("room_password");
+                }
+                return "Error finding data";
+            }catch(SQLException e){
+                database.log("Failed to get room data ("+e.toString()+")","ROOM-DATA-FAILED");
+                return e.toString();
+            }
+        }
+        return "You are not an admin of this room!";
+    }
+
+    /**
      * Function for creating room object
      * @param room_name
      * @param room_desc
