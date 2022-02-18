@@ -59,14 +59,16 @@ public class Database_Room {
      * @return Boolean
      */
      int check_room_admin(int room_id,int user_id) throws SQLException {
-        String query = "SELECT room_member_id FROM ROOM_MEMBER WHERE room_id = ? and user_id = ?;";
+        String query = "SELECT role FROM ROOM_MEMBER WHERE room_id = ? and user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,room_id);
             ppst.setInt(2,user_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
-                return 1;
+                if ( rs.getInt("role") == 1){
+                    return 1;
+                }
             }
             return 0;
         } catch (SQLException e) {

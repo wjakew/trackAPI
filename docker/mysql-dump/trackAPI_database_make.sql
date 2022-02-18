@@ -19,6 +19,7 @@ drop table if exists LOG_HISTORY;
 drop table if exists PRIVILAGES;
 drop table if exists CONNECTION_LOG;
 drop table if exists SESSION_TOKEN;
+drop table if exists SESSION_TOKEN_ARCH;
 drop table if exists TOKEN;
 drop table if exists OBJECT_HISTORY;
 drop table if exists BOARD_ELEMENT;
@@ -95,6 +96,7 @@ CREATE TABLE ROOM_MESSAGE
 (
     room_message_id INT PRIMARY KEY AUTO_INCREMENT,
     room_message_content TEXT,
+    room_time TIMESTAMP,
     room_id INT,
     user_id INT,
     ping_id INT,

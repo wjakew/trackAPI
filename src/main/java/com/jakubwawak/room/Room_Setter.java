@@ -1,3 +1,8 @@
+/**
+ Jakub Wawak
+ kubawawak@gmail.com
+ all rights reserved
+ */
 package com.jakubwawak.room;
 
 import com.jakubwawak.administrator.Session_Validator;
@@ -52,9 +57,13 @@ public class Room_Setter {
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             viewer.view.add(dr.get_room_data(room_id,TrackApiApplication.database.get_userid_bysession(session_token)));
             viewer.flag = 1;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to get room data ("+room_id+")","Room data got!");
         }
         else{
             viewer.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to get room data ("+room_id+")","No authorization!");
         }
         return viewer;
     }
@@ -124,9 +133,13 @@ public class Room_Setter {
                 viewer.view.add(dr.get_room_members(r.room_id));
             }
             viewer.flag = 1;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to get room viewer for user ("+session_token+")","View loaded!");
         }
         else{
             viewer.flag = sv.flag;
+            TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
+                    session_token,"Trying to get room viewer for user ("+session_token+")","No authorization!");
         }
         return viewer;
     }
