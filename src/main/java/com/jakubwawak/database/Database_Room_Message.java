@@ -5,8 +5,11 @@
  */
 package com.jakubwawak.database;
 
+import com.jakubwawak.room.Room;
 import com.jakubwawak.room.Room_Message;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -137,5 +140,38 @@ public class Database_Room_Message {
             rm.flag = -1;
         }
         return rm;
+    }
+    /**
+     * Function for downloading messages from rooms
+     * @param room_id
+     * @return Integer
+     */
+    public int download_messages(int room_id) throws IOException, SQLException {
+        String filename = "room_messages_"+room_id+".txt";
+        FileWriter fw = new FileWriter(filename);
+        Database_Room dr = new Database_Room(database);
+        ArrayList<String> members = dr.list_room_members(room_id);
+        fw.write("Room members: \n");
+        for(String line : members){
+            fw.write(line+"\n");
+        }
+        fw.write("Messages: \n");
+        String query = "SELECT * FROM ROOM_MESSAGE WHERE room_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ResultSet rs = ppst.executeQuery();
+            while (rs.next()){
+                Room_Message rm = new Room_Message(rs);
+                fw.write(rm.room_time.toString()+" - user_id:"+rm.user_id+" > "+rm.room_message_content+"\n");
+            }
+            fw.write("END.");
+            fw.close();
+            return 1;
+        }catch(SQLException e){
+            database.log("Failed to download all messages ("+e.toString()+")","ROOM-DWNMESSA-FAILED");
+            return -1;
+        }
+
     }
 }

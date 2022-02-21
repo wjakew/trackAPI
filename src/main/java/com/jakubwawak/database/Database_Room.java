@@ -7,6 +7,7 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.room.Room;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +49,29 @@ public class Database_Room {
             return false;
         }catch(SQLException e){
             database.log("Failed to check room codes ("+e.toString()+")","ROOM-CDCH-FAILED");
+            return false;
+        }
+    }
+
+    /**
+     * Function for checking given password (if password correct)
+     * @param password
+     * @return Boolean
+     */
+    boolean check_password(String password) throws SQLException {
+        String query = "SELECT room_id FROM ROOM WHERE room_password = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setString(1,password);
+            ResultSet rs = ppst.executeQuery();
+            if(rs.next()){
+                database.log("Room password exists in the database","ROOM-PASS");
+                return true;
+            }
+            database.log("Room password not found (room_password:"+password+")","ROOM-PASS");
+            return false;
+        } catch (SQLException e) {
+            database.log("Failed to check room password ("+e.toString()+")","ROOM-PASS-FAILED");
             return false;
         }
     }
@@ -193,7 +217,7 @@ public class Database_Room {
 
             while(rs.next()){
                 int user_id = rs.getInt("user_id");
-                data.add(database.get_userlogin_byid(user_id));
+                data.add(user_id+":"+database.get_userlogin_byid(user_id));
             }
 
             if (data.size() == 0){
@@ -298,19 +322,67 @@ public class Database_Room {
      * @return Integer
      * return codes:
      *  1 - user removed
+     *  2 - user is not an admin,
      * -1 - database error
      */
-    public int remove_room_member(int room_id,int user_id) throws SQLException {
+    public int remove_room_member(int room_id,int user_id,int owner_id) throws SQLException {
         String query = "DELETE FROM ROOM_MEMBER WHERE user_id = ? and room_id = ?;";
+        try{
+            if ( check_room_admin(room_id,owner_id) == 1 ){
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,room_id);
+                ppst.setInt(2,user_id);
+                ppst.executeQuery();
+                database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
+                return 1;
+            }
+            else{
+                database.log("User is not an admin.","ROOM-MEMREM");
+                return 2;
+            }
+        }catch(SQLException e){
+            database.log("Failed to remove room member ("+e.toString()+")","ROOM-MEMREM-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing all room members
+     * @param room_id
+     * @return Integer
+     */
+    int remove_members(int room_id) throws SQLException {
+        String query = "DELETE FROM ROOM_MEMBER WHERE room_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,room_id);
-            ppst.setInt(2,user_id);
-            ppst.executeQuery();
-            database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
+            ppst.execute();
+            database.log("Members of the room room_id:"+room_id+" removed!","ROOM-MBMREMOVE");
             return 1;
         }catch(SQLException e){
-            database.log("Failed to remove room member ("+e.toString()+")","ROOM-MEMREM-FAILED");
+            database.log("Failed to remove members ("+e.toString()+")","ROOM-MBMREMOVE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing messages from room
+     * @param room_id
+     * @return Integer
+     * @throws SQLException
+     */
+    int remove_messages(int room_id) throws SQLException, IOException {
+        Database_Room_Message drm = new Database_Room_Message(database);
+        drm.download_messages(room_id);
+        String query = "DELETE FROM ROOM_MESSAGE WHERE room_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ppst.execute();
+            database.log("Removed all messages from room room_id:"+room_id,"ROOM-MSGREMOVE");
+            return 1;
+        }catch(SQLException e){
+            database.log("Failed to remove messages ("+e.toString()+")","ROOM-MSGREMOVE-FAILED");
             return -1;
         }
     }
@@ -321,15 +393,25 @@ public class Database_Room {
      * @return Integer
      */
     public int remove_room(int room_id,String room_password) throws SQLException {
-        String query = "DELETE FROM ROOM WHERE room_id = ? && room_password = ?;";
+        String query = "DELETE FROM ROOM WHERE room_id = ? and room_password = ?;";
+        room_password = room_password.replaceAll(" ","");
         try{
-            PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,room_id);
-            ppst.setString(2,room_password);
-            ppst.execute();
-            database.log("Room removed!","ROOM_REMOVE");
-            return 1;
-        }catch(SQLException e){
+            if ( check_password(room_password) ){
+                database.log("Trying to remove room (room_id:"+room_id+") with password (room_password:"+room_password+")","ROOM_REMOVE");
+                remove_members(room_id);
+                remove_messages(room_id);
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,room_id);
+                ppst.setString(2,room_password);
+                ppst.execute();
+                database.log("Room removed!","ROOM_REMOVE");
+                return 1;
+            }
+            else{
+                database.log("Password not match any room!","ROOM_REMOVE");
+                return 3;
+            }
+        }catch(SQLException | IOException e){
             database.log("Failed to remove room ("+e.toString()+")","ROOM-REMOVE-FAILED");
             return -1;
         }

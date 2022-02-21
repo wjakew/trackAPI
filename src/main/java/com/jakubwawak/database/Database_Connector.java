@@ -8,11 +8,10 @@ package com.jakubwawak.database;
 
 import com.jakubwawak.administrator.Configuration;
 import com.jakubwawak.administrator.RandomString;
+import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
-import org.apache.tomcat.jni.Local;
 
-import javax.sound.midi.Track;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -32,7 +31,7 @@ public class Database_Connector {
     public Connection con;
 
     // variable for debug purposes
-    public int debug = 1;
+    public int log_printing = 1;
 
     public boolean connected;                      // flag for checking connection to the database
     public String ip;                              // ip data for the connector
@@ -77,31 +76,43 @@ public class Database_Connector {
         database_log.add("("+actual_date.toString()+")"+"- "+code+" - "+log);
         database_log_copy.add("("+actual_date.toString()+")"+" - "+log);
         // load log to database
-        if ( debug == 1){
-            String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
-            System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
-            if ( con == null){
-                System.out.println("DATABASE: con=null ("+log+")");
+        String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
+        // print log to the screen
+        if (log_printing == 1){
+            if ( database_log.get(database_log.size()-1).contains("NEW JOB") || database_log.get(database_log.size()-1).contains("HEALTH")){
+                System.out.println(ConsoleColors.BLUE_BOLD+"\nTRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("Failed") ||database_log.get(database_log.size()-1).contains("FAILED")){
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("VALIDATION")){
+                System.out.println(ConsoleColors.YELLOW_BOLD+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
             }
             else{
-                PreparedStatement ppst = con.prepareStatement(query);
-
-                try{
-
-                    ppst.setString(1,log);
-                    ppst.setString(2,code);
-                    ppst.setString(3,"empty");
-                    ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
-                    ppst.execute();
-
-                }catch(SQLException e){}
-            }
-
-            // after 100 records dump to file
-            if(database_log.size() > 100){
-                database_log.clear();
+                System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
             }
         }
+        if ( con == null){
+            System.out.println("DATABASE: con=null ("+log+")");
+        }
+        else{
+            PreparedStatement ppst = con.prepareStatement(query);
+            try{
+
+                ppst.setString(1,log);
+                ppst.setString(2,code);
+                ppst.setString(3,"empty");
+                ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+                ppst.execute();
+
+            }catch(SQLException e){}
+        }
+
+        // after 100 records dump to file
+        if(database_log.size() > 100){
+            database_log.clear();
+        }
+
     }
 
     /**
@@ -116,30 +127,44 @@ public class Database_Connector {
         database_log.add("("+actual_date.toString()+")"+"- "+code+" - "+log);
         database_log_copy.add("("+actual_date.toString()+")"+" - "+log);
         // load log to database
-        if ( debug == 1){
-            String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
-            System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
-            if ( con == null){
-                System.out.println("DATABASE: con=null ("+log+")");
+        String query = "INSERT INTO PROGRAM_LOG (program_log_desc,program_log_code,program_log_session_token,program_log_time) VALUES (?,?,?,?); ";
+
+        // print log to the screen
+        if (log_printing == 1){
+            if ( database_log.get(database_log.size()-1).contains("NEW JOB") || database_log.get(database_log.size()-1).contains("HEALTH")){
+                System.out.println(ConsoleColors.BLUE_BOLD+"\nTRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("Failed") ||database_log.get(database_log.size()-1).contains("FAILED")){
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("VALIDATION")){
+                System.out.println(ConsoleColors.YELLOW_BOLD+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
             }
             else{
-                PreparedStatement ppst = con.prepareStatement(query);
-
-                try{
-
-                    ppst.setString(1,log);
-                    ppst.setString(2,code);
-                    ppst.setString(3,session_token);
-                    ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
-                    ppst.execute();
-
-                }catch(SQLException e){}
+                System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
             }
+        }
 
-            // after 100 records dump to file
-            if(database_log.size() > 100){
-                database_log.clear();
-            }
+        if ( con == null){
+            System.out.println("DATABASE: con=null ("+log+")");
+        }
+        else{
+            PreparedStatement ppst = con.prepareStatement(query);
+
+            try{
+
+                ppst.setString(1,log);
+                ppst.setString(2,code);
+                ppst.setString(3,session_token);
+                ppst.setObject(4,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+                ppst.execute();
+
+            }catch(SQLException e){}
+        }
+
+        // after 100 records dump to file
+        if(database_log.size() > 100){
+            database_log.clear();
         }
     }
 
@@ -165,7 +190,7 @@ public class Database_Connector {
          *     CONSTRAINT fk_connectionlog FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
          * );
          */
-        String query = "INSERT INTO CONNECTION_LOG(user_id,session_token,session_time,connection_request,connection_answer)\n" +
+        String query = "INSERT INTO CONNECTION_LOG(user_id,session_token,connection_time,connection_request,connection_answer)\n" +
                 "VALUES\n" +
                 "(?,?,?,?,?);";
         try{

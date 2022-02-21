@@ -53,6 +53,7 @@ public class Room_Setter {
     public Viewer get_room_data(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int room_id) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ROOM-DATA","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             viewer.view.add(dr.get_room_data(room_id,TrackApiApplication.database.get_userid_bysession(session_token)));
@@ -73,6 +74,7 @@ public class Room_Setter {
                            @PathVariable int user_id,@PathVariable int role) throws SQLException {
         Room room = new Room();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ROOM-ADDMEMBER","JOB-GOT");
         if ( sv.connector_validation(app_token) ){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             if ( dr.create_room_member(room_id,user_id,role,
@@ -100,12 +102,17 @@ public class Room_Setter {
                               @PathVariable int room_id, @PathVariable int user_id) throws SQLException {
         Room room = new Room();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ROOM-REMOVEMEMBER","JOB-GOT");
         if ( sv.connector_validation(app_token) ){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
-            if ( dr.remove_room_member(room_id,user_id) == 1){
+            int ans = dr.remove_room_member(room_id,user_id,TrackApiApplication.database.get_userid_bysession(session_token));
+            if ( ans == 1){
                 room.flag = 1;
                 TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
                         session_token,"Trying to remove room member(room_id:"+room_id+")","Room member (user_id: "+user_id+") removed!");
+            }
+            else if ( ans == 2 ){
+                room.flag = 2;
             }
             else{
                 room.flag = -2;
@@ -126,6 +133,7 @@ public class Room_Setter {
     public Viewer list_rooms(@PathVariable String app_token, @PathVariable String session_token) throws SQLException {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ROOM-VIEWER","JOB-GOT");
         if (sv.connector_validation(app_token)){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             viewer.view2 = dr.list_rooms(TrackApiApplication.database.get_userid_bysession(session_token));
@@ -150,6 +158,7 @@ public class Room_Setter {
         Room room = new Room();
         room.room_id = room_id;
         Session_Validator sv = new Session_Validator(session_token);
+        TrackApiApplication.database.log("NEW JOB: ROOM-REMOVE","JOB-GOT");
         if ( sv.connector_validation(app_token)){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             room.flag = dr.remove_room(room_id,room_password);

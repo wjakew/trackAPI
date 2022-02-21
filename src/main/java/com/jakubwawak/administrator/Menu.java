@@ -9,7 +9,6 @@ import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.HealthMonitor;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
-import org.apache.catalina.User;
 import org.springframework.boot.SpringApplication;
 
 import java.io.BufferedReader;
@@ -173,6 +172,7 @@ public class Menu {
                             String user_password = raw_data.split(" ")[2];
                             User_Data user = new User_Data();
                             user.manual_register(user_login, user_password);
+                            user.create_user_configuration();
                         } catch (Exception e) {
                             System.out.println("wrong arguments.");
                         }
@@ -316,11 +316,11 @@ public class Menu {
                             switch(raw_data.split(" ")[1]){
                                 case "off":
                                     System.out.println("Log printing off.");
-                                    TrackApiApplication.database.debug = 0;
+                                    TrackApiApplication.database.log_printing = 0;
                                     break;
                                 case "on":
                                     System.out.println("Log printing on.");
-                                    TrackApiApplication.database.debug = 1;
+                                    TrackApiApplication.database.log_printing = 1;
                                     break;
                             }
                         }

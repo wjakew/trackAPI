@@ -133,7 +133,7 @@ public class User_Data {
 
             ppst.execute();
             TrackApiApplication.database.log("User "+user_name+" "+user_surname+" registered with "+user_login+" - "+user_login,"REGISTER-SUCCESS");
-            user_id = 1;
+            get_userid_by_login(user_login);
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to register user ( "+e.toString()+")","REGISTER-FAILED");
         } catch (NoSuchAlgorithmException e) {
