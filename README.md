@@ -26,6 +26,7 @@ Ability to add project, create linked tasks and issues. Easy way for sharing pro
 </ul>
 <p><strong>How to deploy</strong><br>
 Dowload latest release. Copy all files to linux server. Simply make docker_create.sh and docker_run_database.sh executable. Run both commands. Then chmod run.sh and execute it. Your api is running!</p>
+    <p><strong> Client app: https://github.com/wjakew/track </strong></p>
 </div>
 </body>
 
