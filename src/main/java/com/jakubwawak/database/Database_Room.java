@@ -54,6 +54,31 @@ public class Database_Room {
     }
 
     /**
+     * Function for checking invite data
+     * @param room_code
+     * @param room_password
+     * @return Integer
+     * Returns room_id, 0 if not found
+     */
+    public int check_invite_data(String room_code,String room_password) throws SQLException {
+        String query = "SELECT room_id FROM ROOM WHERE room_code = ? and room_password = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setString(1,room_code);
+            ppst.setString(2,room_password);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next()){
+                database.log("Found room for given invite data (room_id:"+rs.getInt("room_id")+")","ROOM-INVITEC");
+                return rs.getInt("room_id");
+            }
+            return 0;
+        }catch(SQLException e){
+            database.log("Failed to check invite data ("+e.toString()+")","ROOM-INVITEC-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for checking given password (if password correct)
      * @param password
      * @return Boolean
@@ -280,13 +305,32 @@ public class Database_Room {
                 ppst.setInt(2,user_id);
                 ppst.setInt(3,role);
                 ppst.execute();
-                database.log("Created room admin! User (user_id:"+user_id+") is now admin of room_id:"+room_id,"ROOM-ADMIN-CRT");
+                database.log("Created room user! User (user_id:"+user_id+") is now user of room_id:"+room_id+" with role: "+role,
+                        "ROOM-ADMIN-CRT");
                 return 1;
             }
             database.log("User not room admin - cannot add member","ROOM-ADMIN-NOAUTH");
             return 0;
         }catch(SQLException e){
             database.log("Failed to create room member ("+e.toString()+")","ROOM-ADMIN-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for adding member to room by given room data
+     * @param user_id
+     * @param room_code
+     * @param room_password
+     * @return Integer
+     * @throws SQLException
+     */
+    public int create_room_member_frominvite(int user_id,String room_code,String room_password) throws SQLException {
+        int room_id = check_invite_data(room_code,room_password);
+        if ( room_id > 0){
+            return create_room_member(room_id,user_id,2);
+        }
+        else{
             return -1;
         }
     }
@@ -307,7 +351,8 @@ public class Database_Room {
             ppst.setInt(2,user_id);
             ppst.setInt(3,role);
             ppst.execute();
-            database.log("Created room admin! User (user_id:"+user_id+") is now admin of room_id:"+room_id,"ROOM-ADMIN-CRT");
+            database.log("Created room user! User (user_id:"+user_id+") is now user of room_id:"+room_id+" with role: "+role,
+                    "ROOM-ADMIN-CRT");
             return 1;
         }catch(SQLException e){
             database.log("Failed to create room member ("+e.toString()+")","ROOM-ADMIN-FAILED");
@@ -340,6 +385,27 @@ public class Database_Room {
                 database.log("User is not an admin.","ROOM-MEMREM");
                 return 2;
             }
+        }catch(SQLException e){
+            database.log("Failed to remove room member ("+e.toString()+")","ROOM-MEMREM-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for removing room member
+     * @param room_id
+     * @param user_id
+     * @return
+     */
+    public int remove_room_member(int room_id,int user_id) throws SQLException {
+        String query = "DELETE FROM ROOM_MEMBER WHERE user_id = ? and room_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ppst.setInt(2,user_id);
+            ppst.executeQuery();
+            database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
+            return 1;
         }catch(SQLException e){
             database.log("Failed to remove room member ("+e.toString()+")","ROOM-MEMREM-FAILED");
             return -1;

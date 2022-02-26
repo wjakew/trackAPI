@@ -26,6 +26,7 @@ public class Room_Message_Setter {
     public Room_Message set_message(@PathVariable String app_token,@PathVariable String session_token,
                                     @PathVariable int room_id, @PathVariable String message_content) throws SQLException {
         Room_Message rm = new Room_Message();
+        TrackApiApplication.database.log("NEW JOB: ROOM-MESSAGE-SEND","JOB-GOT");
         rm.room_id = room_id;
         rm.room_message_content = message_content;
         Session_Validator sv = new Session_Validator(session_token);
@@ -43,6 +44,7 @@ public class Room_Message_Setter {
     public Room_Message get_messages(@PathVariable String app_token,@PathVariable String session_token
             ,@PathVariable int room_message_id) throws SQLException {
         Room_Message rm = new Room_Message();
+        TrackApiApplication.database.log("NEW JOB: ROOM-MESSAGE-GET","JOB-GOT");
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token) ){
             Database_Room_Message drm = new Database_Room_Message(TrackApiApplication.database);
@@ -59,6 +61,7 @@ public class Room_Message_Setter {
     public Viewer room_messages(@PathVariable String app_token, @PathVariable String session_token,
                                 @PathVariable int room_id) throws SQLException {
         ArrayList<Room_Message> messages = new ArrayList<>();
+        TrackApiApplication.database.log("NEW JOB: ROOM-MESSAGES-LIST","JOB-GOT");
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token) ){

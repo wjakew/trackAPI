@@ -97,6 +97,31 @@ public class Room_Setter {
         return room;
     }
 
+    @GetMapping("/room-invite/{app_token}/{session_token}/{mode}/{room_code}/{room_password}")
+    public Room invite_member(@PathVariable String app_token,@PathVariable String session_token,@PathVariable int mode,
+                              @PathVariable String room_code,@PathVariable String room_password) throws SQLException {
+        Room room = new Room();
+        TrackApiApplication.database.log("NEW JOB: ROOM-INVITE","JOB-GOT");
+        Session_Validator sv = new Session_Validator(session_token);
+        if ( sv.connector_validation(app_token) ) {
+            Database_Room dr = new Database_Room(TrackApiApplication.database);
+            if (mode == 1)
+                room.flag = dr.create_room_member_frominvite(TrackApiApplication.database.get_userid_bysession(session_token), room_code, room_password);
+            else if (mode == 2) {
+                int room_id = dr.check_invite_data(room_code, room_password);
+                if ( room_id > 0)
+                    room.flag = dr.remove_room_member(room_id, TrackApiApplication.database.get_userid_bysession(session_token));
+                else
+                    room.flag = -1;
+            }
+        }
+        else{
+            room.flag = sv.flag;
+        }
+
+        return room;
+    }
+
     @GetMapping("/room-removemember/{app_token}/{session_token}/{room_id}/{user_id}")
     public Room remove_member(@PathVariable String app_token,@PathVariable String session_token,
                               @PathVariable int room_id, @PathVariable int user_id) throws SQLException {
