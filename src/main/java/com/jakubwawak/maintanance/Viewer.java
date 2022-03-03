@@ -20,6 +20,7 @@ public class Viewer {
     public ArrayList<String> view;
     public ArrayList<Room> view2;
     public ArrayList<Room_Message> view3;
+    public int field;
     public Session_Validator sv;
 
     /**
@@ -27,6 +28,7 @@ public class Viewer {
      */
     public Viewer(){
         flag = 0;
+        field = -1;
         view = new ArrayList<>();
         view2 = new ArrayList<>();
         view3 = new ArrayList<>();

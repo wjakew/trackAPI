@@ -197,6 +197,31 @@ public class Database_Room {
     }
 
     /**
+     * Function for getting user role from room
+     * @param user_id
+     * @return Integer
+     */
+    public int get_user_role(int room_id,int user_id) throws SQLException {
+        String query = "SELECT role from ROOM_MEMBER WHERE room_id = ? and user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,room_id);
+            ppst.setInt(2,user_id);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if ( rs.next() ){
+                database.log("Loaded user role!","ROOM-ROLEG");
+                return rs.getInt("role");
+            }
+            return 0;
+        } catch (SQLException e) {
+            database.log("Failed to get user role ("+e.toString()+")","ROOM-ROLEG-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for creating room object
      * @param room_name
      * @param room_desc
@@ -368,16 +393,22 @@ public class Database_Room {
      * return codes:
      *  1 - user removed
      *  2 - user is not an admin,
+     *  3 - removed user is admin - cannot remove
      * -1 - database error
      */
     public int remove_room_member(int room_id,int user_id,int owner_id) throws SQLException {
         String query = "DELETE FROM ROOM_MEMBER WHERE user_id = ? and room_id = ?;";
         try{
             if ( check_room_admin(room_id,owner_id) == 1 ){
+                if ( check_room_admin(room_id,user_id) == 1 ){
+                    database.log("Cannot remove room admin!","ROOM-MEMREM");
+                    return 3;
+                }
+                database.log("Given user is an admin user_id:"+owner_id,"ROOM-MEMREM");
                 PreparedStatement ppst = database.con.prepareStatement(query);
-                ppst.setInt(1,room_id);
-                ppst.setInt(2,user_id);
-                ppst.executeQuery();
+                ppst.setInt(1,user_id);
+                ppst.setInt(2,room_id);
+                ppst.execute();
                 database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
                 return 1;
             }
@@ -401,8 +432,8 @@ public class Database_Room {
         String query = "DELETE FROM ROOM_MEMBER WHERE user_id = ? and room_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,room_id);
-            ppst.setInt(2,user_id);
+            ppst.setInt(1,user_id);
+            ppst.setInt(2,room_id);
             ppst.executeQuery();
             database.log("Room (room_id:"+room_id+") member (user_id:"+user_id+") removed!","ROOM-MEMREM");
             return 1;

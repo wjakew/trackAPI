@@ -59,7 +59,7 @@ public class Room_Message {
      * @param rs
      */
     public Room_Message(ResultSet rs) throws SQLException {
-        room_message_id = rs.getInt("room_messge_id");
+        room_message_id = rs.getInt("room_message_id");
         room_message_content = rs.getString("room_message_content");
         room_time = rs.getObject("user_login",LocalDateTime.class);
         room_id = rs.getInt("room_id");
@@ -84,10 +84,22 @@ public class Room_Message {
     public void look_for_logins() throws SQLException {
         String[] words = room_message_content.split(" ");
         for(String word : words){
-            int check = TrackApiApplication.database.get_userid_bylogin(word);
-            if ( check > 0 ){
-                ping_id = check;
-                break;
+            if ( word.contains("@")){
+                try{
+                    word = word.replaceAll("@","");
+                    String[] elements = word.split(":");
+                    int check = TrackApiApplication.database.get_userid_bylogin(elements[1]);
+                    if ( check > 0 ){
+                        ping_id = check;
+                        break;
+                    }
+                }catch(Exception e){
+                    int check = TrackApiApplication.database.get_userid_bylogin(word.replaceAll("@",""));
+                    if ( check > 0 ){
+                        ping_id = check;
+                        break;
+                    }
+                }
             }
         }
     }

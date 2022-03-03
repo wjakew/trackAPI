@@ -6,6 +6,7 @@
 package com.jakubwawak.room;
 
 import com.jakubwawak.administrator.Session_Validator;
+import com.jakubwawak.database.Database_Room;
 import com.jakubwawak.database.Database_Room_Message;
 import com.jakubwawak.maintanance.Viewer;
 import com.jakubwawak.trackAPI.TrackApiApplication;
@@ -29,6 +30,7 @@ public class Room_Message_Setter {
         TrackApiApplication.database.log("NEW JOB: ROOM-MESSAGE-SEND","JOB-GOT");
         rm.room_id = room_id;
         rm.room_message_content = message_content;
+        rm.user_id = TrackApiApplication.database.get_userid_bysession(session_token);
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token)){
             Database_Room_Message drm = new Database_Room_Message(TrackApiApplication.database);
@@ -65,10 +67,12 @@ public class Room_Message_Setter {
         Viewer viewer = new Viewer();
         Session_Validator sv = new Session_Validator(session_token);
         if ( sv.connector_validation(app_token) ){
+            Database_Room dr = new Database_Room(TrackApiApplication.database);
             Database_Room_Message drm = new Database_Room_Message(TrackApiApplication.database);
             messages = drm.get_room_messages(room_id);
             viewer.view3 = messages;
             viewer.flag = 1;
+            viewer.field = dr.get_user_role(room_id,TrackApiApplication.database.get_userid_bysession(session_token));
         }
         else{
             viewer.flag = sv.flag;

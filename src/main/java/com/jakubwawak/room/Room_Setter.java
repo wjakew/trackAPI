@@ -131,16 +131,13 @@ public class Room_Setter {
         if ( sv.connector_validation(app_token) ){
             Database_Room dr = new Database_Room(TrackApiApplication.database);
             int ans = dr.remove_room_member(room_id,user_id,TrackApiApplication.database.get_userid_bysession(session_token));
+            room.flag = ans;
             if ( ans == 1){
                 room.flag = 1;
                 TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
                         session_token,"Trying to remove room member(room_id:"+room_id+")","Room member (user_id: "+user_id+") removed!");
             }
-            else if ( ans == 2 ){
-                room.flag = 2;
-            }
             else{
-                room.flag = -2;
                 TrackApiApplication.database.connection_logger(TrackApiApplication.database.get_userid_bysession(session_token),
                         session_token,"Trying to remove room member (room_id:"+room_id+")","Failed to remove room, user is not admin");
             }

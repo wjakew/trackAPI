@@ -5,7 +5,6 @@
  */
 package com.jakubwawak.database;
 
-import com.jakubwawak.room.Room;
 import com.jakubwawak.room.Room_Message;
 
 import java.io.FileWriter;
@@ -104,34 +103,34 @@ public class Database_Room_Message {
      */
     public Room_Message send_message(Room_Message to_send) throws SQLException {
         /**
-         * CREATE TABLE ROOM_MESSAGE
-         * (
-         *     room_message_id INT PRIMARY KEY AUTO_INCREMENT,
-         *     room_message_content TEXT,
-         *     message_time TIMESTAMP,
-         *     room_id INT,
-         *     user_id INT,
-         *     ping_id INT,
-         *     content_id INT,
-         *
-         *     CONSTRAINT fk_roommessage1 FOREIGN KEY (room_id) REFERENCES ROOM(room_id),
-         *     CONSTRAINT fk_roommessage2 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
-         * );
+         CREATE TABLE ROOM_MESSAGE
+         (
+         room_message_id INT PRIMARY KEY AUTO_INCREMENT,
+         room_message_content TEXT,
+         room_time TIMESTAMP,
+         room_id INT,
+         user_id INT,
+         ping_id INT,
+         content_id INT,
+
+         CONSTRAINT fk_roommessage1 FOREIGN KEY (room_id) REFERENCES ROOM(room_id),
+         CONSTRAINT fk_roommessage2 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         );
          */
-        String query = "INSERT INTO ROOM_MESSAGES (room_id,message_time,room_message_content,user_id,ping_id,content_id)\n"
-                +"VALUES (?,?,?,?,?,?,?);";
+        String query = "INSERT INTO ROOM_MESSAGE (room_id,room_time,room_message_content,user_id,ping_id,content_id)\n"
+                +"VALUES (?,?,?,?,?,?);";
 
         Room_Message rm = to_send;
         rm.look_for_logins();
         try{
+            database.log("Trying to set new message on database!","ROOM-SEND");
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,rm.room_id);
             ppst.setObject(2,rm.room_time);
             ppst.setString(3,rm.room_message_content);
             ppst.setInt(4,rm.user_id);
-            ppst.setInt(5,rm.user_id);
-            ppst.setInt(6,rm.ping_id);
-            ppst.setInt(7,rm.content_id);
+            ppst.setInt(5,rm.ping_id);
+            ppst.setInt(6,rm.content_id);
             ppst.execute();
             database.log("Message from user_id:"+rm.user_id+" to room room_id:"+rm.room_id+" was sent!","ROOM-SEND");
             rm.flag = 1;
