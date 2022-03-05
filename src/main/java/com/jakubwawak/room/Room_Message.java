@@ -61,7 +61,7 @@ public class Room_Message {
     public Room_Message(ResultSet rs) throws SQLException {
         room_message_id = rs.getInt("room_message_id");
         room_message_content = rs.getString("room_message_content");
-        room_time = rs.getObject("user_login",LocalDateTime.class);
+        room_time = rs.getObject("room_time",LocalDateTime.class);
         room_id = rs.getInt("room_id");
         user_id = rs.getInt("user_id");
         ping_id = rs.getInt("ping_id");
