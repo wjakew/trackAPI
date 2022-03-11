@@ -8,7 +8,7 @@ SET SQL_MODE='ALLOW_INVALID_DATES';
 -- database drop and reload
 drop table if exists PROGRAMCODES;
 drop table if exists PROGRAM_LOG;
-
+drop table if exists WHO_TABLE;
 drop table if exists ISSUE;
 drop table if exists TASK_COMMENT;
 drop table if exists TASK;
@@ -41,6 +41,14 @@ CREATE TABLE PROGRAMCODES
   programcodes_key VARCHAR(100),
   programcodes_values VARCHAR(100)
 );
+-- table for saving connection data
+CREATE TABLE WHO_TABLE
+(
+  whotable_id INT AUTO_INCREMENT PRIMARY KEY,
+  whotable_mac VARCHAR(50),
+  whotable_ip VARCHAR(50),
+  whotable_time TIMESTAMP
+)AUTO_INCREMENT = 1000000;
 -- table for storing program log (errors etc)
 CREATE TABLE PROGRAM_LOG
 (
