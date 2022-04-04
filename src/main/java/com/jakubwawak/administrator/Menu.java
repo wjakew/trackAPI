@@ -376,6 +376,38 @@ public class Menu {
                     }
                     break;
                 }
+                case "web_session":
+                {
+                    //web_session [web_session -state, web_session create -macaddress -user_id] -state[on/off], creates new session for web
+                    if(raw_data.split(" ").length == 4) {
+                        switch (raw_data.split(" ")[1]) {
+                            case "create":
+                            {
+                                try{
+                                    int user_id = Integer.parseInt(raw_data.split(" ")[3]);
+                                    TrackApiApplication.database.create_webtoken(raw_data.split(" ")[2],user_id);
+                                }catch(NumberFormatException e){
+                                    System.out.println("Wrong user_id");
+                                }
+                                break;
+                            }
+                            default:
+                            {
+                                System.out.println("Wrong command usage.");
+                                break;
+                            }
+                        }
+                    }
+                    else if ( raw_data.split(" ").length == 2){
+                        if ( raw_data.split(" ")[1].contains("on") || raw_data.split(" ")[1].contains("off")){
+                            TrackApiApplication.database.update_programcodes("web_apps",raw_data.split(" ")[1]);
+                        }
+                    }
+                    else{
+                        System.out.println("Wrong command use. Check help.");
+                    }
+
+                }
                 case "":
                     if ( clear_blank == 1){
                         System.out.print("\033[H\033[2J");
@@ -387,6 +419,7 @@ public class Menu {
                     System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
+                    System.out.println("web_session [web_session -state, web_session create -macaddress] -state[on/off], creates new session for web");
                     System.out.println("cruser [cruser -login -password, cruser -email] - creates user with given login and password");
                     System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");

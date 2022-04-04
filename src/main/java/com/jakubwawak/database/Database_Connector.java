@@ -23,7 +23,7 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.7";
+    public final String version = "v0.0.8";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -669,6 +669,27 @@ public class Database_Connector {
     }
 
     /**
+     * Function for updating programcodes data
+     * @param programcodes_key
+     * @param programcodes_values
+     * @return Integer
+     */
+    public int update_programcodes(String programcodes_key,String programcodes_values) throws SQLException {
+        String query = "UPDATE PROGRAMCODES SET programcodes_values = ? where programcodes_key = ?;";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,programcodes_values);
+            ppst.setString(2,programcodes_key);
+            ppst.execute();
+            TrackApiApplication.database.log("Updated programcodes value!","SERVICETAG-UPDATE");
+            return 1;
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to update data ("+e.toString()+")","SERVICETAG-UPDATE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
      * Function for listing apptokens
      * @return ArrayList
      */
@@ -719,6 +740,42 @@ public class Database_Connector {
             return 1;
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to create apptoken ("+e.toString()+")","APPTOKEN-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for creating webtokens
+     * @param mac_address
+     * @return Integer
+     */
+    public int create_webtoken(String mac_address,int user_id) throws SQLException {
+        /**
+         * CREATE TABLE SESSION_WHITETABLE
+         * (
+         *     session_whitetable_id INT AUTO_INCREMENT PRIMARY KEY,
+         *     user_id INT,
+         *     session_token VARCHAR(70),
+         *     session_token_time TIMESTAMP,
+         *
+         *     CONSTRAINT fk_session_whitetable FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        String query = "INSERT INTO SESSION_WHITETABLE (user_id,session_token,session_token_time)\n" +
+                "VALUES (?,?,?);";
+        RandomString generator = new RandomString(10);
+        String token = "$WEB$"+generator.buf;
+        TrackApiApplication.database.log("Created new web token: "+token,"APPTOKEN-CREATE");
+        LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setString(2,token);
+            ppst.setObject(3,ldt);
+            ppst.execute();
+            return 1;
+        }catch(Exception e){
+            TrackApiApplication.database.log("Failed to create webtoken ("+e.toString()+")","APPTOKEN-FAILED");
             return -1;
         }
     }

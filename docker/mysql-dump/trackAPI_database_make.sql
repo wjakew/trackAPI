@@ -18,6 +18,7 @@ drop table if exists PROJECT;
 drop table if exists LOG_HISTORY;
 drop table if exists PRIVILAGES;
 drop table if exists CONNECTION_LOG;
+drop table if exists SESSION_WHITETABLE;
 drop table if exists SESSION_TOKEN;
 drop table if exists SESSION_TOKEN_ARCH;
 drop table if exists TOKEN;
@@ -156,6 +157,16 @@ CREATE TABLE SESSION_TOKEN
   session_token_time TIMESTAMP,
   
   CONSTRAINT fk_session_token FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing session whitetables (for track_web development)
+CREATE TABLE SESSION_WHITETABLE
+(
+    session_whitetable_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    session_token VARCHAR(70),
+    session_token_time TIMESTAMP,
+
+    CONSTRAINT fk_session_whitetable FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
 -- table for storing archived token data
 CREATE TABLE SESSION_TOKEN_ARCH
@@ -317,8 +328,11 @@ CREATE TABLE USER_CONFIGURATION
 INSERT INTO PROGRAMCODES
 (programcodes_key,programcodes_values)
 VALUES
-('DATABASEVERSION','102');
-
+('DATABASEVERSION','103');
+INSERT INTO PROGRAMCODES
+(programcodes_key, programcodes_values)
+VALUES
+('web_apps','on');
 INSERT INTO USER_DATA
 (user_name,user_surname,user_email,user_login,user_password,user_category)
 VALUES

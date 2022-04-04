@@ -94,7 +94,7 @@ public class Session_Validator {
     public boolean connector_validation(String app_token) throws SQLException {
         TokenCheck tc = new TokenCheck(app_token);
         if ( tc.check() == 1){
-            TrackApiApplication.database.log("Validation status: "+validation_flag,"SESSION-FLAG-STATUS");
+            TrackApiApplication.database.log("Apptoken validation status: "+validation_flag,"SESSION-FLAG-STATUS");
             if ( validation_flag == 1){
                 TrackApiApplication.database.log("------Connection validation successful for "+session_token+"/"+app_token,"CONNECT-VALIDATION",session_token);
                 return true;
@@ -119,8 +119,10 @@ public class Session_Validator {
      * -1 - validation session error
      */
     public int validate() throws SQLException {
-        String query = "SELECT * FROM SESSION_TOKEN WHERE session_token = ?;";
 
+        TrackApiApplication.database.log("CONNECTION VALIDATION","VALIDATION");
+        TrackApiApplication.database.log("App connection","VALIDATION");
+        String query = "SELECT * FROM SESSION_TOKEN WHERE session_token = ?;";
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
             ppst.setString(1,session_token);
@@ -147,6 +149,5 @@ public class Session_Validator {
             TrackApiApplication.database.log("Failed to validate session! Token: "+session_token,"ERROR-VALIDATION");
             return -1;
         }
-
     }
 }
