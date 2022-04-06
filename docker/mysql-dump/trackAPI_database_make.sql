@@ -32,6 +32,8 @@ drop table if exists USER_GRAVEYARD;
 drop table if exists ROOM_MESSAGE;
 drop table if exists ROOM_MEMBER;
 drop table if exists ROOM;
+drop table if exists TWO_FACTOR_ENABLED;
+drop table if exists TWO_FACTOR_CODES;
 drop table if exists USER_DATA;
 
 
@@ -72,6 +74,23 @@ CREATE TABLE USER_DATA
   user_password VARCHAR(50),
   user_category VARCHAR(100) -- CODES: ADMIN,DEVELOPER,CLIENT
 ) AUTO_INCREMENT = 1000;
+-- table for storing 2fa data
+CREATE TABLE TWO_FACTOR_ENABLED
+(
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    2fa_email VARCHAR(200),
+    2fa_confirmed INT,
+
+    CONSTRAINT fk_twofactorenabled1 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
+-- table for storing 2fa codes
+CREATE TABLE TWO_FACTOR_CODES
+(
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    2fa_code INT,
+
+    CONSTRAINT fk_twofactorcodes FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+);
 -- table for storing user graveyard data
 CREATE TABLE USER_GRAVEYARD
 (

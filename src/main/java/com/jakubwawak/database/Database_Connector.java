@@ -238,6 +238,14 @@ public class Database_Connector {
     }
 
     /**
+     * Showing log
+     * @param size
+     */
+    public void show_all_log(int size){
+
+    }
+
+    /**
      * Function for connecting to database
      * @param ip
      * @param database_name

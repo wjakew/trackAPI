@@ -5,6 +5,7 @@
  */
 package com.jakubwawak.administrator;
 
+import com.jakubwawak.database.Database_2FactorAuth;
 import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.HealthMonitor;
 import com.jakubwawak.trackAPI.TrackApiApplication;
@@ -22,6 +23,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Object for creating menu for the system
@@ -406,7 +409,56 @@ public class Menu {
                     else{
                         System.out.println("Wrong command use. Check help.");
                     }
-
+                    break;
+                }
+                case "2fa":
+                {
+                    // 2fa show
+                    if( raw_data.split(" ").length == 2){
+                        if ( raw_data.split(" ")[1].equals("show")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            d2fa.show_2fa_enabled_users();
+                        }
+                        else{
+                            System.out.println("Wrong command usage.");
+                        }
+                    }
+                    //2fa enable -user_id -email
+                    else if (raw_data.split(" ").length == 4){
+                        if ( raw_data.split(" ")[1].equals("enable")){
+                            try{
+                                int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                String email = raw_data.split(" ")[3];
+                                Pattern pattern = Pattern.compile(".*@*.");
+                                Matcher matcher = pattern.matcher(email);
+                                if ( matcher.matches() ){
+                                    Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                                    d2fa.enable_authorization(user_id,email);
+                                }
+                                else{
+                                    System.out.println("Wrong email address");
+                                }
+                            }catch(NumberFormatException e){
+                                System.out.println("Wrong user_id.");
+                            }
+                        }
+                        else{
+                            System.out.println("Wrong command usage.");
+                        }
+                    }
+                    else if ( raw_data.split(" ").length == 3){
+                        // 2fa disable -user_id
+                        if ( raw_data.split(" ")[1].contains("disable")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            try{
+                                int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                d2fa.disable_authorization(user_id);
+                            }catch(NumberFormatException e){
+                                System.out.println("Wrong user_id.");
+                            }
+                        }
+                    }
+                    break;
                 }
                 case "":
                     if ( clear_blank == 1){
@@ -420,6 +472,7 @@ public class Menu {
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
                     System.out.println("web_session [web_session -state, web_session create -macaddress] -state[on/off], creates new session for web");
+                    System.out.println("2fa [2fa show,2fa enable -user_id -email ,2fa disable -user_id, 2fa create -user_id] - for maintaining 2fa security for users");
                     System.out.println("cruser [cruser -login -password, cruser -email] - creates user with given login and password");
                     System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");
