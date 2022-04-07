@@ -10,6 +10,7 @@ import com.jakubwawak.administrator.Menu;
 import com.jakubwawak.administrator.Password_Validator;
 import com.jakubwawak.database.Database_Admin;
 import com.jakubwawak.maintanance.ConsoleColors;
+import com.jakubwawak.maintanance.MailConnector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -17,6 +18,7 @@ import java.io.Console;
 import com.jakubwawak.database.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -25,8 +27,12 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.2.8";
-	public static String build = "050422REV01";
+	public static String build = "070422REV01";
 
+	public static int debug = 0;
+
+	private static InetAddress ip;
+	public static String service_ip;
 	public static Configuration configuration;
 	public static Database_Connector database;
 	public static Menu menu;
@@ -39,6 +45,16 @@ public class TrackApiApplication {
 	public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		clear_console();
 		header();
+		service_ip = ip.getLocalHost().toString();
+		System.out.println("Service ip (actual): "+service_ip);
+		if ( debug == 1){
+			load_configuration();
+			System.out.println("Debug starting...");
+			MailConnector mc = new MailConnector();
+			mc.send("kubawawak@gmail.com","test","test");
+			System.out.println("Debug is over. Exiting...");
+			System.exit(0);
+		}
 		System.out.print("Loaded startup arguments: ");
 		for(String arg : args){
 			System.out.println(arg);

@@ -53,7 +53,7 @@ public class Database_2FactorAuth {
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
-                return "http://"+TrackApiApplication.database.configuration.database_ip+"/"+user_id+"/"+rs.getInt("2fa_confirmed");
+                return "http://"+TrackApiApplication.service_ip.split("/")[1]+"/track-2fa-confirm"+"/"+user_id+"/"+rs.getInt("2fa_confirmed");
             }
             return "error";
         }catch(Exception e){
