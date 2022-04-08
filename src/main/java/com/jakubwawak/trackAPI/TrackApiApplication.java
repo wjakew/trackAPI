@@ -27,7 +27,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.2.8";
-	public static String build = "070422REV01";
+	public static String build = "080422REV01";
 
 	public static int debug = 0;
 
@@ -48,12 +48,7 @@ public class TrackApiApplication {
 		service_ip = ip.getLocalHost().toString();
 		System.out.println("Service ip (actual): "+service_ip);
 		if ( debug == 1){
-			load_configuration();
-			System.out.println("Debug starting...");
-			MailConnector mc = new MailConnector();
-			mc.send("kubawawak@gmail.com","test","test");
-			System.out.println("Debug is over. Exiting...");
-			System.exit(0);
+			//debug data here
 		}
 		System.out.print("Loaded startup arguments: ");
 		for(String arg : args){

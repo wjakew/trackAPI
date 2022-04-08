@@ -84,6 +84,55 @@ public class Database_2FactorAuth {
     }
 
     /**
+     * Function for checking if user have enabled 2fa
+     * @param user_id
+     * @return Integer
+     * return codes:
+     *  1 - user using 2fa and confirmed
+     *  0 - user using 2fa but no mail confirmation
+     * -1 - 2fa not enabled
+     * -2 - database error
+     */
+    public int check_2fa_enabled(int user_id) throws SQLException {
+        String query = "SELECT 2fa_confirmed FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                if  (rs.getInt("2fa_confirmed") == 0){
+                    return 1;
+                }
+                return 0;
+            }
+            return -1;
+        } catch (SQLException e) {
+            database.log("Failed to check 2fa enabled ("+e.toString()+")","2FACHECK-FAILED");
+            return -2;
+        }
+    }
+
+    /**
+     * Function for getting user email
+     * @param user_id
+     * @return String
+     */
+    String get_email(int user_id) throws SQLException {
+        String query = "SELECT 2fa_email FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if( rs.next() ){
+                return rs.getString("2fa_email");
+            }
+            return "none";
+        }catch(SQLException e){
+            database.log("Failed to get email ("+e.toString()+")","2FAEMAIL-FAILED");
+            return "error";
+        }
+    }
+    /**
      * Function for showing list of users with 2fa enabled
      */
     public void show_2fa_enabled_users() throws SQLException {
@@ -129,6 +178,41 @@ public class Database_2FactorAuth {
             return -1;
         }catch(Exception e){
             database.log("Error: "+e.toString(),"ENABLE-AUTH");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for clearing user codes from database
+     * @param user_id
+     * @return Integer
+     */
+    public int clear_user_codes(int user_id) throws SQLException {
+        String query = "DELETE FROM TWO_FACTOR_CODES WHERE user_id = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.execute();
+            return 1;
+        } catch (SQLException e) {
+            database.log("Failed to clear user 2fa codes ("+e.toString()+")","2FACLEAR-USER-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for clearing all user codes
+     * @return Integer
+     */
+    public int clear_codes() throws SQLException {
+        String query = "DELETE FROM TWO_FACTOR_CODES;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.execute();
+            database.log("Removed all 2fa codes","2FACLEAR");
+            return 1;
+        }catch(Exception e){
+            database.log("Failed to remove all codes from database ("+e.toString()+")","2FACLEAR-FAILED");
             return -1;
         }
     }
@@ -218,18 +302,91 @@ public class Database_2FactorAuth {
          *     CONSTRAINT fk_twofactorcodes FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
          * );
          */
-        String query = "INSERT INTO TWO_FACTOR_CODES (user_id,2fa_code) VALUES (?,?);";
+        if ( check_2fa_enabled(user_id) == 1){
+            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,2fa_code) VALUES (?,?);";
 
-        try{
-            PreparedStatement ppst = database.con.prepareStatement(query);
-            ppst.setInt(1,user_id);
-            ppst.setInt(2,get_code());
+            try{
+                int fa_code = get_code();
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ppst.setInt(2,fa_code);
+                ppst.execute();
+                database.log("Rolled 2fa for user_id: "+user_id,"2FAROLL");
+                MailConnector mc = new MailConnector();
 
-            database.log("Rolled 2fa for user_id: "+user_id,"2FAROLL");
-            return 1;
-        } catch (SQLException e) {
-            database.log("Failed to roll 2fa code ("+e.toString()+")","2FAROLL-FAILED");
-            return -1;
+                String email = get_email(user_id);
+
+                if ( !email.equals("none") && !email.equals("error")){
+                    mc.send(email,"2FA CODE - TRACK","Your 2FA code: "+fa_code+"\n Track Team");
+                    database.log("Email with code sent!","2FACODE-EMAIL");
+                    return 1;
+                }
+                else{
+                    database.log("Problem with 2fa code. Check log.","2FACODE-EMAIL-FAILED");
+                    return -1;
+                }
+            } catch (SQLException e) {
+                database.log("Failed to roll 2fa code ("+e.toString()+")","2FAROLL-FAILED");
+                return -1;
+            }
+        }
+        else if (check_2fa_enabled(user_id) == 0 ){
+            database.log("2FA for user_id:"+user_id+" not confirmed","2FAROLL");
+            return 0;
+        }
+        else if (check_2fa_enabled(user_id) == -1){
+            database.log("2FA not enabled for user.","2FAROLL-NOTENABLED");
+            return -2;
+        }
+        else{
+            database.log("2FA roll error. Check log.","2FAROLL-FAILED");
+            return -3;
+        }
+    }
+
+    /**
+     * Function for rolling new 2fa
+     * @param user_id
+     * @return Integer
+     */
+    public int manual_roll_2fa(int user_id) throws SQLException {
+        /**
+         * CREATE TABLE TWO_FACTOR_CODES
+         * (
+         *     user_id INT PRIMARY KEY AUTO_INCREMENT,
+         *     2fa_code INT,
+         *
+         *     CONSTRAINT fk_twofactorcodes FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
+         * );
+         */
+        if ( check_2fa_enabled(user_id) == 1){
+            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,2fa_code) VALUES (?,?);";
+
+            try{
+                int fa_code = get_code();
+                PreparedStatement ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ppst.setInt(2,fa_code);
+                ppst.execute();
+                database.log("Rolled 2fa for user_id: "+user_id,"2FAROLL");
+                database.log("2FA code: user_id:"+user_id+" code: "+fa_code,"2FA");
+                return 1;
+            } catch (SQLException e) {
+                database.log("Failed to roll 2fa code ("+e.toString()+")","2FAROLL-FAILED");
+                return -1;
+            }
+        }
+        else if (check_2fa_enabled(user_id) == 0 ){
+            database.log("2FA for user_id:"+user_id+" not confirmed","2FAROLL");
+            return 0;
+        }
+        else if (check_2fa_enabled(user_id) == -1){
+            database.log("2FA not enabled for user.","2FAROLL-NOTENABLED");
+            return -2;
+        }
+        else{
+            database.log("2FA roll error. Check log.","2FAROLL-FAILED");
+            return -3;
         }
     }
 }

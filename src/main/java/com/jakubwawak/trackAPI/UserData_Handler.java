@@ -7,6 +7,7 @@ package com.jakubwawak.trackAPI;
 
 import com.jakubwawak.administrator.Session_Validator;
 import com.jakubwawak.administrator.TokenCheck;
+import com.jakubwawak.database.Database_2FactorAuth;
 import com.jakubwawak.users.User_Data;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,6 +75,42 @@ public class UserData_Handler {
         TrackApiApplication.database.log("NEW JOB: LOGIN","JOB-GOT");
         if ( tc.check() == 1){
             ud.login(user_login,user_password);
+        }
+        else{
+            ud.user_id = -11;
+        }
+        return ud;
+    }
+
+    /**
+     * Function for login in user
+     * @param token
+     * @param user_login
+     * @param user_password
+     * @return User_Data
+     * @throws SQLException
+     * return codes:
+     * user_id:
+     * -6 - app token is wrong
+     * -69 - 2fa enabled on account
+     * -1 - user not found
+     * -5 - user not found
+     */
+    @GetMapping("/n-login/{token}/{user_login}/{user_password}")
+    public User_Data new_login(@PathVariable String token,@PathVariable String user_login,@PathVariable String user_password) throws SQLException {
+        TokenCheck tc = new TokenCheck(token);
+        User_Data ud = new User_Data();
+        TrackApiApplication.database.log("NEW JOB: N-LOGIN","JOB-GOT");
+        if ( tc.check() == 1){
+            ud.login(user_login,user_password);
+            if ( ud.user_id > 0 ){
+                // 2fa check
+                Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                if(d2fa.check_2fa_enabled(ud.user_id) == 1){
+                    d2fa.roll_2fa(ud.user_id);
+                    ud.user_id = -69;
+                }
+            }
         }
         else{
             ud.user_id = -11;

@@ -12,6 +12,7 @@ import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
 import org.springframework.boot.SpringApplication;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -419,6 +420,10 @@ public class Menu {
                             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
                             d2fa.show_2fa_enabled_users();
                         }
+                        else if ( raw_data.split(" ")[1].equals("clear")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            d2fa.clear_codes();
+                        }
                         else{
                             System.out.println("Wrong command usage.");
                         }
@@ -447,12 +452,33 @@ public class Menu {
                         }
                     }
                     else if ( raw_data.split(" ").length == 3){
+
                         // 2fa disable -user_id
                         if ( raw_data.split(" ")[1].contains("disable")){
                             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
                             try{
                                 int user_id = Integer.parseInt(raw_data.split(" ")[2]);
                                 d2fa.disable_authorization(user_id);
+                            }catch(NumberFormatException e){
+                                System.out.println("Wrong user_id.");
+                            }
+                        }
+                        // 2fa roll -user_id
+                        else if (raw_data.split(" ")[1].contains("roll")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            try{
+                                int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                d2fa.manual_roll_2fa(user_id);
+                            }catch(NumberFormatException e){
+                                System.out.println("Wrong user_id.");
+                            }
+                        }
+                        // 2fa crcodes -user_id
+                        else if (raw_data.split(" ")[1].contains("crcodes")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            try{
+                                int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                d2fa.clear_user_codes(user_id);
                             }catch(NumberFormatException e){
                                 System.out.println("Wrong user_id.");
                             }
@@ -472,7 +498,9 @@ public class Menu {
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
                     System.out.println("web_session [web_session -state, web_session create -macaddress] -state[on/off], creates new session for web");
-                    System.out.println("2fa [2fa show,2fa enable -user_id -email ,2fa disable -user_id, 2fa create -user_id] - for maintaining 2fa security for users");
+                    System.out.println("2fa");
+                    System.out.println("   [2fa show,2fa enable -user_id -email ,2fa disable -user_id, 2fa create -user_id, 2fa roll -user_id, 2fa clear, 2fa crcodes -user_id]");
+                    System.out.println("                                                                                    -crcodes - clears given user 2fa codes");
                     System.out.println("cruser [cruser -login -password, cruser -email] - creates user with given login and password");
                     System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");
