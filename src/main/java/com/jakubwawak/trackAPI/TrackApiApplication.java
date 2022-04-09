@@ -27,7 +27,7 @@ import java.util.Scanner;
 public class TrackApiApplication {
 
 	public static String version = "v1.2.8";
-	public static String build = "080422REV01";
+	public static String build = "090422REV01";
 
 	public static int debug = 0;
 

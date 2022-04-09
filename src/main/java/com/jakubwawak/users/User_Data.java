@@ -460,6 +460,7 @@ public class User_Data {
         }
     }
 
+
     /**
      * Function for checking login avaiablity
      */
@@ -723,6 +724,7 @@ public class User_Data {
                 }
                 else{
                     TrackApiApplication.database.log("Password check successfull.","PASWORD-CHECK-SUCCESS");
+                    user_id = 77;
                 }
             }
             else{

@@ -63,6 +63,41 @@ public class Database_2FactorAuth {
     }
 
     /**
+     * Function for authorizing 2fa
+     * @param user_id
+     * @param fa_code
+     * @return Integer
+     */
+    public int authorize(int user_id,int fa_code) throws SQLException {
+        database.log("Trying to authorize "+user_id+" with "+fa_code,"2FAAUTH");
+        String query = "SELECT user_id FROM TWO_FACTOR_CODES WHERE user_id = ? and fa_code = ?;";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.setInt(2,fa_code);
+
+            ResultSet rs = ppst.executeQuery();
+
+            if (rs.next()){
+                user_id =  rs.getInt("user_id");
+                database.log("2fa code and user match!","2FAAUTH");
+                query = "DELETE FROM TWO_FACTOR_CODES where user_id = ?  and fa_code = ?;";
+                ppst = database.con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ppst.setInt(2,fa_code);
+                ppst.execute();
+                database.log("2fa code removed","2FAAUTH");
+                database.log("User "+user_id+" authorized on database","2FAAUTH");
+                return user_id;
+            }
+            return -11;
+        }catch(SQLException e){
+            database.log("Failed to authorize user ("+user_id+" with "+fa_code+") ("+e.toString(),"2FAAUTH-FAILED");
+            return -6;
+        }
+    }
+
+    /**
      * Function for sending confirmation email
      * @return String
      */
