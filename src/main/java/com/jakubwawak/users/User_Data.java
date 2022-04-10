@@ -706,10 +706,42 @@ public class User_Data {
     }
 
     /**
-     * Function for checking if given password is correct
+     * Function for checking if given password is correct using user_session token
      */
     public void check_password() throws SQLException {
         user_id = TrackApiApplication.database.get_userid_bysession(this.user_session);
+        String query = "SELECT user_password FROM USER_DATA WHERE user_id = ?;";
+
+        TrackApiApplication.database.log("Checking password for user_id "+user_id,"PASSWORD-CHECK");
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next()){
+                if ( !rs.getString("user_password").equals(user_password)){
+                    TrackApiApplication.database.log("Password check failed, wrong password","PASSWORD-CHECK-VALIDATION");
+                    user_id = -5;
+                }
+                else{
+                    TrackApiApplication.database.log("Password check successfull.","PASWORD-CHECK-SUCCESS");
+                    user_id = 77;
+                }
+            }
+            else{
+                TrackApiApplication.database.log("Cannot find user with user_id "+user_id,"PASSWORD-CHECK-NOUSER");
+                user_id = -5;
+            }
+
+        }catch(Exception e){
+            TrackApiApplication.database.log("Failed to check user password ("+e.toString()+")","PASSWORD-CHECK-FAILED");
+        }
+    }
+
+    /**
+     * Function for checking user password using user_id field
+     * @throws SQLException
+     */
+    public void check_password_fromuser_id() throws SQLException {
         String query = "SELECT user_password FROM USER_DATA WHERE user_id = ?;";
 
         TrackApiApplication.database.log("Checking password for user_id "+user_id,"PASSWORD-CHECK");

@@ -102,10 +102,13 @@ public class UserData_Handler {
         User_Data ud = new User_Data();
         TrackApiApplication.database.log("NEW JOB: N-LOGIN","JOB-GOT");
         if ( tc.check() == 1){
+            ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
+            ud.user_login = user_login;
             ud.user_password = user_password;
             ud.check_password();
             if ( ud.user_id == 77 ){
                 // 2fa check
+                ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
                 Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
                 if(d2fa.check_2fa_enabled(ud.user_id) == 1){
                     d2fa.roll_2fa(ud.user_id);
