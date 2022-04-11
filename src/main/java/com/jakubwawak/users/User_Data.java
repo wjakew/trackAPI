@@ -741,13 +741,13 @@ public class User_Data {
      * Function for checking user password using user_id field
      * @throws SQLException
      */
-    public void check_password_fromuser_id() throws SQLException {
-        String query = "SELECT user_password FROM USER_DATA WHERE user_id = ?;";
+    public void check_password_fromuser_login() throws SQLException {
+        String query = "SELECT user_password FROM USER_DATA WHERE user_login = ?;";
 
         TrackApiApplication.database.log("Checking password for user_id "+user_id,"PASSWORD-CHECK");
         try{
             PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
-            ppst.setInt(1,user_id);
+            ppst.setString(1,user_login);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next()){
                 if ( !rs.getString("user_password").equals(user_password)){

@@ -319,7 +319,7 @@ public class Database_Connector {
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
                 TrackApiApplication.database.log("User found by login","USER-DATA-GET");
-                rs.getInt("user_id");
+                return rs.getInt("user_id");
             }
             return 0;
         } catch (SQLException e) {

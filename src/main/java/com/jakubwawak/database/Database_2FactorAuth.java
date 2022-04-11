@@ -70,7 +70,7 @@ public class Database_2FactorAuth {
      */
     public int authorize(int user_id,int fa_code) throws SQLException {
         database.log("Trying to authorize "+user_id+" with "+fa_code,"2FAAUTH");
-        String query = "SELECT user_id FROM TWO_FACTOR_CODES WHERE user_id = ? and fa_code = ?;";
+        String query = "SELECT user_id FROM TWO_FACTOR_CODES WHERE user_id = ? and 2fa_code = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
@@ -81,7 +81,7 @@ public class Database_2FactorAuth {
             if (rs.next()){
                 user_id =  rs.getInt("user_id");
                 database.log("2fa code and user match!","2FAAUTH");
-                query = "DELETE FROM TWO_FACTOR_CODES where user_id = ?  and fa_code = ?;";
+                query = "DELETE FROM TWO_FACTOR_CODES where user_id = ?  and 2fa_code = ?;";
                 ppst = database.con.prepareStatement(query);
                 ppst.setInt(1,user_id);
                 ppst.setInt(2,fa_code);
@@ -114,8 +114,9 @@ public class Database_2FactorAuth {
      * @return Integer
      */
     int get_code(){
-        Random rand = new Random();
-        return rand.nextInt(9999);
+        int min = 1000;
+        int max = 9999;
+        return (int)Math.floor(Math.random()*(max-min+1)+min);
     }
 
     /**

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sound.midi.Track;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -105,16 +106,21 @@ public class UserData_Handler {
             ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
             ud.user_login = user_login;
             ud.user_password = user_password;
-            ud.check_password();
+            ud.check_password_fromuser_login();
+            TrackApiApplication.database.log("Checking 2fa settings for user "+user_login,"2FA-START");
             if ( ud.user_id == 77 ){
                 // 2fa check
                 ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
                 Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                TrackApiApplication.database.log("Check for "+ud.user_id+" returned: "+d2fa.check_2fa_enabled(ud.user_id),"2FA-START");
                 if(d2fa.check_2fa_enabled(ud.user_id) == 1){
                     d2fa.roll_2fa(ud.user_id);
+                    TrackApiApplication.database.log("Sending 2fa code to authorize...","2FA-START");
                     ud.user_id = -69;
+                    TrackApiApplication.database.log("Login procedure stopped. 2FA enabled","2FA-FINISH");
                 }
                 else{
+                    TrackApiApplication.database.log("Login without 2fa authorization","2FA-FINISH");
                     ud.login(user_login,user_password);
                 }
             }
