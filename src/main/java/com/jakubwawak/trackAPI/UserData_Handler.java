@@ -116,12 +116,13 @@ public class UserData_Handler {
                 if(d2fa.check_2fa_enabled(ud.user_id) == 1){
                     d2fa.roll_2fa(ud.user_id);
                     TrackApiApplication.database.log("Sending 2fa code to authorize...","2FA-START");
-                    ud.user_id = -69;
+                    ud.flag = -69;
                     TrackApiApplication.database.log("Login procedure stopped. 2FA enabled","2FA-FINISH");
                 }
                 else{
                     TrackApiApplication.database.log("Login without 2fa authorization","2FA-FINISH");
                     ud.login(user_login,user_password);
+                    ud.flag = 1;
                 }
             }
         }

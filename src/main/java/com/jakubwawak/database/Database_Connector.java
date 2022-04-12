@@ -23,7 +23,7 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.8";
+    public final String version = "v0.0.9";
     public final String database_version = "100";
     public LocalDateTime run_time;
     // header for logging data
@@ -82,11 +82,14 @@ public class Database_Connector {
             if ( database_log.get(database_log.size()-1).contains("NEW JOB") || database_log.get(database_log.size()-1).contains("HEALTH")){
                 System.out.println(ConsoleColors.BLUE_BOLD+"\nTRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
             }
-            else if(database_log.get(database_log.size()-1).contains("Failed") ||database_log.get(database_log.size()-1).contains("FAILED")){
-                System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
-            }
             else if(database_log.get(database_log.size()-1).contains("VALIDATION")){
                 System.out.println(ConsoleColors.YELLOW_BOLD+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("2FA")){
+                System.out.println(ConsoleColors.GREEN_BOLD+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
+            }
+            else if(database_log.get(database_log.size()-1).contains("Failed") ||database_log.get(database_log.size()-1).contains("FAILED")){
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"TRACKAPI LOG: "+database_log.get(database_log.size()-1)+ConsoleColors.RESET);
             }
             else{
                 System.out.println("TRACKAPI LOG: "+database_log.get(database_log.size()-1));
@@ -242,7 +245,10 @@ public class Database_Connector {
      * @param size
      */
     public void show_all_log(int size){
-
+        System.out.println("Showing all log");
+        if(size != 0 ){
+            String query = "SELECT * FROM PROGRAM_LOG ORDER BY program_log_id DESC";
+        }
     }
 
     /**

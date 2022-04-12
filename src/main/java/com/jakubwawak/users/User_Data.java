@@ -33,6 +33,7 @@ import java.time.ZoneId;
  * -5 user not found
  * -6 database error
  * -9 user blocked
+ * -69 2fa enabled
  *
  * check_login_avaiability()
  * true - login clear to use

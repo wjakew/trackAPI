@@ -343,11 +343,12 @@ public class Database_2FactorAuth {
 
             try{
                 int fa_code = get_code();
+                clear_user_codes(user_id);
                 PreparedStatement ppst = database.con.prepareStatement(query);
                 ppst.setInt(1,user_id);
                 ppst.setInt(2,fa_code);
                 ppst.execute();
-                database.log("Rolled 2fa for user_id: "+user_id,"2FAROLL");
+                database.log("Rolled 2fa for user_id: "+user_id+" code: "+fa_code,"2FAROLL");
                 MailConnector mc = new MailConnector();
 
                 String email = get_email(user_id);
