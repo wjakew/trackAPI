@@ -241,13 +241,38 @@ public class Database_Connector {
     }
 
     /**
-     * Showing log
+     * Showing archive log from database
      * @param size
      */
-    public void show_all_log(int size){
-        System.out.println("Showing all log");
+    public void show_all_log(int size) throws SQLException {
+
+        /**
+         * CREATE TABLE PROGRAM_LOG
+         * (
+         *   program_log_id INT AUTO_INCREMENT PRIMARY KEY,
+         *   program_log_code VARCHAR(30),
+         *   program_log_desc VARCHAR(300),
+         *   program_log_session_token VARCHAR(10),
+         *   program_log_time TIMESTAMP
+         * );
+         */
+        System.out.println("Showing all log (size:"+size+")");
         if(size != 0 ){
-            String query = "SELECT * FROM PROGRAM_LOG ORDER BY program_log_id DESC";
+            String query = "SELECT * FROM PROGRAM_LOG ORDER BY program_log_id DESC LIMIT ?;";
+            try{
+                PreparedStatement ppst = this.con.prepareStatement(query);
+                ppst.setInt(1,size);
+                ResultSet rs = ppst.executeQuery();
+                while(rs.next()){
+                    System.out.println(rs.getInt("program_log_id")+"| "
+                            +rs.getString("program_log_code")+"|>"+rs.getString("program_log_session_token")+"| "+rs.getString("program_log_desc"));
+                }
+            }catch(SQLException e){
+                log("Failed to load log from database ("+e.toString()+")","LOGARCH-FAILED");
+            }
+        }
+        else{
+            System.out.println("END OF LOG.");
         }
     }
 

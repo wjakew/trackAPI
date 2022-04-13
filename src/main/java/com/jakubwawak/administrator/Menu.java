@@ -329,6 +329,20 @@ public class Menu {
                             }
                         }
                     }
+                    else if (raw_data.split(" ").length == 3){
+                        //log arch -size
+                        try{
+                            if ( raw_data.split(" ")[1].equals("arch")){
+                                int size = Integer.parseInt(raw_data.split(" ")[2]);
+                                TrackApiApplication.database.show_all_log(size);
+                            }
+                            else{
+                                System.out.println("Wrong command usage. Check help.");
+                            }
+                        }catch(NumberFormatException e){
+                            System.out.println("Wrong size set.");
+                        }
+                    }
                     else{
                         //log
                         TrackApiApplication.database.show_log(0);
@@ -511,7 +525,7 @@ public class Menu {
                     System.out.println("lsapptoken - lists all active apptokens");
                     System.out.println("crapptoken [crapptoken -user_id] - creates new apptoken");
                     System.out.println("rmapptoken [rmapptoken -user_id] - removes active apptokens");
-                    System.out.println("log [log,log -size,log -state] - shows log, shows last -size amount of log, turn on/off log printing");
+                    System.out.println("log [log,log -size,log -state, log arch -size] - shows log, shows last -size amount of log, turn on/off log printing, shows archive log");
                     System.out.println("info - printing info about the program");
                     System.out.println("clear [clear. clear blank]- clears the terminal, sets 'enter' key as clear");
                     System.out.println("reload - run api again");
