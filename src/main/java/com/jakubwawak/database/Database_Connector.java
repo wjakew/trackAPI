@@ -264,7 +264,7 @@ public class Database_Connector {
                 ppst.setInt(1,size);
                 ResultSet rs = ppst.executeQuery();
                 while(rs.next()){
-                    System.out.println(rs.getInt("program_log_id")+"| "
+                    System.out.println(rs.getObject("program_log_time",LocalDateTime.class).toString()+"| "
                             +rs.getString("program_log_code")+"|>"+rs.getString("program_log_session_token")+"| "+rs.getString("program_log_desc"));
                 }
             }catch(SQLException e){
