@@ -26,8 +26,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.2.9";
-	public static String build = "140422REV01";
+	public static String version = "v1.3.0";
+	public static String build = "170422REV01";
 
 	public static int debug = 0;
 
@@ -69,6 +69,7 @@ public class TrackApiApplication {
 			}
 			else{
 				System.out.println("Program aborted");
+				System.exit(0);
 			}
 			// main menu
 			menu = new Menu();
@@ -99,6 +100,7 @@ public class TrackApiApplication {
 								if (database.connected){
 									System.out.println("Connection to database established");
 									// ready to authorize
+									database.configuration = configuration;
 									if ( authorize(0) ){
 										header();
 										System.out.println("Please wait till Spring initializes...");
@@ -177,14 +179,29 @@ public class TrackApiApplication {
 		System.out.println(ConsoleColors.BLUE_BOLD+"@@ Database connector creator @@"+ConsoleColors.RESET);
 		System.out.println("Connecting to database..");
 		database = new Database_Connector();
-		System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
-		System.out.println("Using password: "+configuration.database_password.substring(0,2)+"XXXXX");
+		if ( configuration.database_mode.equals("server") ){
+			System.out.println("Server database mode enabled!");
+			System.out.println("Trying to connect as "+configuration.database_user+" to "+configuration.database_ip+"..");
+			System.out.println("Using password: "+configuration.database_password.substring(0,2)+"XXXXX");
+		}
+		else{
+			System.out.println("File database mode enabled!");
+			System.out.println("Trying to connect to file: "+configuration.database_url);
+		}
 		System.out.print("continue(y/n)?");
 		String ans = sc.nextLine();
 		if (ans.equals("y")){
 			try{
-				database.connect(configuration.database_ip, configuration.database_name,
-						configuration.database_user,configuration.database_password);
+				if ( configuration.database_mode.equals("server")){
+					database.connect(configuration.database_ip, configuration.database_name,
+							configuration.database_user,configuration.database_password);
+
+				}
+				else{
+					database.connect(configuration.database_url);
+				}
+
+				database.configuration = configuration;
 
 				if (database.connected){
 					System.out.println("Connection to database established");
@@ -236,14 +253,14 @@ public class TrackApiApplication {
 			String ans = sc.nextLine();
 			if ( ans.equals("y") ){
 				configuration.load_user_data();
-				System.out.println("save to file(y/n)?");
+				System.out.print("save to file(y/n)?");
 				ans = sc.nextLine();
 				if (ans.equals("y")){
 					configuration.copy_configuration();
 				}
 				if (!configuration.error){
 					System.out.println("Configuration correct");
-					System.out.println("continue(y/n)?");
+					System.out.print("continue(y/n)?");
 					ans = sc.nextLine();
 					return ans.equals("y");
 				}

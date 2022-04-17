@@ -21,9 +21,11 @@ import java.time.ZoneId;
  *
  * user_id field return codes:
  *
- * -99 - session validation failed
- * -11 - app token validation failed
- * -88 - database error while validation session
+ *   1  - ok
+ * -99  - session validation failed
+ * -11  - app token validation failed
+ * -88  - database error while validation session
+ * -101 - wrong 2fa token
  *
  * check_email_avability()
  * -5 user not found
@@ -449,6 +451,42 @@ public class User_Data {
                     user_id = -9;
                 }
 
+            }
+            else{
+                TrackApiApplication.database.log("User "+user_login+" failed to login","USER-FAILED");
+                user_id = -5;
+            }
+
+        } catch (SQLException e) {
+            TrackApiApplication.database.log("Failed to login user ("+e.toString()+")","ERROR-USR3");
+            user_id = -6;
+        }
+    }
+
+    /**
+     * Function for login user after
+     * @throws SQLException
+     */
+    public void login() throws SQLException {
+        String query = "SELECT * FROM USER_DATA where user_id = ?;";
+
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            TrackApiApplication.database.log("Adding data to authorized user (user_id:"+user_id+")","USER-LOGIN");
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                if ( !check_block(rs.getString("user_login"))){
+                    database_loader(rs);
+                    TrackApiApplication.database.remove_session(user_login);
+                    user_session = TrackApiApplication.database.create_session(user_id);
+                    flag = 1;
+                    TrackApiApplication.database.log("User "+user_login+" logged in!","USER-SUCCESS");
+                }
+                else{
+                    TrackApiApplication.database.log("User blocked on app.","USER-BLOCKED");
+                    user_id = -9;
+                }
             }
             else{
                 TrackApiApplication.database.log("User "+user_login+" failed to login","USER-FAILED");

@@ -12,6 +12,7 @@ import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
 
+import javax.sound.midi.Track;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,8 +24,8 @@ public class Database_Connector {
 
     public final int SESSION_TIME = 15;
     // version of database
-    public final String version = "v0.0.9";
-    public final String database_version = "100";
+    public final String version = "v1.0.0";
+    public final String database_version = "103";
     public LocalDateTime run_time;
     // header for logging data
     // connection object for maintaing connection to the database
@@ -62,7 +63,7 @@ public class Database_Connector {
         admin_login = "notlogged";
         configuration = null;
         run_time = null;
-        log("Started! Database Connector initzialazed","DATABASE");
+        log("Started! Database Connector initialized","DATABASE");
         log("Session validation time set to: "+SESSION_TIME,"DATABASE");
     }
 
@@ -290,23 +291,49 @@ public class Database_Connector {
         this.database_name = database_name;
         database_user = user;
         database_password = password;
-
+        log("Connection to mysql/mariadb database","CONNECTION");
         String login_data = "jdbc:mysql://"+this.ip+"/"+database_name+"?"
                 + "useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&" +
                 "user="+database_user+"&password="+database_password;
         try{
             con = DriverManager.getConnection(login_data);
-            connected = true;
             run_time = LocalDateTime.now( ZoneId.of( "Europe/Warsaw" ) );
             log("Connected succesfully","CONNECTION");
             log(login_data.substring(0,login_data.length()-25)+"...*END*","CONNECTION");
             log("Removing old/saved sessions from database...","CONNECTION-GARBAGE-COLLECTOR");
+            connected = true;
             remove_current_sessions();
         }catch(SQLException e){
             connected = false;
             log("Failed to connect to database ("+e.toString()+")","ERROR-DB01");
         }
         log("Database string: "+login_data.substring(0,login_data.length()-25)+"...*END*","ERROR-DB02");
+    }
+
+    /**
+     * Function for connecting to file database
+     * @param database_src
+     */
+    public void connect(String database_src) throws SQLException {
+        this.ip = database_src;
+        this.database_name = database_src.split("/")[database_src.split("/").length-1];
+        database_user = "none";
+        database_password = "password";
+        run_time = LocalDateTime.now( ZoneId.of( "Europe/Warsaw" ) );
+        log("Connection to sqlite database","CONNECTION");
+        try{
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:"+database_src;
+            log("Trying to connect url: "+url,"CONNECTION");
+            con = DriverManager.getConnection(url);
+            connected = true;
+            log("Removing old/saved sessions from database...","CONNECTION-GARBAGE-COLLECTOR");
+            remove_current_sessions();
+        }catch(Exception e){
+            connected = false;
+            log("Failed to connect to sqlite database ("+e.toString()+")","ERROR-DB03");
+
+        }
     }
 
     /**
@@ -412,33 +439,62 @@ public class Database_Connector {
     public String create_session(int user_id) throws SQLException {
         LocalDateTime lt = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         String query = "INSERT INTO SESSION_TOKEN (user_id,session_token,session_token_time) VALUES (?,?,?);";
+        if ( configuration.database_mode.equals("server")){
+            try{
+                PreparedStatement ppst = con.prepareStatement(query);
 
-        try{
-            PreparedStatement ppst = con.prepareStatement(query);
+                RandomString session = new RandomString(15);
 
-            RandomString session = new RandomString(15);
+                if ( check_userid(user_id)){
+                    ppst.setInt(1,user_id);
+                    ppst.setString(2,session.buf);
+                    lt = lt.plusMinutes(SESSION_TIME);
+                    log("Created new session: |"+session.buf+"| for user_id "+user_id,"SESSION-CRT");
+                    ppst.setObject(3,lt);
 
-            if ( check_userid(user_id)){
-                ppst.setInt(1,user_id);
-                ppst.setString(2,session.buf);
-                lt = lt.plusMinutes(SESSION_TIME);
-                log("Created new session: |"+session.buf+"| for user_id "+user_id,"SESSION-CRT");
-                ppst.setObject(3,lt);
+                    ppst.execute();
+                    log("Session expires at "+lt.toString(),"SESSION-CRT");
+                    archive_session(session.buf,user_id);
+                    return session.buf;
+                }
+                else{
+                    log("user_id not found. Cannot create session","SESSION-CRT-NOUSER");
+                    return null;
+                }
 
-                ppst.execute();
-                log("Session expires at "+lt.toString(),"SESSION-CRT");
-                archive_session(session.buf,user_id);
-                return session.buf;
-            }
-            else{
-                log("user_id not found. Cannot create session","SESSION-CRT-NOUSER");
+            } catch (SQLException e) {
+                log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
                 return null;
             }
-
-        } catch (SQLException e) {
-            log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
-            return null;
         }
+        else if ( configuration.database_mode.equals("file")){
+            try{
+                PreparedStatement ppst = con.prepareStatement(query);
+
+                RandomString session = new RandomString(15);
+
+                if ( check_userid(user_id)){
+                    ppst.setInt(1,user_id);
+                    ppst.setString(2,session.buf);
+                    lt = lt.plusMinutes(SESSION_TIME);
+                    log("Created new session: |"+session.buf+"| for user_id "+user_id,"SESSION-CRT");
+                    ppst.setString(3,lt.toString());
+                    ppst.execute();
+                    log("Session expires at "+lt.toString(),"SESSION-CRT");
+                    archive_session(session.buf,user_id);
+                    return session.buf;
+                }
+                else{
+                    log("user_id not found. Cannot create session","SESSION-CRT-NOUSER");
+                    return null;
+                }
+
+            } catch (SQLException e) {
+                log("Failed to create session! user_id "+user_id+ " ("+e.toString()+")","SESSION-ERR");
+                return null;
+            }
+        }
+        return null;
     }
 
     /**
@@ -460,16 +516,32 @@ public class Database_Connector {
          * );
          */
         String query = "INSERT INTO SESSION_TOKEN_ARCH (user_id,session_token,session_token_time) VALUES (?,?,?);";
-        try{
-            PreparedStatement ppst = con.prepareStatement(query);
-            ppst.setInt(1,user_id);
-            ppst.setString(2,session_token);
-            ppst.setObject(3,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
-            ppst.execute();
-            log("Saved archive session_token to database","SESSION-ARCH");
-        } catch (SQLException e) {
-            log("Failed to save session_token ("+e.toString()+")","SESSION-ARCH-FAILED");
+        if ( configuration.database_mode.equals("server")){
+            try{
+                PreparedStatement ppst = con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ppst.setString(2,session_token);
+                ppst.setObject(3,LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
+                ppst.execute();
+                log("Saved archive session_token to database","SESSION-ARCH");
+            } catch (SQLException e) {
+                log("Failed to save session_token ("+e.toString()+")","SESSION-ARCH-FAILED");
+            }
         }
+
+        else if ( configuration.database_mode.equals("file") ){
+            try{
+                PreparedStatement ppst = con.prepareStatement(query);
+                ppst.setInt(1,user_id);
+                ppst.setString(2,session_token);
+                ppst.setString(3,LocalDateTime.now(ZoneId.of("Europe/Warsaw")).toString());
+                ppst.execute();
+                log("Saved archive session_token to database","SESSION-ARCH");
+            } catch (SQLException e) {
+                log("Failed to save session_token ("+e.toString()+")","SESSION-ARCH-FAILED");
+            }
+        }
+
     }
     /**
      * Function for showing current user sessions
@@ -484,8 +556,13 @@ public class Database_Connector {
             ResultSet rs = ppst.executeQuery();
 
             while(rs.next()){
-                data.add("user:"+rs.getInt("user_id")+" - "+rs.getString("session_token")
+                if (configuration.database_mode.equals("server"))
+                    data.add("user:"+rs.getInt("user_id")+" - "+rs.getString("session_token")
                         + " - expires at:"+rs.getObject("session_token_time",LocalDateTime.class).toString());
+                else{
+                    data.add("user:"+rs.getInt("user_id")+" - "+rs.getString("session_token")
+                            + " - expires at:"+rs.getString("session_token_time"));
+                }
             }
         } catch (SQLException e) {
             log("Failed to list current sessions ("+e.toString()+")","SESSION-ERROR");
@@ -725,6 +802,32 @@ public class Database_Connector {
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to update data ("+e.toString()+")","SERVICETAG-UPDATE-FAILED");
             return -1;
+        }
+    }
+
+    /**
+     * Function for getting programcodes values
+     * @param programcodes_key
+     * @return Integer
+     */
+    public String get_programcodes_value(String programcodes_key) throws SQLException {
+        String query = "SELECT programcodes_values FROM PROGRAMCODES WHERE programcodes_key = ?;";
+        String value = "";
+        try{
+            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+            ppst.setString(1,programcodes_key);
+            ResultSet rs = ppst.executeQuery();
+            if ( rs.next() ){
+                value = rs.getString("programcodes_values");
+                log("Value loaded - "+programcodes_key+" = "+value,"PROGRAMCODES-VALUE");
+                return rs.getString("programcodes_values");
+            }
+            value = "empty";
+            log("Value loaded - "+programcodes_key+" = "+value,"PROGRAMCODES-VALUE");
+            return "empty";
+        }catch(SQLException e){
+            log("Failed to get programcodes value ("+e.toString()+")","PROGRAMCODES-VALUE-FAILED");
+            return "error";
         }
     }
 

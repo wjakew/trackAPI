@@ -1,0 +1,6 @@
+GET http://localhost:8080/token-check/testtoken
+
+<> 2021-09-03T155928.406.json
+
+###
+

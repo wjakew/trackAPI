@@ -125,14 +125,26 @@ public class Project {
                 "(?,?,?,?,?);";
 
         try{
-            PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
-            ppst.setString(1,project_name);
-            ppst.setString(2,project_desc);
-            ppst.setObject(3,project_creation_date);
-            ppst.setString(4,project_state);
-            ppst.setInt(5,user_id);
-            ppst.execute();
-            flag = 1;
+            if ( TrackApiApplication.database.configuration.database_mode.equals("server")){
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+                ppst.setString(1,project_name);
+                ppst.setString(2,project_desc);
+                ppst.setObject(3,project_creation_date);
+                ppst.setString(4,project_state);
+                ppst.setInt(5,user_id);
+                ppst.execute();
+                flag = 1;
+            }
+            else{
+                PreparedStatement ppst = TrackApiApplication.database.con.prepareStatement(query);
+                ppst.setString(1,project_name);
+                ppst.setString(2,project_desc);
+                ppst.setString(3,project_creation_date.toString());
+                ppst.setString(4,project_state);
+                ppst.setInt(5,user_id);
+                ppst.execute();
+                flag = 1;
+            }
         } catch (SQLException e) {
             TrackApiApplication.database.log("Failed to load project to database ("+e.toString()+")","PROJECT-LOAD-ERROR");
             flag = -1;

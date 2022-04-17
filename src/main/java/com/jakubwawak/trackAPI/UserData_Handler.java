@@ -102,32 +102,44 @@ public class UserData_Handler {
         TokenCheck tc = new TokenCheck(token);
         User_Data ud = new User_Data();
         TrackApiApplication.database.log("NEW JOB: N-LOGIN","JOB-GOT");
-        if ( tc.check() == 1){
-            ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
-            ud.user_login = user_login;
-            ud.user_password = user_password;
-            ud.check_password_fromuser_login();
-            TrackApiApplication.database.log("Checking 2fa settings for user "+user_login,"2FA-START");
-            if ( ud.user_id == 77 ){
-                // 2fa check
+        if ( TrackApiApplication.database.get_programcodes_value("2fa_system").equals("enable")){
+            if ( tc.check() == 1){
                 ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
-                Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
-                TrackApiApplication.database.log("Check for "+ud.user_id+" returned: "+d2fa.check_2fa_enabled(ud.user_id),"2FA-START");
-                if(d2fa.check_2fa_enabled(ud.user_id) == 1){
-                    d2fa.roll_2fa(ud.user_id);
-                    TrackApiApplication.database.log("Sending 2fa code to authorize...","2FA-START");
-                    ud.flag = -69;
-                    TrackApiApplication.database.log("Login procedure stopped. 2FA enabled","2FA-FINISH");
-                }
-                else{
-                    TrackApiApplication.database.log("Login without 2fa authorization","2FA-FINISH");
-                    ud.login(user_login,user_password);
-                    ud.flag = 1;
+                ud.user_login = user_login;
+                ud.user_password = user_password;
+                ud.check_password_fromuser_login();
+                TrackApiApplication.database.log("Checking 2fa settings for user "+user_login,"2FA-START");
+                if ( ud.user_id == 77 ){
+                    // 2fa check
+                    ud.user_id = TrackApiApplication.database.get_userid_bylogin(user_login);
+                    Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                    TrackApiApplication.database.log("Check for "+ud.user_id+" returned: "+d2fa.check_2fa_enabled(ud.user_id),"2FA-START");
+                    if(d2fa.check_2fa_enabled(ud.user_id) == 1){
+                        d2fa.roll_2fa(ud.user_id);
+                        TrackApiApplication.database.log("Sending 2fa code to authorize...","2FA-START");
+                        ud.flag = -69;
+                        TrackApiApplication.database.log("Login procedure stopped. 2FA enabled","2FA-FINISH");
+                    }
+                    else{
+                        TrackApiApplication.database.log("Login without 2fa authorization","2FA-FINISH");
+                        ud.login(user_login,user_password);
+                        ud.flag = 1;
+                    }
                 }
             }
+            else{
+                ud.user_id = -11;
+            }
         }
-        else{
-            ud.user_id = -11;
+        else if (TrackApiApplication.database.get_programcodes_value("2fa_system").equals("disable")){
+            if ( tc.check() == 1){
+                ud.login(user_login,user_password);
+                ud.flag = 1;
+            }
+            else{
+                ud.user_id = -11;
+            }
+            return ud;
         }
         return ud;
     }

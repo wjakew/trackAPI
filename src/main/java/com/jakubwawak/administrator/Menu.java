@@ -8,6 +8,7 @@ package com.jakubwawak.administrator;
 import com.jakubwawak.database.Database_2FactorAuth;
 import com.jakubwawak.maintanance.ConsoleColors;
 import com.jakubwawak.maintanance.HealthMonitor;
+import com.jakubwawak.trackAPI.Cat;
 import com.jakubwawak.trackAPI.TrackApiApplication;
 import com.jakubwawak.users.User_Data;
 import org.springframework.boot.SpringApplication;
@@ -428,15 +429,31 @@ public class Menu {
                 }
                 case "2fa":
                 {
-                    // 2fa show
                     if( raw_data.split(" ").length == 2){
+                        // 2fa show
                         if ( raw_data.split(" ")[1].equals("show")){
                             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
                             d2fa.show_2fa_enabled_users();
                         }
+                        // 2fa clear
                         else if ( raw_data.split(" ")[1].equals("clear")){
                             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
                             d2fa.clear_codes();
+                        }
+                        // 2fa disable
+                        else if (raw_data.split(" ")[1].equals("disable")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            d2fa.disable_function();
+                        }
+                        // 2fa enable
+                        else if (raw_data.split(" ")[1].equals("enable")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            d2fa.enable_function();
+                        }
+                        // 2fa status
+                        else if (raw_data.split(" ")[1].equals("status")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            d2fa.check_function_status();
                         }
                         else{
                             System.out.println("Wrong command usage.");
@@ -466,7 +483,6 @@ public class Menu {
                         }
                     }
                     else if ( raw_data.split(" ").length == 3){
-
                         // 2fa disable -user_id
                         if ( raw_data.split(" ")[1].contains("disable")){
                             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
@@ -483,6 +499,16 @@ public class Menu {
                             try{
                                 int user_id = Integer.parseInt(raw_data.split(" ")[2]);
                                 d2fa.manual_roll_2fa(user_id);
+                            }catch(NumberFormatException e){
+                                System.out.println("Wrong user_id.");
+                            }
+                        }
+                        // 2fa activate -user_id
+                        else if (raw_data.split(" ")[1].contains("activate")){
+                            Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
+                            try{
+                                int user_id = Integer.parseInt(raw_data.split(" ")[2]);
+                                d2fa.confirm_authorization(user_id);
                             }catch(NumberFormatException e){
                                 System.out.println("Wrong user_id.");
                             }
@@ -507,14 +533,27 @@ public class Menu {
                         TrackApiApplication.header();
                     }
                     break;
+                case "cat":
+                {
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    TrackApiApplication.header();
+                    if ( raw_data.split(" ").length == 1 ){
+                        Cat cat = new Cat();
+                        cat.print_random_cat();
+                    }
+                    break;
+                }
                 case "help":
                     System.out.println(ConsoleColors.RED_BOLD_BRIGHT+"crsession [crsession -user_id] - creates session for given user");
                     System.out.println("rmsession [rmsession, rmsession -user_id] - removes session, removes session for given user");
                     System.out.println("lssession - lists all sessions");
                     System.out.println("web_session [web_session -state, web_session create -macaddress] -state[on/off], creates new session for web");
                     System.out.println("2fa");
-                    System.out.println("   [2fa show,2fa enable -user_id -email ,2fa disable -user_id, 2fa create -user_id, 2fa roll -user_id, 2fa clear, 2fa crcodes -user_id]");
-                    System.out.println("                                                                                    -crcodes - clears given user 2fa codes");
+                    System.out.println("   [2fa enable/disable, 2fa status]");
+                    System.out.println("   [2fa show,2fa enable -user_id -email ,2fa disable -user_id]");
+                    System.out.println("   [2fa create -user_id, 2fa roll -user_id, 2fa clear, 2fa crcodes -user_id, 2fa activate -user_id]");
+                    System.out.println("   -crcodes - clears given user 2fa codes");
                     System.out.println("cruser [cruser -login -password, cruser -email] - creates user with given login and password");
                     System.out.println("lsuser [lsuser, lsuser active] - lists all users, lists all active users" );
                     System.out.println("mnuser [mnuser -user_id email value, mnuser -user_id reset] - sets user email, reset user password");

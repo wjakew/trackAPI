@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class Session_Validator {
 
@@ -131,18 +133,46 @@ public class Session_Validator {
             if ( rs.next() ){
                 TrackApiApplication.database.log("Session found. Checking data","VALIDATION-CHECK");
                 LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-                LocalDateTime session_time = rs.getObject("session_token_time",LocalDateTime.class);
-                if ( now.isBefore(session_time)){
-                    TrackApiApplication.database.log("Session validated! Token: "+session_token,"VALIDATION-CORRECT");
-                    session_due = session_time;
-                    validation_flag = 1;
-                    return 1;
+
+                LocalDateTime session_time = null;
+
+                if ( TrackApiApplication.configuration.database_mode.equals("server")) {
+                     session_time = rs.getObject("session_token_time", LocalDateTime.class);
                 }
-                else{
-                    TrackApiApplication.database.log("Session token expired!","VALIDATION-EXPIRED");
-                    validation_flag = 2;
-                    return 2;
+                else if (TrackApiApplication.configuration.database_mode.equals("file")){
+                    TrackApiApplication.database.log("Loaded from database (raw time): "+rs.getString("session_token_time"),"VALIDATION-CHECK");
+                    String time = rs.getString("session_token_time");
+                    try{
+                        String elements [] = time.split("T");
+                        int year = Integer.parseInt(elements[0].split("-")[0]);
+                        int month_number = Integer.parseInt(elements[0].split("-")[1]);
+                        Month month = Month.of(month_number);
+                        int day = Integer.parseInt(elements[0].split("-")[2]);
+                        int hour = Integer.parseInt(elements[1].split(":")[0]);
+                        int minutes = Integer.parseInt(elements[1].split(":")[1]);
+                        session_time = LocalDateTime.of(year,month,day,hour,minutes);
+                        TrackApiApplication.database.log("Parsed session time: "+session_time.toString(),"SESSION-TIME");
+                    }catch(Exception e){
+                        TrackApiApplication.database.log("Error parsing session time ("+e.toString()+")","SESSION-TIME-FAILED");
+                    }
                 }
+
+                if ( session_time != null ){
+                    TrackApiApplication.database.log("Session expire time: "+session_time.toString(),"VALIDATION-CHECK");
+
+                    if ( now.isBefore(session_time)){
+                        TrackApiApplication.database.log("Session validated! Token: "+session_token,"VALIDATION-CORRECT");
+                        session_due = session_time;
+                        validation_flag = 1;
+                        return 1;
+                    }
+                    else{
+                        TrackApiApplication.database.log("Session token expired!","VALIDATION-EXPIRED");
+                        validation_flag = 2;
+                        return 2;
+                    }
+                }
+
             }
             return 0;
         } catch (SQLException e) {

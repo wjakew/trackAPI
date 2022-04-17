@@ -53,6 +53,15 @@ public class TFactor_Auth {
         if ( tc.check() == 1 ){
             Database_2FactorAuth d2fa = new Database_2FactorAuth(TrackApiApplication.database);
             ud.user_id = d2fa.authorize(user_id,fa_token);
+            TrackApiApplication.database.log("2FA Authorization returned id: "+ud.user_id+" for token "+fa_token,"2FA-AUTH");
+            if ( ud.user_id > 0 ){
+                ud.login();
+                ud.flag = 1;
+            }
+            else{
+                ud.user_id = -101;
+                ud.flag = tc.check();
+            }
         }
         else{
             ud.user_id = -11;

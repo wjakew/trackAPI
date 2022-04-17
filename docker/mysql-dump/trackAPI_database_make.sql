@@ -77,9 +77,9 @@ CREATE TABLE USER_DATA
 -- table for storing 2fa data
 CREATE TABLE TWO_FACTOR_ENABLED
 (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    2fa_email VARCHAR(200),
-    2fa_confirmed INT,
+    user_id INT,
+    fa_email VARCHAR(200),
+    fa_confirmed INT,
 
     CONSTRAINT fk_twofactorenabled1 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE TWO_FACTOR_ENABLED
 CREATE TABLE TWO_FACTOR_CODES
 (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
-    2fa_code INT,
+    fa_code INT,
 
     CONSTRAINT fk_twofactorcodes FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
 );
@@ -365,6 +365,10 @@ INSERT INTO PROGRAMCODES
 (programcodes_key, programcodes_values)
 VALUES
 ('service_tag','servicexd');
+INSERT INTO PROGRAMCODES
+(programcodes_key, programcodes_values)
+VALUES
+('2fa_system','disabled');
 INSERT INTO USER_CONFIGURATION
 (user_id,config1,config2,config3)
 VALUES

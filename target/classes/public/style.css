@@ -1,0 +1,47 @@
+h1
+{
+    font-family: "Courier New";
+    text-align: center;
+    color: black;
+}
+h2
+{
+    font-family: "Courier New";
+    text-align: center;
+    font-size: 30px;
+    color: aqua;
+}
+h3
+{
+    font-family: "Courier New";
+    text-align: left;
+    font-size: 13px;
+}
+body
+{
+    font-family: "Courier New";
+    background-color: gray;
+    color: black;
+}
+.container {
+    text-align: left;
+    left: 0;
+    right: 0;
+}
+.main {
+    position:relative;
+    width: 300px;
+    min-height: 40px;
+    margin: auto;
+    padding-top:5px;
+}
+.main:before {
+    content:'';
+    position: absolute;
+    width: 420px;
+    height: 2490px;
+    margin: auto;
+    z-index: -1;
+    border: 5px solid black;
+    left:-60px;
+}

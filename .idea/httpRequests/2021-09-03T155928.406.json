@@ -1,0 +1,6 @@
+{
+  "timestamp": "2021-09-03T13:59:28.124+00:00",
+  "status": 406,
+  "error": "Not Acceptable",
+  "path": "/token-check/testtoken"
+}

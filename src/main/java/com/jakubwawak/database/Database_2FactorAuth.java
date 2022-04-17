@@ -22,9 +22,9 @@ public class Database_2FactorAuth {
     /**
      * CREATE TABLE TWO_FACTOR_ENABLED
      * (
-     *     user_id INT PRIMARY KEY AUTO_INCREMENT,
-     *     2fa_email VARCHAR(200),
-     *     2fa_confirmed INT,
+     *     user_id,
+     *     fa_email VARCHAR(200),
+     *     fa_confirmed INT,
      *
      *     CONSTRAINT fk_twofactorenabled1 FOREIGN KEY (user_id) REFERENCES USER_DATA(user_id)
      * );
@@ -41,19 +41,56 @@ public class Database_2FactorAuth {
     }
 
     /**
+     * Function for enabling 2fa on api
+     * @return Integer
+     */
+    public int enable_function() throws SQLException {
+        try{
+            database.update_programcodes("2fa_system","enable");
+            database.log("2FA function enabled on API","2FAENABLE");
+            return 1;
+        }catch(SQLException e){
+            database.log("Failed to enable function on API ("+e.toString()+")","2FAENABLE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for disabling 2fa on api
+     * @return Integer
+     */
+    public int disable_function() throws SQLException {
+        try{
+            database.update_programcodes("2fa_system","disable");
+            database.log("2FA function disabled on API","2FADISABLE");
+            return 1;
+        }catch(SQLException e){
+            database.log("Failed to disable function on API ("+e.toString()+")","2FADISABLE-FAILED");
+            return -1;
+        }
+    }
+
+    /**
+     * Function for checking 2fa status
+     */
+    public void check_function_status() throws SQLException {
+        database.get_programcodes_value("2fa_system");
+    }
+
+    /**
      * Function for setting confirmation links to users
      * @param user_id
      * @return String
      */
     String generate_start_link(int user_id) throws SQLException {
         // track-2fa-confirm/{user_id}/{confirmation_code}
-        String query = "SELECT 2fa_confirmed FROM TWO_FACTOR_ENABLED where user_id = ?;";
+        String query = "SELECT fa_confirmed FROM TWO_FACTOR_ENABLED where user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
-                return "http://"+TrackApiApplication.service_ip.split("/")[1]+"/track-2fa-confirm"+"/"+user_id+"/"+rs.getInt("2fa_confirmed");
+                return "http://"+TrackApiApplication.service_ip.split("/")[1]+"/track-2fa-confirm"+"/"+user_id+"/"+rs.getInt("fa_confirmed");
             }
             return "error";
         }catch(Exception e){
@@ -70,7 +107,7 @@ public class Database_2FactorAuth {
      */
     public int authorize(int user_id,int fa_code) throws SQLException {
         database.log("Trying to authorize "+user_id+" with "+fa_code,"2FAAUTH");
-        String query = "SELECT user_id FROM TWO_FACTOR_CODES WHERE user_id = ? and 2fa_code = ?;";
+        String query = "SELECT user_id FROM TWO_FACTOR_CODES WHERE user_id = ? and fa_code = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
@@ -81,7 +118,7 @@ public class Database_2FactorAuth {
             if (rs.next()){
                 user_id =  rs.getInt("user_id");
                 database.log("2fa code and user match!","2FAAUTH");
-                query = "DELETE FROM TWO_FACTOR_CODES where user_id = ?  and 2fa_code = ?;";
+                query = "DELETE FROM TWO_FACTOR_CODES where user_id = ?  and fa_code = ?;";
                 ppst = database.con.prepareStatement(query);
                 ppst.setInt(1,user_id);
                 ppst.setInt(2,fa_code);
@@ -130,13 +167,13 @@ public class Database_2FactorAuth {
      * -2 - database error
      */
     public int check_2fa_enabled(int user_id) throws SQLException {
-        String query = "SELECT 2fa_confirmed FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
+        String query = "SELECT fa_confirmed FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next() ){
-                if  (rs.getInt("2fa_confirmed") == 0){
+                if  (rs.getInt("fa_confirmed") == 0){
                     return 1;
                 }
                 return 0;
@@ -154,13 +191,13 @@ public class Database_2FactorAuth {
      * @return String
      */
     String get_email(int user_id) throws SQLException {
-        String query = "SELECT 2fa_email FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
+        String query = "SELECT fa_email FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             if( rs.next() ){
-                return rs.getString("2fa_email");
+                return rs.getString("fa_email");
             }
             return "none";
         }catch(SQLException e){
@@ -172,18 +209,18 @@ public class Database_2FactorAuth {
      * Function for showing list of users with 2fa enabled
      */
     public void show_2fa_enabled_users() throws SQLException {
-        String query = "SELECT user_id,2fa_confirmed FROM TWO_FACTOR_ENABLED;";
+        String query = "SELECT user_id,fa_confirmed FROM TWO_FACTOR_ENABLED;";
         try{
             System.out.println("Showing 2fa enabled users:");
             PreparedStatement ppst = database.con.prepareStatement(query);
             ResultSet rs = ppst.executeQuery();
             while(rs.next()){
                 String data = rs.getInt("user_id")+" - "+database.get_userlogin_byid(rs.getInt("user_id"));
-                if ( rs.getInt("2fa_confirmed") != 0 ){
-                    data = data + " ,code:"+rs.getInt("2fa_confirmed") ;
+                if ( rs.getInt("fa_confirmed") != 0 ){
+                    data = data + "- code:"+rs.getInt("fa_confirmed") ;
                 }
                 else{
-                    data = data + "CONFIRMED";
+                    data = data + " - CONFIRMED";
                 }
                 System.out.println(data);
             }
@@ -199,7 +236,7 @@ public class Database_2FactorAuth {
      * @return Integer
      */
     public int enable_authorization(int user_id, String email) throws SQLException {
-        String query = "INSERT INTO TWO_FACTOR_ENABLED (user_id,2fa_email,2fa_confirmed) VALUES (?,?,?);";
+        String query = "INSERT INTO TWO_FACTOR_ENABLED (user_id,fa_email,fa_confirmed) VALUES (?,?,?);";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
@@ -262,13 +299,13 @@ public class Database_2FactorAuth {
      *  > - 2fa code
      */
     int get_2fa_code(int user_id) throws SQLException {
-        String query = "SELECT 2fa_confirmed FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
+        String query = "SELECT fa_confirmed FROM TWO_FACTOR_ENABLED WHERE user_id = ?;";
         try{
             PreparedStatement ppst = database.con.prepareStatement(query);
             ppst.setInt(1,user_id);
             ResultSet rs = ppst.executeQuery();
             if ( rs.next()){
-                return rs.getInt("2fa_confirmed");
+                return rs.getInt("fa_confirmed");
             }
             return -1;
         }catch(Exception e){
@@ -288,7 +325,7 @@ public class Database_2FactorAuth {
      */
     public int confirm_authorization(int user_id,int confirmation_code) throws SQLException {
         if ( confirmation_code == get_2fa_code(user_id)){
-            String query = "UPDATE TWO_FACTOR_ENABLED SET 2fa_confirmed = 0 WHERE user_id = ?";
+            String query = "UPDATE TWO_FACTOR_ENABLED SET fa_confirmed = 0 WHERE user_id = ?";
             try{
                 PreparedStatement ppst = database.con.prepareStatement(query);
                 ppst.setInt(1,user_id);
@@ -301,6 +338,25 @@ public class Database_2FactorAuth {
             }
         }
         return 0;
+    }
+
+    /**
+     * Function for confirming authorization
+     * @param user_id
+     * @return Integer
+     */
+    public int confirm_authorization(int user_id) throws SQLException {
+        String query = "UPDATE TWO_FACTOR_ENABLED SET fa_confirmed = 0 WHERE user_id = ?";
+        try{
+            PreparedStatement ppst = database.con.prepareStatement(query);
+            ppst.setInt(1,user_id);
+            ppst.execute();
+            database.log("Authorization confirmed!","2FAAUTH-CONF");
+            return 1;
+        }catch(Exception e){
+            database.log("Failed to confirm authorization ("+e.toString()+")","2FAAUTH-CONF-FAILED");
+            return -1;
+        }
     }
 
     /**
@@ -318,7 +374,7 @@ public class Database_2FactorAuth {
             database.log("2FA disabled for user_id:"+user_id,"2FA-DISABLED");
             return 1;
         }catch(Exception e){
-            database.log("Failed to disable autorization ("+e.toString()+")","2FA-DISABLE-FAILED");
+            database.log("Failed to disable authorization ("+e.toString()+")","2FA-DISABLE-FAILED");
             return -1;
         }
     }
@@ -339,7 +395,7 @@ public class Database_2FactorAuth {
          * );
          */
         if ( check_2fa_enabled(user_id) == 1){
-            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,2fa_code) VALUES (?,?);";
+            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,fa_code) VALUES (?,?);";
 
             try{
                 int fa_code = get_code();
@@ -397,7 +453,7 @@ public class Database_2FactorAuth {
          * );
          */
         if ( check_2fa_enabled(user_id) == 1){
-            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,2fa_code) VALUES (?,?);";
+            String query = "INSERT INTO TWO_FACTOR_CODES (user_id,fa_code) VALUES (?,?);";
 
             try{
                 int fa_code = get_code();
