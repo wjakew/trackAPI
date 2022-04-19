@@ -221,7 +221,7 @@ public class Configuration {
      * @return boolean
      */
     public boolean check_mail_data(){
-        return !(this.mail_email_address.equals("") || this.mail_email_password.equals(""));
+        return !(this.mail_email_address.equals("none") || this.mail_email_password.equals("none"));
     }
 
     /**
@@ -246,9 +246,18 @@ public class Configuration {
             fw.write("name%"+this.database_name+"\n");
             fw.write("user%"+this.database_user+"\n");
             fw.write("password%"+this.database_password+"\n");
-            fw.write("email_address%"+this.mail_email_address+"\n");
-            fw.write("email_pass%"+this.mail_email_password+"\n");
-            fw.write("url%"+this.database_url+"\n");
+            if ( this.mail_email_address.isEmpty() )
+                fw.write("email_address%none\n");
+            else
+                fw.write("email_address%"+this.mail_email_address+"\n");
+            if ( this.mail_email_password.isEmpty())
+                fw.write("email_pass%none\n");
+            else
+                fw.write("email_pass%"+this.mail_email_password+"\n");
+            if ( this.database_url.isEmpty())
+                fw.write("url%none\n");
+            else
+                fw.write("url%"+this.database_url+"\n");
             fw.write("mode%"+this.database_mode);
 
             fw.close();

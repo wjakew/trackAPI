@@ -4,5 +4,5 @@ user%root
 password%password
 email_address%none
 email_pass%none
-url%trackapi_database.db
+url%none
 mode%server

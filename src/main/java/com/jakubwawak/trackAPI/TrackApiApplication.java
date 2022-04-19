@@ -26,8 +26,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.3.0";
-	public static String build = "170422REV01";
+	public static String version = "v1.3.1";
+	public static String build = "190422REV01";
 
 	public static int debug = 0;
 

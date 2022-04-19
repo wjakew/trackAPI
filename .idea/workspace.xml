@@ -5,171 +5,63 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa2e6967-5b4a-4688-9856-e8e64454d34d" name="Changes" comment="2211REV01">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec (1).xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/entities/entities.dat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/entities/entities.dat.len" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/entities/entities.dat_i.len" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/storage_v2/_src_/schema/entrc_database._uGYSw.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/storage_v2/_src_/schema/mysql.osA4Bg.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec/storage_v2/_src_/schema/sys.zb4BAA.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/httpRequests/2021-09-03T155928.406.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/httpRequests/http-client.cookies" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Cat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Configuration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Menu.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Password_Validator.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/RandomString.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Session_Validator.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/TokenCheck.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/board/Board.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/board/BoardManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/board/Board_Element.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/board/Board_Setters.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/board/Board_Viewers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_2FactorAuth.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Admin.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Board.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Connector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Issue.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Log.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Project.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Room.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Room_Message.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Share.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Snippet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_Task.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/database/Database_ToDo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/issue_handlers/Issue.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/issue_handlers/Issue_Setters.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/issue_handlers/Issue_Viewers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/ConsoleColors.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/HealthMonitor.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/MailConnector.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/ProjectMail_Answer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/Service.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/Service_Answer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/Standard_Answer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/User_Configuration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/maintanance/Viewer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/project_handlers/Project.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/project_handlers/Project_Setters.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/project_handlers/Project_Viewers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/room/Room.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/room/Room_Member.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/room/Room_Message.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/room/Room_Message_Setter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/room/Room_Setter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/shared_handler/Shared.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/shared_handler/Shared_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/shared_handler/Shared_Viewer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/snippet_handlers/User_Snippet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/snippet_handlers/User_Snippet_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/snippet_handlers/User_Snippet_Viewer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task_Comment.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task_Comment_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task_Setters.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task_State_Changer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/task_handlers/Task_Viewers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/todo/ToDo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/todo/ToDo_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/Cat.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/HealthMonitor_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/Issue_State_Changer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/TFactor_Auth.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/TokenAuth_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/TrackApiApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/UserData_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/User_Configuration_Handler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/Validation_Check.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/Who.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/users/User_Data.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/wrapper/Response.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/wrapper/Wrapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/public/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/public/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/trackAPI-1.3.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/trackAPI-1.3.0.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trackapi_database.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec (1).xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec (1).xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ed985625-2eb0-4dd9-8af0-32d0abd5e0ec.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-client.cookies" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-client.cookies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/httpRequests/http-requests-log.http" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.trak" beforeDir="false" afterPath="$PROJECT_DIR$/config.trak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/docker_clear_data.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker_clear_data.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/docker_create.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker_create.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/docker_run_database.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker_run_database.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker/mysql-dump/trackAPI_database_make.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/mysql-dump/trackAPI_database_make.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/notes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker/run.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Password_Validator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Password_Validator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/RandomString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/RandomString.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Session_Validator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/Session_Validator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/TokenCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/administrator/TokenCheck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/BoardManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/BoardManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Element.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Element.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Setters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Setters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Viewers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/board/Board_Viewers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_2FactorAuth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_2FactorAuth.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Connector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Connector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Issue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Issue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Log.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Log.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Share.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Share.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue_Setters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue_Setters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue_Viewers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/issue_handlers/Issue_Viewers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/HealthMonitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/HealthMonitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/MailConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/MailConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Service_Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Service_Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Viewer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project_Setters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project_Setters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project_Viewers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/project_handlers/Project_Viewers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared_Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared_Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/shared_handler/Shared_Viewer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Setters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Setters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_State_Changer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_State_Changer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Viewers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Viewers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/HealthMonitor_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/HealthMonitor_Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Issue_State_Changer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Issue_State_Changer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Room_Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Room_Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Snippet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_Snippet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/database/Database_ToDo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/ConsoleColors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/ConsoleColors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/ProjectMail_Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/ProjectMail_Answer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Standard_Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/Standard_Answer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/User_Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/maintanance/User_Configuration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Message_Setter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Message_Setter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Setter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/room/Room_Setter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet_Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet_Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/snippet_handlers/User_Snippet_Viewer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Comment_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/task_handlers/Task_Comment_Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/todo/ToDo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/todo/ToDo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/todo/ToDo_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/todo/ToDo_Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Cat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Cat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TFactor_Auth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TFactor_Auth.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TokenAuth_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TokenAuth_Handler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TrackApiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/TrackApiApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/UserData_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/UserData_Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Validation_Check.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Validation_Check.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/users/User_Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/users/User_Data.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/wrapper/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/wrapper/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/wrapper/Wrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/wrapper/Wrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/public/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/public/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/User_Configuration_Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/User_Configuration_Handler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Who.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jakubwawak/trackAPI/Who.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Configuration.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/administrator/Configuration.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/TrackApiApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/jakubwawak/trackAPI/TrackApiApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/public/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/public/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trackapi.log" beforeDir="false" afterPath="$PROJECT_DIR$/trackapi.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trackapi.log.2022-03-31.0.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trackapi.log.2022-04-04.0.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/trackapi_database.db" beforeDir="false" afterPath="$PROJECT_DIR$/trackapi_database.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,17 +109,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RequestMappingsPanelOrder0" value="0" />
-    <property name="RequestMappingsPanelOrder1" value="1" />
-    <property name="RequestMappingsPanelWidth0" value="75" />
-    <property name="RequestMappingsPanelWidth1" value="75" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "spring.configuration.checksum": "e201c3a98047ddd71e2319ff6c7c9a76"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\kubaw\Mój dysk\PROJEKTY PROGRAMOWANIE\Aktywne Projekty\src\java projects\trackAPI\application\trackAPI\docker" />
@@ -260,8 +155,8 @@
     </configuration>
     <configuration name="TrackApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="trackAPI" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.jakubwawak.trackAPI.TrackApiApplication" />
       <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.jakubwawak.trackAPI.TrackApiApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -442,6 +337,9 @@
       <workItem from="1650099171796" duration="10408000" />
       <workItem from="1650183220262" duration="9143000" />
       <workItem from="1650223529566" duration="80000" />
+      <workItem from="1650289857940" duration="3000" />
+      <workItem from="1650314912526" duration="300000" />
+      <workItem from="1650365064715" duration="1307000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1630619593658</created>
