@@ -14,10 +14,11 @@ import com.jakubwawak.maintanance.MailConnector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.Console;
+import java.io.*;
+
 import com.jakubwawak.database.*;
 
-import java.io.IOException;
+import javax.sound.midi.Track;
 import java.net.InetAddress;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -26,8 +27,8 @@ import java.util.Scanner;
 @SpringBootApplication(scanBasePackages = {"com.jakubwawak"})
 public class TrackApiApplication {
 
-	public static String version = "v1.3.1";
-	public static String build = "190422REV01";
+	public static String version = "v1.3.2";
+	public static String build = "250422REV01";
 
 	public static int debug = 0;
 
@@ -61,6 +62,7 @@ public class TrackApiApplication {
 				if ( load_database_connection() ){
 					if ( authorize(1) ){
 						header();
+						prepare_certificate();
 						System.out.println("Please wait till Spring initializes...");
 						SpringApplication.run(TrackApiApplication.class, args);
 						System.out.println("trackAPI is running currently. To check commands type /help/");
@@ -103,6 +105,7 @@ public class TrackApiApplication {
 									database.configuration = configuration;
 									if ( authorize(0) ){
 										header();
+										prepare_certificate();
 										System.out.println("Please wait till Spring initializes...");
 										SpringApplication.run(TrackApiApplication.class, args);
 										System.out.println("trackAPI is running currently. To check commands type /help/");
@@ -282,6 +285,38 @@ public class TrackApiApplication {
 	public static void clear_console(){
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
+	}
+
+	/**
+	 * Function for creating / maintaining certificate
+	 * @return Integer
+	 * return codes:
+	 * 1 - certificate found
+	 * 2 - certificate create
+	 *
+	 */
+	public static int prepare_certificate() throws SQLException {
+		File dir = new File(".");
+		File[] directoryListing = dir.listFiles();
+		TrackApiApplication.database.log("Searching for cert in: "+dir.getAbsolutePath(),"API-CERT");
+		if (directoryListing != null) {
+			for (File child : directoryListing) {
+				if ( child.getName().contains("trackapi_cert")){
+					TrackApiApplication.database.log("Found trackAPI HTTPS certificate.","API-CERT");
+					return 1;
+				}
+			}
+			TrackApiApplication.database.log("Certificate not found..","API-CERT");
+			TrackApiApplication.database.log("This version of trackAPI need HTTPS cert to run","API-CERT-ABORT");
+			TrackApiApplication.database.log("Run https_key.sh as a root to create certificate","API-CERT-ABORT");
+			System.exit(1);
+			return 0;
+		}
+		else {
+			TrackApiApplication.database.log("Failed to load directory. Exiting...","API-CERT");
+			System.exit(1);
+			return -2;
+		}
 	}
 
 	/**

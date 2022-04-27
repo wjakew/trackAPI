@@ -9,6 +9,8 @@ import com.jakubwawak.trackAPI.TrackApiApplication;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * Object for getting status data from database
@@ -16,6 +18,7 @@ import java.net.UnknownHostException;
 public class HealthMonitor {
     private InetAddress ip;
     public String start_time;
+    public String current_time;
     public String database_status;
     public String database_ip;
     public String service_ip;
@@ -34,6 +37,7 @@ public class HealthMonitor {
             database_status = "disconnected";
         }
         database_ip = TrackApiApplication.database.ip;
+        current_time = LocalDateTime.now(ZoneId.of("Europe/Warsaw")).toString();
         version = TrackApiApplication.version;
         build_number = TrackApiApplication.build;
         service_ip = ip.getLocalHost().toString();
